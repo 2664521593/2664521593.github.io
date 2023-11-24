@@ -63,7 +63,7 @@
                                                总文章数 23
                                 </nav>
                                 <nav>
-	总字数 <span class="post-count">31.7k</span>
+	总字数 <span class="post-count">31.5k</span>
                                 </nav>
 		<nav class="header-smart-menu">
     		
@@ -163,7 +163,7 @@
     
       <header class="article-header">
         <div align="center" class="post-count">
-    字数：2.2k字 | 预计阅读时长：8分钟
+    字数：1.9k字 | 预计阅读时长：7分钟
 </div>
         
   
@@ -185,15 +185,15 @@
 <p>本篇论文聚焦于fuzz测试的种子调度问题。</p>
 <h2 id="问题引入"><a href="#问题引入" class="headerlink" title="问题引入"></a>问题引入</h2><p>fuzz是一种通过改变一组集合来查找错误的技术。</p>
 <p>fuzzing初始时候会有一个种子池(seed corpus), 里面有很多的测试用例，每个测试用例都是一个种子  (seed)，每次fuzzing需要从种子池里面挑选出来一个种子,  在它的基础上生成很多测试用例变种，然后把这些测试用例变种输入程序中，观察是否有异常的程序行为或者程序崩溃出现，并且保留那些能测试新的代码段的测试用例变种。</p>
-<p>![](E:\360MoveData\Users\26645\Desktop\effective seed scheduling\image-20231115132921585.png)</p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231115132921585.png"></p>
 <p>​                                                                                                 图1. Fuzzing的基本工作流程</p>
 <p>种子调度，种子被选择的顺序，可以极大地影响模糊器的性能。</p>
 <p>一些种子调度方法：</p>
-<p>![](E:\360MoveData\Users\26645\Desktop\effective seed scheduling\image-20231115133112679.png)</p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231115133112679.png"></p>
 <p>现有的方法调度种子的历史变异数据的基础上，但忽略了底层的控制流图（CFG）的结构。</p>
 <p>程序控制流图（CFG）作为程序执行过程中所有基本块执行可能流向的表现，反映着基本块节点之间的相互关系。一个好的种子，在程序流程图(CFG)中, 它的的执行路径可以连通到大量的未测试代码段，检查CFG可以通过揭示突变种子的潜在边缘覆盖增益来帮助种子调度。</p>
-<p>![](E:\360MoveData\Users\26645\Desktop\effective seed scheduling\image-20231115133626633.png)</p>
-<p>![](E:\360MoveData\Users\26645\Desktop\effective seed scheduling\image-20231115133659743.png)</p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231115133626633.png"></p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231115133659743.png"></p>
 <p>一个理想的策略将基于从种子到突变的所有可达和可行边的计数来调度种子，但是沿着所有边计算可行性是非常昂贵且复杂的。</p>
 <p>因此需要采取一种近似的算法，根据观察，算法需要满足以下几个条件：</p>
 <ol>
@@ -203,58 +203,58 @@
 </ol>
 <p>这个问题可以抽象成在一个动态的大规模图中，如何去高效地计算可以连通到的节点数量，我们想到了社交网络中的中心性算法。</p>
 <h2 id="图中心性算法"><a href="#图中心性算法" class="headerlink" title="图中心性算法"></a>图中心性算法</h2><p>中心性算法可以测量每个节点在社交网络中的连通性和影响力。比如在社交网络分析中，图中心性可以用于识别最有影响力的人物或关键人物。这些人物可能具有更大的影响力、信息传播能力或社会地位。</p>
-<p>![](E:\360MoveData\Users\26645\Desktop\effective seed scheduling\image-20231115140039584.png)</p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231115140039584.png"></p>
 <p>文章采用katz中心性计算每个节点的权重，katz中心性分析可以较好地解决以上三个问题。</p>
 <p>katz公式：</p>
-<p>![](E:\360MoveData\Users\26645\Desktop\effective seed scheduling\image-20231115152605717.png)</p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231115152605717.png"></p>
 <p>α表示衰退因子(0~1)，可以为远的节点赋更低的权重，A表示邻接矩阵，cj为相邻节点的权值，βi为当前节点的权值，用于减少难以到达节点的权重。</p>
 <p>矩阵形式：</p>
-<p>![](E:\360MoveData\Users\26645\Desktop\effective seed scheduling\image-20231115154420605.png)</p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231115154420605.png"></p>
 <p>进一步整理：</p>
-<p>![](E:\360MoveData\Users\26645\Desktop\effective seed scheduling\image-20231115171311577.png)</p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231115171311577.png"></p>
 <p>可以用幂方法近似，简化计算：</p>
-<p>![](E:\360MoveData\Users\26645\Desktop\effective seed scheduling\image-20231115154056140.png)</p>
-<p>![](E:\360MoveData\Users\26645\Desktop\effective seed scheduling\image-20231115153055844.png)</p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231115154056140.png"></p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231115153055844.png"></p>
 <h2 id="具体例子"><a href="#具体例子" class="headerlink" title="具体例子"></a>具体例子</h2><p>具体程序</p>
-<p>![](E:\360MoveData\Users\26645\Desktop\effective seed scheduling\image-20231115154717093.png)</p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231115154717093.png"></p>
 <p>由于初始的CFG图中包含已访问和未访问的节点，而我们更关心未访问节点的情况，而且CFG中缺少种子相关的信息，因此需要对CFG做进一步的处理</p>
 <p>首先删除掉已访问的节点，其中A B为边缘节点，特点是他们本身没有被访问但是具有已被访问过的父节点，将对应访问了其父节点的种子连接上，插入种子节点，生成edge horizon graph(边缘分界线图)。</p>
-<p>![](E:\360MoveData\Users\26645\Desktop\effective seed scheduling\image-20231115154833205.png)</p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231115154833205.png"></p>
 <p>为节点分配权重，对于边缘节点根据历史访问数据赋权重，其余赋权重为默认值1。</p>
-<p>![](E:\360MoveData\Users\26645\Desktop\effective seed scheduling\image-20231115201756772.png)</p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231115201756772.png"></p>
 <p>Ri度量到达节点i的父节点的突变数量，T度量种子的突变总数，以此衡量一个节点是否容易到达。比如我们假设在100个突变中，有70个到达了水平节点A的父节点，所以它的β &#x3D; 1− 70&#x2F;100 &#x3D; 0.3，30个到达了水平节点B的父节点，所以它的β &#x3D; 1− 30&#x2F;100 &#x3D; 0.7。这表明水平节点A更难通过突变到达，因为模糊器无法通过其70%的突变到达它。</p>
 <p>计算</p>
-<p>![](E:\360MoveData\Users\26645\Desktop\effective seed scheduling\image-20231115160011216.png)</p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231115160011216.png"></p>
 <p>Cs2(0) &#x3D; 1</p>
 <p>Cs2(1) &#x3D; α(Ca(0)+Cb(0))+βs2 &#x3D; 0.5∗(0.3+0.7)+1 &#x3D; 1.5</p>
 <p>Cs2(2) &#x3D; α(Ca(1) + Cb(1)) +βs2 &#x3D;0.5 ∗ (0.3 + 1.7) + 1 &#x3D; 2</p>
 <p>Cs2(3) &#x3D; α(Ca(2) + Cb(2)) +βs2 &#x3D;0.5 ∗ (0.3 + 1.7) + 1 &#x3D; 2</p>
-<p>![](E:\360MoveData\Users\26645\Desktop\effective seed scheduling\image-20231115153055844.png)</p>
-<p>![](E:\360MoveData\Users\26645\Desktop\effective seed scheduling\image-20231115155933047.png)</p>
-<h2 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h2><p>![](E:\360MoveData\Users\26645\Desktop\effective seed scheduling\image-20231115165143771.png)</p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231115153055844.png"></p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231115155933047.png"></p>
+<h2 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h2><p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231115165143771.png"></p>
 <p>给定程序、种子语料库和目标程序的过程间CFG，K-Scheduler首先修改CFG以生成仅由种子、边界节点和非边界未访问节点组成的边缘分界线图。然后，使用Katz中心性对边缘分界线图进行中心性分析。模糊器优先选择中心性得分最高的种子。</p>
 <p>当模糊器的突变到达以前未访问的节点时，删除这些新访问的节点，并在更新后的边缘分界线图上重新计算Katz中心性。因为我们不希望已访问节点对中心性结果造成影响，特别地，给定一个图A → B → C，如果B被访问过，我们通过添加一条产生A → C的边来保持连通性。此时A → C现在有距离1。</p>
 <p>或者在过去给定的时间后，更新中心性值，以便虽然没有新到达的节点，K-Scheduler也能及时地指导fuzz。</p>
 <h2 id="评估"><a href="#评估" class="headerlink" title="评估"></a>评估</h2><p>使用Google FuzzBench基准测试，选取其中的12个程序，作者将K-Scheduler分别集成到AFL和LibFuzzer中，在底层模糊器相同的情况下比较种子调度策略。</p>
 <h3 id="RQ1、和其他的调度策略相比如何？"><a href="#RQ1、和其他的调度策略相比如何？" class="headerlink" title="RQ1、和其他的调度策略相比如何？"></a>RQ1、和其他的调度策略相比如何？</h3><p>对于与基于Libfuzzer的种子调度策略，作者将K-Scheduler与Entropic和Libfuzzer默认种子调度器（Defalult）进行对比，将24小时作为一轮的循行周期，共计运行了10次，并取10次运行结果的算术平均值。该实验结果如表1所示，可以看出，在运行了24小时后，K-Scheduler的特征覆盖率与边覆盖率与Entropic和Libfuzzer默认种子调度器相比都要更高。</p>
-<p>![](E:\360MoveData\Users\26645\Desktop\effective seed scheduling\image-20231116164914495.png)</p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231116164914495.png"></p>
 <p>对于与基于AFL的种子调度策略，作者将K-Scheduler与RarePath、RareEdges、NewPath、SecurityCov和AFL默认种子调度策略（Default）进行24小时一轮、10次实验</p>
-<p>![](E:\360MoveData\Users\26645\Desktop\effective seed scheduling\image-20231116170059380.png)</p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231116170059380.png"></p>
 <p>我们认为性能差异减少是因为底层的模糊器AFL在24小时模糊活动期间多次迭代种子队列，因此将频繁地调度几乎所有的种子，从而降低了种子选择的效果。</p>
 <h3 id="RQ2：能否提高fuzzer发现漏洞的能力"><a href="#RQ2：能否提高fuzzer发现漏洞的能力" class="headerlink" title="RQ2：能否提高fuzzer发现漏洞的能力"></a>RQ2：能否提高fuzzer发现漏洞的能力</h3><p>在12个程序上运行10次，每次24h，对结果取算术平均值。</p>
-<p>![](E:\360MoveData\Users\26645\Desktop\effective seed scheduling\image-20231116172137743.png)</p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231116172137743.png"></p>
 <h3 id="RQ3运行开销"><a href="#RQ3运行开销" class="headerlink" title="RQ3运行开销"></a>RQ3运行开销</h3><p>运行开销主要分为</p>
 <ul>
 <li>fuzz维护开销：记录边缘的命中计数并计算种子的能量</li>
 <li>图形分析：构造边缘分界线图并执行Katz中心性分析</li>
 </ul>
 <p>由于katz中心性可以用幂方法高效计算同时边缘分界线图不用每次从0构建，所以图形分析开销较小。</p>
-<p>![](E:\360MoveData\Users\26645\Desktop\effective seed scheduling\image-20231116193314921.png)</p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231116193314921.png"></p>
 <h3 id="RQ4每个设计的影响"><a href="#RQ4每个设计的影响" class="headerlink" title="RQ4每个设计的影响"></a>RQ4每个设计的影响</h3><p>(1)、β值的影响</p>
 <p>文中是根据历史变异数据改变β，通过比较使用统一β值的K-Scheduler与使用非统一β值的K-Scheduler的效果展示该方法的作用。</p>
-<p>![](E:\360MoveData\Users\26645\Desktop\effective seed scheduling\image-20231116200140444.png)</p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231116200140444.png"></p>
 <p>(2)、删除已访问的节点</p>
-<p>![](E:\360MoveData\Users\26645\Desktop\effective seed scheduling\image-20231116200336125.png)</p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231116200336125.png"></p>
 <p>(3)、α的取值</p>
 <p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231116200508021.png"></p>
 
