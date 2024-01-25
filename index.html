@@ -60,10 +60,10 @@
 			</ul>
 		</nav>
                                 <nav>
-                                               总文章数 24
+                                               总文章数 25
                                 </nav>
                                 <nav>
-	总字数 <span class="post-count">33.3k</span>
+	总字数 <span class="post-count">35.1k</span>
                                 </nav>
 		<nav class="header-smart-menu">
     		
@@ -157,6 +157,116 @@
           </div>
           <div id="js-content" class="content-ll">
             
+  
+    <article id="post-1-25" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        <div align="center" class="post-count">
+    字数：1.7k字 | 预计阅读时长：7分钟
+</div>
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2024/01/25/1-25/">1.25</a>
+    </h1>
+  
+
+        
+        <a href="/2024/01/25/1-25/" class="archive-article-date">
+  	<time datetime="2024-01-24T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2024-01-25</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>#GAN</p>
+<p>  生成对抗网络（Generative Adversarial Network,  GAN）是一种通过两个神经网络相互博弈的方式进行学习的生成模型。生成对抗网络能够在不使用标注数据的情况下来进行生成任务的学习。生成对抗网络由一个生成器和一个判别器组成。生成器从潜在空间随机取样作为输入，其输出结果需要尽量模仿训练集中的真实样本。判别器的输入则为真实样本或生成器的输出，其目的是将生成器的输出从真实样本中尽可能分别出来。生成器和判别器相互对抗、不断学习，最终目的使得判别器无法判断生成器的输出结果是否真实。</p>
+<h2 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h2><p><img src="/2024/01/25/1-25/image-20240125175804845.png"></p>
+<p>GAN是由两部分主成：生成模型G（generative model）和判别模型D（discriminative model）。生成模型捕捉样本数据的分布，判别模型是一个二分类器，判别输入是真实数据还是生成的样本。</p>
+<h2 id="损失函数："><a href="#损失函数：" class="headerlink" title="损失函数："></a>损失函数：</h2><p><img src="/2024/01/25/1-25/image-20240117204810680.png"></p>
+<p>简单分析一下这个公式：</p>
+<ul>
+<li>G是一个生成网络，它接收一个随机噪声z(随机数)，通过噪声生成图像。</li>
+<li>D是一个判断图像是否“真实”的网络。它的输入参数是x, x代表一张图片，输出D (x)代表x是一张真实图片的概率。如果是1，代表100%真实的图像，如果是0，代表不可能的图像。</li>
+<li>整个式子由两项构成。x表示真实图片，z表示输入G网络的噪声，而G(z)表示G网络生成的图片。</li>
+<li>D(x)表示D网络判断<strong>真实图片是否真实</strong>的概率（因为x就是真实的，所以对于D来说，这个值越接近1越好）。而D(G(z))是<strong>D网络判断G生成的图片的是否真实的概率。</strong></li>
+<li>G的目的：上面提到过，D(G(z))是<strong>D网络判断G生成的图片是否真实的概率</strong>，G应该希望自己生成的图片“越接近真实越好”。也就是说，G希望D(G(z))尽可能得大，这时V(D, G)会变小。因此我们看到式子的最前面的记号是min_G。</li>
+<li>D的目的：D的能力越强，D(x)应该越大，D(G(x))应该越小。这时V(D,G)会变大。因此式子对于D来说是求最大(max_D)</li>
+</ul>
+<p>如何训练：</p>
+<p>GAN的训练过程可以分为两个部分：</p>
+<ul>
+<li>判别器的训练：固定生成器G，更新判别器D的参数，使得判别器能够准确地将真实样本与虚假样本区分开来；</li>
+<li>生成器的训练：固定判别器D，更新生成器G的参数，使得生成器能够伪造出更加逼真的虚假样本，使得判别器难以区分真假样本。</li>
+</ul>
+<p>通过不断迭代判别器和生成器的训练过程，GAN最终能够得到一个平衡状态，生成器可以生成与真实数据相似的样本，判别器无法准确区分真实数据和生成数据。</p>
+<p><img src="/2024/01/25/1-25/image-20240117204950292.png"></p>
+<p><img src="/2024/01/25/1-25/image-20240117204956152.png"></p>
+<h2 id="代码："><a href="#代码：" class="headerlink" title="代码："></a>代码：</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch.nn <span class="keyword">as</span> nn</span><br><span class="line"><span class="keyword">import</span> torch.nn.functional <span class="keyword">as</span> F</span><br><span class="line"><span class="keyword">import</span> torch.optim <span class="keyword">as</span> optim</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> torchvision</span><br><span class="line"><span class="keyword">from</span> torchvision <span class="keyword">import</span> transforms</span><br><span class="line"><span class="keyword">import</span> torch</span><br><span class="line">transform = transforms.Compose([</span><br><span class="line">    transforms.ToTensor(),  <span class="comment"># 归一化为0~1</span></span><br><span class="line">    transforms.Normalize(<span class="number">0.5</span>, <span class="number">0.5</span>)  <span class="comment"># 归一化为-1~1</span></span><br><span class="line">])</span><br><span class="line">train_ds = torchvision.datasets.MNIST(<span class="string">&#x27;datasets&#x27;</span>,  <span class="comment"># 下载到那个目录下</span></span><br><span class="line">                                      train=<span class="literal">True</span>,</span><br><span class="line">                                      transform=transform,</span><br><span class="line">                                      download=<span class="literal">True</span>)</span><br><span class="line">dataloader = torch.utils.data.DataLoader(train_ds, batch_size=<span class="number">64</span>, shuffle=<span class="literal">True</span>)</span><br><span class="line">imgs, _ = <span class="built_in">next</span>(<span class="built_in">iter</span>(dataloader))</span><br><span class="line">imgs.shape</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Generator</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">super</span>(Generator, self).__init__()  <span class="comment"># 继承父类</span></span><br><span class="line">        self.main = nn.Sequential(</span><br><span class="line">            nn.Linear(<span class="number">100</span>, <span class="number">256</span>), nn.ReLU(),</span><br><span class="line">            nn.Linear(<span class="number">256</span>, <span class="number">512</span>), nn.ReLU(),</span><br><span class="line">            nn.Linear(<span class="number">512</span>, <span class="number">28</span> * <span class="number">28</span>),</span><br><span class="line">            nn.Tanh()  <span class="comment"># 最后必须用tanh，把数据分布到（-1，1）之间</span></span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, x</span>):  <span class="comment"># x表示长度为100的噪声输入</span></span><br><span class="line">        img = self.main(x)</span><br><span class="line">        img = img.view(-<span class="number">1</span>, <span class="number">28</span>, <span class="number">28</span>, <span class="number">1</span>)  <span class="comment"># 方便等会绘图</span></span><br><span class="line">        <span class="keyword">return</span> img</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Discriminator</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">super</span>(Discriminator, self).__init__()</span><br><span class="line">        self.main = nn.Sequential(</span><br><span class="line">            nn.Linear(<span class="number">28</span> * <span class="number">28</span>, <span class="number">512</span>),</span><br><span class="line">            nn.LeakyReLU(),  <span class="comment"># x小于零是是一个很小的值不是0，x大于0是还是x</span></span><br><span class="line">            nn.Linear(<span class="number">512</span>, <span class="number">256</span>),</span><br><span class="line">            nn.LeakyReLU(),</span><br><span class="line">            nn.Linear(<span class="number">256</span>, <span class="number">1</span>),</span><br><span class="line">            nn.Sigmoid()  <span class="comment"># 保证输出范围为（0，1）的概率</span></span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, x</span>):  <span class="comment"># x表示28*28的mnist图片</span></span><br><span class="line">        img = x.view(-<span class="number">1</span>, <span class="number">28</span> * <span class="number">28</span>)</span><br><span class="line">        img = self.main(img)</span><br><span class="line">        <span class="keyword">return</span> img</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">device = <span class="string">&#x27;cuda&#x27;</span> <span class="keyword">if</span> torch.cuda.is_available() <span class="keyword">else</span> <span class="string">&#x27;cpu&#x27;</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;training on &#x27;</span>, device)</span><br><span class="line"><span class="comment"># 模型</span></span><br><span class="line">gen = Generator().to(device)</span><br><span class="line">dis = Discriminator().to(device)</span><br><span class="line"><span class="comment"># 优化器</span></span><br><span class="line">g_opt = torch.optim.Adam(gen.parameters(), lr=<span class="number">0.0001</span>)</span><br><span class="line">d_opt = torch.optim.Adam(dis.parameters(), lr=<span class="number">0.0001</span>)</span><br><span class="line"><span class="comment"># 损失</span></span><br><span class="line">loss = torch.nn.BCELoss()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">gen_img_plot</span>(<span class="params">model, test_input</span>):</span><br><span class="line">    prediction = np.squeeze(model(test_input).detach().cpu().numpy())</span><br><span class="line">    fig = plt.figure(figsize=(<span class="number">4</span>, <span class="number">4</span>))</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">16</span>):</span><br><span class="line">        plt.subplot(<span class="number">4</span>, <span class="number">4</span>, i + <span class="number">1</span>)  <span class="comment"># 四行四列的第一个</span></span><br><span class="line">        <span class="comment"># imshow函数绘图的输入是（0，1）的float，或者（1，256）的int</span></span><br><span class="line">        <span class="comment"># 但prediction是tanh出来的范围是[-1，1]没法绘图，需要转成0~1(即加1除2)。</span></span><br><span class="line">        plt.imshow((prediction[i] + <span class="number">1</span>) / <span class="number">2</span>)</span><br><span class="line">        plt.axis(<span class="string">&#x27;off&#x27;</span>)</span><br><span class="line">    plt.show()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">test_input = torch.randn(<span class="number">16</span>, <span class="number">100</span>, device=device)</span><br><span class="line">D_loss = []</span><br><span class="line">G_loss = []</span><br><span class="line">epochs = <span class="number">40</span></span><br><span class="line"><span class="keyword">for</span> epoch <span class="keyword">in</span> <span class="built_in">range</span>(epochs):</span><br><span class="line">    d_epoch_loss = <span class="number">0</span></span><br><span class="line">    g_epoch_loss = <span class="number">0</span></span><br><span class="line">    count = <span class="built_in">len</span>(dataloader)  <span class="comment"># 一个epoch的大小</span></span><br><span class="line">    <span class="keyword">for</span> step, (img, _) <span class="keyword">in</span> <span class="built_in">enumerate</span>(dataloader):</span><br><span class="line">        img = img.to(device)  <span class="comment"># 一个批次的图片</span></span><br><span class="line">        size = img.size(<span class="number">0</span>)  <span class="comment"># 和和图片对应的原始噪音</span></span><br><span class="line">        random_noise = torch.randn(size, <span class="number">100</span>, device=device)</span><br><span class="line">        gen_img = gen(random_noise)  <span class="comment"># 生成的图像</span></span><br><span class="line"></span><br><span class="line">        d_opt.zero_grad()</span><br><span class="line">        real_output = dis(img)  <span class="comment"># 判别器输入真实图片，对真实图片的预测结果，希望是1</span></span><br><span class="line">        <span class="comment"># 判别器在真实图像上的损失</span></span><br><span class="line">        d_real_loss = loss(real_output, torch.ones_like(real_output))  <span class="comment"># size一样全一的tensor</span></span><br><span class="line">        d_real_loss.backward()</span><br><span class="line"></span><br><span class="line">        g_opt.zero_grad()</span><br><span class="line">        <span class="comment"># 记得切断生成器的梯度</span></span><br><span class="line">        fake_output = dis(gen_img.detach())  <span class="comment"># 判别器输入生成图片，对生成图片的预测结果，希望是0</span></span><br><span class="line">        <span class="comment"># 判别器在生成图像上的损失</span></span><br><span class="line">        d_fake_loss = loss(fake_output, torch.zeros_like(fake_output))  <span class="comment"># size一样全一的tensor</span></span><br><span class="line">        d_fake_loss.backward()</span><br><span class="line"></span><br><span class="line">        d_loss = d_real_loss + d_fake_loss</span><br><span class="line">        d_opt.step()</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 生成器的损失</span></span><br><span class="line">        g_opt.zero_grad()</span><br><span class="line">        fake_output = dis(gen_img)  <span class="comment"># 希望被判定为1</span></span><br><span class="line">        g_loss = loss(fake_output, torch.ones_like(fake_output))</span><br><span class="line">        g_loss.backward()</span><br><span class="line">        g_opt.step()</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 每个epoch内的loss累加，循环外再除epoch大小，得到平均loss</span></span><br><span class="line">        <span class="keyword">with</span> torch.no_grad():</span><br><span class="line">            d_epoch_loss += d_loss</span><br><span class="line">            g_epoch_loss += g_loss</span><br><span class="line">    <span class="comment"># 一个epoch训练完成</span></span><br><span class="line">    <span class="keyword">with</span> torch.no_grad():</span><br><span class="line">        d_epoch_loss /= count</span><br><span class="line">        g_epoch_loss /= count</span><br><span class="line">        D_loss.append(d_epoch_loss)</span><br><span class="line">        G_loss.append(g_epoch_loss)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;Epoch: &#x27;</span>, epoch)</span><br><span class="line">        gen_img_plot(gen, test_input)</span><br></pre></td></tr></table></figure>
+
+<p>##运行结果</p>
+<p>第一轮</p>
+<p><img src="/2024/01/25/1-25/image-20240125175124562.png"></p>
+<p>最后一轮生成的数据</p>
+<p><img src="/2024/01/25/1-25/image-20240125175102646.png"></p>
+<p>可以看到越来越相似了</p>
+<h1 id="注意力机制"><a href="#注意力机制" class="headerlink" title="注意力机制"></a>注意力机制</h1><p><img src="/2024/01/25/1-25/image-20240125174929653.png"></p>
+<p><img src="/2024/01/25/1-25/image-20240125174900646.png"></p>
+<h2 id="自注意力机制"><a href="#自注意力机制" class="headerlink" title="自注意力机制"></a>自注意力机制</h2><p><img src="/2024/01/25/1-25/image-20240125175002825.png"></p>
+<h3 id="公式："><a href="#公式：" class="headerlink" title="公式："></a>公式：</h3><p><img src="/2024/01/25/1-25/image-20240125202916653.png"></p>
+<h3 id="计算流程"><a href="#计算流程" class="headerlink" title="计算流程"></a>计算流程</h3><p><img src="/2024/01/25/1-25/image-20240125202859240.png"></p>
+<p>首先a根据W1、W2、W3计算出Q、K、V。q1依次与q2、q3、q4计算出α，进一步与v计算出b，b就是提取出来的features，能够将输入序列中不同位置的信息同时考虑，并且能够自适应地学习到不同位置之间的依赖关系。。</p>
+<p>第一步可以并行计算，QK要求行列相同，V则可以不同，因为V是要乘一个常数。</p>
+<p><img src="/2024/01/25/1-25/image-20240125204514720.png"></p>
+<h2 id="位置编码："><a href="#位置编码：" class="headerlink" title="位置编码："></a>位置编码：</h2><p>由于自注意力机制不包含位置信息，所以引入位置编码</p>
+<p><img src="/2024/01/25/1-25/image-20240125201900025.png"></p>
+<p>位置信息是直接加到输入上的，比如三角函数式位置编码。</p>
+<p><img src="/2024/01/25/1-25/image-20240125202138664.png"></p>
+<p><img src="/2024/01/25/1-25/image-20240125202233302.png"></p>
+<p>j表示第几个token，i表示d当前token中的位置，d表示当前token的维度。</p>
+<h1 id="Multi-Head-Attention"><a href="#Multi-Head-Attention" class="headerlink" title="Multi-Head Attention"></a>Multi-Head Attention</h1>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2024/01/25/1-25/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
   
     <article id="post-Intelligent-Fuzzy-Attack-Vector-Generation-Framework-Based-on-Deep-Adversarial-Learning" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
@@ -1148,108 +1258,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2023/08/02/Exercise-9-7-Zip/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-论文写作第二篇10 top writing tips and the psychology behind them" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <div align="center" class="post-count">
-    字数：2k字 | 预计阅读时长：6分钟
-</div>
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2023/07/28/%E8%AE%BA%E6%96%87%E5%86%99%E4%BD%9C%E7%AC%AC%E4%BA%8C%E7%AF%8710%20top%20writing%20tips%20and%20the%20psychology%20behind%20them/">论文写作第二篇</a>
-    </h1>
-  
-
-        
-        <a href="/2023/07/28/%E8%AE%BA%E6%96%87%E5%86%99%E4%BD%9C%E7%AC%AC%E4%BA%8C%E7%AF%8710%20top%20writing%20tips%20and%20the%20psychology%20behind%20them/" class="archive-article-date">
-  	<time datetime="2023-07-28T04:53:12.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-07-28</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="10-top-writing-tips-and-the-psychology-behind-them"><a href="#10-top-writing-tips-and-the-psychology-behind-them" class="headerlink" title="10 top writing tips and the psychology behind them"></a>10 top writing tips and the psychology behind them</h1><p>有很多人很乐意告诉你如何写得更好，就像任何医生都会告诉你“吃得好，锻炼身体”一样。但只有当你明白自己为什么要这样做时，才能改变你的写作（或饮食）习惯。</p>
-<h2 id="1、更精简"><a href="#1、更精简" class="headerlink" title="1、更精简"></a>1、更精简</h2><p>通常读者都是不够耐心的，他们可能在你还没有表达清楚观点之前就放弃阅读你的博客文章、电子邮件或文档，任何多余的词语都会让读者感到焦虑。</p>
-<p>打字比编辑要容易的多，所以人们会一昧的添加东西，导致文章写得很长。</p>
-<p>如何改变这些，认真编辑，删除你的“热身”文字，从要点开始。剔除多余的细节和重复。就好像你最终发布或发送的每个单词都要花费10美元一样。</p>
-<p>作者提到经常有一些作家对把他们写的三分之二都划红感到愤怒，但是他们阅读了缩短后的文档后都会明白这样更有力量。</p>
-<h2 id="2、缩短你的句子"><a href="#2、缩短你的句子" class="headerlink" title="2、缩短你的句子"></a>2、缩短你的句子</h2><p>首先，长句子会使读者费力去理解你的意思。长句子需要读者花费更多的精力来解读，可能导致信息传达不清晰。</p>
-<p>为什么句子会过长？在写作每个句子时，你脑海中会不断浮现新的想法。同时，你可能认为长句子会让你听起来更有学问、更高级。</p>
-<p>如何改变？将长句子分为更小的观点，删除你不需要的，倡导海明威那样的简洁的写作风格而不是追求狄更斯那样复杂的句子结构。</p>
-<h2 id="3、重写被动语态"><a href="#3、重写被动语态" class="headerlink" title="3、重写被动语态"></a>3、重写被动语态</h2><p>首先，被动语态句子掩盖了动作的执行者，并产生了一种不安感。</p>
-<p>为什么你会使用被动语态？可能是你的写作老师训练你这样写，也可能是因为你对自己的陈述不确定，所以用被动语态掩饰。</p>
-<p>如何改变？找出句子中的动作执行者，并使其成为主语。例如，《财富》杂志的一篇文章说：“新的成分正在稳步添加到求职匹配中。”可以改写成“初创公司不断增加新的求职匹配技术。”</p>
-<h2 id="4、消除模棱两可的词汇"><a href="#4、消除模棱两可的词汇" class="headerlink" title="4、消除模棱两可的词汇"></a>4、消除模棱两可的词汇</h2><p>诸如“一般”和“大多数”之类的词语会使你的写作听起来软弱和含糊不清。</p>
-<p>为什么你会这样做？可能是因为你害怕做出大胆的陈述，这些词可以给你留有余地。当你不表态时，就不会犯错误。</p>
-<p>如何改变？删除模棱两可的词语，然后阅读修改后的陈述。如果陈述过于大胆，那就用最强烈、最明确的陈述来替代它。（如果没有适用的大胆陈述，那就意味着你无话可说，所以删除这句话。）</p>
-<p>例如，《华尔街日报》的一篇广告文章包含这样一句话：“大多数传统商业模式的公司可能有几名激进的开发人员在员工中。”可以改写为“每家公司都有一两个激进的开发人员。”</p>
-<h2 id="5、用简洁明了的话代替术语"><a href="#5、用简洁明了的话代替术语" class="headerlink" title="5、用简洁明了的话代替术语"></a>5、用简洁明了的话代替术语</h2><p>首先，术语会让读者感到愚蠢。除非他们是内行人，否则他们无法理解你的意思。</p>
-<p>为什么你会这样做？可能是因为你认为术语会让你听起来很复杂，或者是因为你隐藏了自己实际上并不理解自己在说什么的事实。</p>
-<p>如何改变？想象自己在和你的妈妈（除非你的妈妈是你所讨论主题的专家；如果是这样，那就想象自己在和高中历史老师交谈）交谈。用简单明了的英语解释你的意思。</p>
-<p>如果使用一个技术术语能够使事情更清楚或更简洁，先给它下个定义。例如，《SAP》的一份新闻稿包含这样一句话：“随着数字转型革命逐渐成熟，公司有机会在他们所在行业内以颠覆性的方式转变商业模式，以创造新的可捍卫竞争优势的来源。”可以改写为“新技术创造了开展业务的新方式。”</p>
-<h2 id="6、更有效地使用数字"><a href="#6、更有效地使用数字" class="headerlink" title="6、更有效地使用数字"></a>6、更有效地使用数字</h2><p>如果使用得当，统计数据可以支持你的观点。</p>
-<p>为什么你会错误地使用数字。可能是因为你认为一个数字——任何一个数字——都能增加可信度。但是数字很容易被滥用。</p>
-<p>如何改变？在引用统计数据时，包含上下文（与什么进行比较？）。没有来源的统计数据毫无意义；“据估计”几乎等于“我编造了这个数字”。以下是正确使用统计数据的方式：“根据Forrester Research的估计，到2017年，将有24亿人拥有智能手机，约占全球人口的三分之一。”</p>
-<h2 id="7、使用’我‘、’我们‘和’你‘"><a href="#7、使用’我‘、’我们‘和’你‘" class="headerlink" title="7、使用’我‘、’我们‘和’你‘"></a>7、使用’我‘、’我们‘和’你‘</h2><p>这些代词共同创造了作者（“我”）、组织（“我们”）和读者（“你”）之间的关系。</p>
-<p>为什么你不使用这些代词？可能是因为直接与读者交流让人感到紧张，或者听起来太不正式。</p>
-<p>如何改变？想象一下读者，然后使用“你”这个词进行改写。例如，将Fenway Park的规定“禁止携带大于16英寸x16英寸x8英寸的包或物品进入公园”改写为“如果你的包太大，安保人员将不允许你进入公园。”</p>
-<h2 id="8、将核心观点提前"><a href="#8、将核心观点提前" class="headerlink" title="8、将核心观点提前"></a>8、将核心观点提前</h2><p>你只有几句话可以引起读者的注意。如果你大胆地在顶部或顶部附近陈述你的关键点，他们会留下来看看你是否能证明这一点。</p>
-<p>为什么你的见解被埋藏？我们都学过演绎写作法：先是这个，再是那个，然后是这个，最后得出结论。此外，你害怕用大胆的开场陈述吓跑读者。</p>
-<p>如何改变？强迫自己以大胆的陈述开始文章。如果你实在养成不了这个习惯，先写一些热身部分方便陈述你的论文，然后删除这个热身部分。当你完成整篇文章并意识到自己真正想要表达的时候，重新撰写大胆的陈述。每次重写时，都要重新写开篇。</p>
-<h2 id="9、引用例子"><a href="#9、引用例子" class="headerlink" title="9、引用例子"></a>9、引用例子</h2><p>没有例子的文本是乏味且不可信的，而带有例子的文本更生动有趣。</p>
-<p>为什么你缺乏例子？例子来源于研究，需要付出努力和时间。在写作过程中，举例让你停下来思考，从而减慢进度。</p>
-<p>如何改变？对于任何篇幅的文章，计划将一半的写作时间用于事先的研究。如果找不到实际的例子，可以使用假设情况。如果可能，引用一个具体的人而不仅仅是一个公司。</p>
-<h2 id="10、给予一些指引"><a href="#10、给予一些指引" class="headerlink" title="10、给予一些指引"></a>10、给予一些指引</h2><p>如果你写的内容超过一页，读者想要知道他们将会读到什么。</p>
-<p>为什么你缺乏指引？你担心听起来过于追求学术规范。更糟糕的是，如果你的写作组织不好，就无法明确给出文章的结构。</p>
-<p>如何改变？在陈述主要论点之后，写下这样一句话：“我将如何解释这个问题。”然后列出几个简短的句子或者一个编号列表。就是这么简单！</p>
-<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p><img src="/2023/07/28/%E8%AE%BA%E6%96%87%E5%86%99%E4%BD%9C%E7%AC%AC%E4%BA%8C%E7%AF%8710%20top%20writing%20tips%20and%20the%20psychology%20behind%20them/image-20230729010040099.png"></p>
-<p>文章主要介绍了在编写文章时我们常会犯的是个问题以及为什么我们会这样做，同时也给出了解决的方法，并且举了生动形象的例子便于读者理解，从中我也学到了撰写文章时需要注意的点，非常形象。</p>
-<p>参考：<a target="_blank" rel="noopener" href="https://www.linkedin.com/pulse/10-top-writing-tips-psychology-behind-them-josh-bernoff">https://www.linkedin.com/pulse/10-top-writing-tips-psychology-behind-them-josh-bernoff</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2023/07/28/%E8%AE%BA%E6%96%87%E5%86%99%E4%BD%9C%E7%AC%AC%E4%BA%8C%E7%AF%8710%20top%20writing%20tips%20and%20the%20psychology%20behind%20them/">展开全文 >></a>
         </p>
       
 
