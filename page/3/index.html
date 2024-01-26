@@ -60,10 +60,10 @@
 			</ul>
 		</nav>
                                 <nav>
-                                               总文章数 25
+                                               总文章数 26
                                 </nav>
                                 <nav>
-	总字数 <span class="post-count">35.1k</span>
+	总字数 <span class="post-count">38.6k</span>
                                 </nav>
 		<nav class="header-smart-menu">
     		
@@ -157,6 +157,99 @@
           </div>
           <div id="js-content" class="content-ll">
             
+  
+    <article id="post-Exercise-3-tcpdump-使用ASAN" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        <div align="center" class="post-count">
+    字数：629字 | 预计阅读时长：2分钟
+</div>
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2023/07/13/Exercise-3-tcpdump-%E4%BD%BF%E7%94%A8ASAN/">Exercise 3 - tcpdump(使用ASAN)</a>
+    </h1>
+  
+
+        
+        <a href="/2023/07/13/Exercise-3-tcpdump-%E4%BD%BF%E7%94%A8ASAN/" class="archive-article-date">
+  	<time datetime="2023-07-13T05:31:33.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-07-13</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a target="_blank" rel="noopener" href="https://www.cvedetails.com/cve/CVE-2017-13028/"><strong>CVE-2017-13028</strong></a> in TCPdump 4.9.2（Out-of-bounds Read）</p>
+<p>libcap是tcpdump的依赖库，可以不install，但需要保证目录位置与tcpdump根目录相同，且名称可识别</p>
+<h1 id="使用ASAN编译"><a href="#使用ASAN编译" class="headerlink" title="使用ASAN编译"></a>使用ASAN编译</h1><p>ASAN（AddressSanitizer）是一种用于发现内存错误和检测程序中的内存安全问题的工具。它是由Google开发的，作为LLVM&#x2F;Clang编译器的一个特性。</p>
+<p>ASAN在编译时会注入额外的代码，用于在运行时检测常见的内存错误，例如缓冲区溢出、使用已释放的内存、内存对齐问题等。它通过监视程序运行时的内存访问情况，包括读取和写入操作，以及动态分配和释放内存的过程，来检测潜在的内存错误。</p>
+<p>分别下载安装libcap-1.8.0和tcpdump-4.9.2</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">wget https://github.com/the-tcpdump-group/libpcap/archive/refs/tags/libpcap-1.8.0.tar.gz</span><br><span class="line">tar -xzvf libpcap-1.8.0.tar.gz</span><br><span class="line">cd cd libpcap-libpcap-1.8.0</span><br><span class="line">export LLVM_CONFIG=&quot;llvm-config-12&quot;</span><br><span class="line">CC=afl-clang-lto ./configure --enable-shared=no --prefix=&quot;$HOME/fuzzing_tcpdump/install/&quot;</span><br><span class="line">AFL_USE_ASAN=1 make</span><br><span class="line">AFL_USE_ASAN=1 make install</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">AFL_USE_ASAN=1 CC=afl-clang-lto ./configure --prefix=&quot;$HOME/fuzzing_tcpdump/install/&quot;   //配置tcpdump的configure时也要加AFL_USE_ASAN=1，因为它的依赖库也加了ASAN</span><br><span class="line">AFL_USE_ASAN=1 make</span><br><span class="line">AFL_USE_ASAN=1 make install</span><br></pre></td></tr></table></figure>
+
+<p>fuzz</p>
+<p>在tests文件中有许多样本</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">afl-fuzz -m none -i ./tcpdump-4.9.2/tests/ -o ./out/ -s 123 -- ./install/sbin/tcpdump -vvvvXX -ee -nn -r @@    //使用-m none不限制内存使用</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/07/13/Exercise-3-tcpdump-%E4%BD%BF%E7%94%A8ASAN/image-20230713170050257.png"></p>
+<h1 id="动态调试"><a href="#动态调试" class="headerlink" title="动态调试"></a>动态调试</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./install/sbin/tcpdump -vvvvXX -ee -nn -r ./out/default/crashes/id:000000,sig:06,src:002508,time:9116318,execs:3209104,op:havoc,rep:16</span><br></pre></td></tr></table></figure>
+
+<p><code>-vvvv</code>: 设置详细输出模式。使用多个<code>v</code>可以增加输出的详细程度。更多的<code>v</code>表示更详细的输出信息。</p>
+<p><code>-XX</code>: 显示以十六进制形式输出的数据包内容。其中，它会展示每个数据包的十六进制和ASCII码值，并且将源和目的MAC地址、IP地址和端口解析为可读的格式。</p>
+<p><code>-ee</code>: 打印以太网帧头部的扩展信息。包括以太网帧的状态和各种以太网协议字段的解析。</p>
+<p><code>-nn</code>:禁用主机名解析。将IP地址和端口号显示为数字格式，而不是尝试解析为主机名或服务名称。</p>
+<p><code>-r &lt;file&gt;</code>: 从指定的文件中读取数据包进行分析</p>
+<p><img src="/2023/07/13/Exercise-3-tcpdump-%E4%BD%BF%E7%94%A8ASAN/image-20230713174150850.png"></p>
+<p>“ERROR: AddressSanitizer: heap-buffer-overflow”：发生了堆缓冲区溢出错误。</p>
+<p><img src="/2023/07/13/Exercise-3-tcpdump-%E4%BD%BF%E7%94%A8ASAN/image-20230713175303018.png"></p>
+<h2 id="漏洞修复"><a href="#漏洞修复" class="headerlink" title="漏洞修复"></a>漏洞修复</h2><p><a target="_blank" rel="noopener" href="https://github.com/the-tcpdump-group/tcpdump/commit/85078eeaf4bf8fcdc14a4e79b516f92b6ab520fc#diff-05f854a9033643de07f0d0059bc5b98f3b314eeb1e2499ea1057e925e6501ae8L381">https://github.com/the-tcpdump-group/tcpdump/commit/85078eeaf4bf8fcdc14a4e79b516f92b6ab520fc#diff-05f854a9033643de07f0d0059bc5b98f3b314eeb1e2499ea1057e925e6501ae8L381</a></p>
+<h1 id="思考总结"><a href="#思考总结" class="headerlink" title="思考总结"></a>思考总结</h1><p>进一步加深了AFL的学习，并了解了ASAN这种编译方式。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2023/07/13/Exercise-3-tcpdump-%E4%BD%BF%E7%94%A8ASAN/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
   
     <article id="post-Exercise-2-libexif" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
