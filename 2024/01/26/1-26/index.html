@@ -25,8 +25,10 @@
 <meta property="og:image" content="https://yoursite.com/2024/01/26/1-26/image-20240126200341120.png">
 <meta property="og:image" content="https://yoursite.com/2024/01/26/1-26/image-20240126202310172.png">
 <meta property="og:image" content="https://yoursite.com/2024/01/26/1-26/image-20240126204722270.png">
+<meta property="og:image" content="https://yoursite.com/2024/01/26/1-26/Users/26645/AppData/Roaming/Typora/typora-user-images/image-20240127160151731.png">
+<meta property="og:image" content="https://yoursite.com/2024/01/26/1-26/Users/26645/AppData/Roaming/Typora/typora-user-images/image-20240127160221277.png">
 <meta property="article:published_time" content="2024-01-25T16:00:00.000Z">
-<meta property="article:modified_time" content="2024-01-26T13:11:59.501Z">
+<meta property="article:modified_time" content="2024-01-27T13:53:06.904Z">
 <meta property="article:author" content="shy">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://yoursite.com/2024/01/26/1-26/image-20240126145802962.png">
@@ -78,7 +80,7 @@
                                                总文章数 26
                                 </nav>
                                 <nav>
-	总字数 <span class="post-count">38.6k</span>
+	总字数 <span class="post-count">39.1k</span>
                                 </nav>
 		<nav class="header-smart-menu">
     		
@@ -176,7 +178,7 @@
     
       <header class="article-header">
         <div align="center" class="post-count">
-    字数：3.6k字 | 预计阅读时长：12分钟
+    字数：4k字 | 预计阅读时长：14分钟
 </div>
         
   
@@ -293,7 +295,33 @@
 <li>parsers function：包含一个循环的函数。遍历所有解析路径确保不遗漏所有可能的污点传播路径</li>
 <li>sanitizers function：进行无害处理的函数，如下图所示，往往包含复杂的循环与比较操作。对这种函数而言，SaTC仅考虑最长的路径，因为最长的路径受到的约束越多月完整。以函数的起始块为根节点向下遍历直到找到叶子节点，记录相应的路径长度，反复迭代后仅留存最长的路径。</li>
 </ul>
-<h2 id="4、实验"><a href="#4、实验" class="headerlink" title="4、实验"></a>4、实验</h2><h2 id="5、总结"><a href="#5、总结" class="headerlink" title="5、总结"></a>5、总结</h2><p>未完</p>
+<h2 id="4、实验"><a href="#4、实验" class="headerlink" title="4、实验"></a>4、实验</h2><ul>
+<li>输入关键字提取模块基于标准的XML处理库和JavaScript解析库Js2Py实现。</li>
+<li>输入入口识别模块基于Ghidra库和扩展的KARONTE的CPF（覆盖具有NVRAM的共享污染变量）实现。</li>
+<li>输入敏感性分析的污点引擎是基于angr构建的，它是一个多架构的二进制分析框架。</li>
+<li>路径选择部分基于Ghidra库实现。为了使SaTC在MIPS架构上更加可用，修复了angr的二进制加载器和KARONTE的寄存器误用问题。</li>
+<li>SaTC和KARONTE在设计层面上有相似处和差异，它们都依赖于公共字符串来连接物联网设备的不同组件。SaTC通过识别前端和后端之间的公共标识符来定位用户输入的条目，从而可以通过分析前端文件揭示后端的输入项，提高了污点分析的能力，进而增强了bug检测能力。相比之下，KARONTE使用多个后端二进制文件之间的公共字符串来连接数据流，但这些公共字符串并不能保证与用户输入相关，导致了分析效率低下和错过bug的情况。</li>
+</ul>
+<p>satc 是否能够有效的检测漏洞,效率与其他类似软件相比怎么样?</p>
+<p><img src="/2024/01/26/1-26/Users\26645\AppData\Roaming\Typora\typora-user-images\image-20240127160151731.png" alt="image-20240127160151731"></p>
+<p>对比情况</p>
+<p><img src="/2024/01/26/1-26/Users\26645\AppData\Roaming\Typora\typora-user-images\image-20240127160221277.png" alt="image-20240127160221277"></p>
+<h2 id="5、总结展望"><a href="#5、总结展望" class="headerlink" title="5、总结展望"></a>5、总结展望</h2><ul>
+<li>可扩展性</li>
+</ul>
+<p>​    只要系统符合通过关键字在前后端传递信息,就可以使用satc的思想进行BUG探索</p>
+<ul>
+<li>隐式关键字处理</li>
+</ul>
+<p>​    尝试寻找隐藏模式,更好的处理前后端之间的关系</p>
+<ul>
+<li>效率 &amp; 准确率</li>
+</ul>
+<p>​    satc得到的了很好的平衡</p>
+<ul>
+<li>加密和模糊</li>
+</ul>
+<p>​    satc未来的工作,对于加密或模糊后的数据,不能很好的识别,关注现有的反混淆技术</p>
 
       
 
@@ -416,7 +444,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Sharing-More-and-Checking-Less-Leveraging-Common-Input-Keywords-to-Detect-Bugs-in-Embedded-Systems"><span class="toc-number">1.</span> <span class="toc-text">Sharing More and Checking Less: Leveraging Common Input Keywords to Detect Bugs in Embedded Systems</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1%E3%80%81%E6%91%98%E8%A6%81"><span class="toc-number">1.1.</span> <span class="toc-text">1、摘要</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%EF%BC%9A"><span class="toc-number">1.1.1.</span> <span class="toc-text">问题：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E6%96%B9%E6%B3%95%EF%BC%9A"><span class="toc-number">1.1.2.</span> <span class="toc-text">动态方法：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%99%E6%80%81%E6%96%B9%E6%B3%95%EF%BC%9A"><span class="toc-number">1.1.3.</span> <span class="toc-text">静态方法：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2%E3%80%81%E6%83%B3%E6%B3%95%E5%92%8C%E9%97%AE%E9%A2%98"><span class="toc-number">1.2.</span> <span class="toc-text">2、想法和问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BF%80%E5%8A%B1%E6%80%A7%E7%9A%84%E5%AE%9E%E4%BE%8B"><span class="toc-number">1.2.1.</span> <span class="toc-text">激励性的实例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3%E3%80%81%E5%85%B7%E4%BD%93%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.3.</span> <span class="toc-text">3、具体实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81%E8%BE%93%E5%85%A5%E5%85%B3%E9%94%AE%E8%AF%8D%E6%8F%90%E5%8F%96"><span class="toc-number">1.3.1.</span> <span class="toc-text">1、输入关键词提取</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81%E8%BE%93%E5%85%A5%E6%95%8F%E6%84%9F%E6%B1%A1%E7%82%B9%E5%88%86%E6%9E%90"><span class="toc-number">1.3.2.</span> <span class="toc-text">3、输入敏感污点分析</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4%E3%80%81%E5%AE%9E%E9%AA%8C"><span class="toc-number">1.4.</span> <span class="toc-text">4、实验</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5%E3%80%81%E6%80%BB%E7%BB%93"><span class="toc-number">1.5.</span> <span class="toc-text">5、总结</span></a></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Sharing-More-and-Checking-Less-Leveraging-Common-Input-Keywords-to-Detect-Bugs-in-Embedded-Systems"><span class="toc-number">1.</span> <span class="toc-text">Sharing More and Checking Less: Leveraging Common Input Keywords to Detect Bugs in Embedded Systems</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1%E3%80%81%E6%91%98%E8%A6%81"><span class="toc-number">1.1.</span> <span class="toc-text">1、摘要</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%EF%BC%9A"><span class="toc-number">1.1.1.</span> <span class="toc-text">问题：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E6%96%B9%E6%B3%95%EF%BC%9A"><span class="toc-number">1.1.2.</span> <span class="toc-text">动态方法：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%99%E6%80%81%E6%96%B9%E6%B3%95%EF%BC%9A"><span class="toc-number">1.1.3.</span> <span class="toc-text">静态方法：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2%E3%80%81%E6%83%B3%E6%B3%95%E5%92%8C%E9%97%AE%E9%A2%98"><span class="toc-number">1.2.</span> <span class="toc-text">2、想法和问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BF%80%E5%8A%B1%E6%80%A7%E7%9A%84%E5%AE%9E%E4%BE%8B"><span class="toc-number">1.2.1.</span> <span class="toc-text">激励性的实例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3%E3%80%81%E5%85%B7%E4%BD%93%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.3.</span> <span class="toc-text">3、具体实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81%E8%BE%93%E5%85%A5%E5%85%B3%E9%94%AE%E8%AF%8D%E6%8F%90%E5%8F%96"><span class="toc-number">1.3.1.</span> <span class="toc-text">1、输入关键词提取</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81%E8%BE%93%E5%85%A5%E6%95%8F%E6%84%9F%E6%B1%A1%E7%82%B9%E5%88%86%E6%9E%90"><span class="toc-number">1.3.2.</span> <span class="toc-text">3、输入敏感污点分析</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4%E3%80%81%E5%AE%9E%E9%AA%8C"><span class="toc-number">1.4.</span> <span class="toc-text">4、实验</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5%E3%80%81%E6%80%BB%E7%BB%93%E5%B1%95%E6%9C%9B"><span class="toc-number">1.5.</span> <span class="toc-text">5、总结展望</span></a></li></ol></li></ol>
                     </div>
                 </span>
             </div>

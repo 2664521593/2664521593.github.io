@@ -63,7 +63,7 @@
                                                总文章数 26
                                 </nav>
                                 <nav>
-	总字数 <span class="post-count">38.6k</span>
+	总字数 <span class="post-count">39.1k</span>
                                 </nav>
 		<nav class="header-smart-menu">
     		
@@ -163,7 +163,7 @@
     
       <header class="article-header">
         <div align="center" class="post-count">
-    字数：3.6k字 | 预计阅读时长：12分钟
+    字数：4k字 | 预计阅读时长：14分钟
 </div>
         
   
@@ -280,7 +280,33 @@
 <li>parsers function：包含一个循环的函数。遍历所有解析路径确保不遗漏所有可能的污点传播路径</li>
 <li>sanitizers function：进行无害处理的函数，如下图所示，往往包含复杂的循环与比较操作。对这种函数而言，SaTC仅考虑最长的路径，因为最长的路径受到的约束越多月完整。以函数的起始块为根节点向下遍历直到找到叶子节点，记录相应的路径长度，反复迭代后仅留存最长的路径。</li>
 </ul>
-<h2 id="4、实验"><a href="#4、实验" class="headerlink" title="4、实验"></a>4、实验</h2><h2 id="5、总结"><a href="#5、总结" class="headerlink" title="5、总结"></a>5、总结</h2><p>未完</p>
+<h2 id="4、实验"><a href="#4、实验" class="headerlink" title="4、实验"></a>4、实验</h2><ul>
+<li>输入关键字提取模块基于标准的XML处理库和JavaScript解析库Js2Py实现。</li>
+<li>输入入口识别模块基于Ghidra库和扩展的KARONTE的CPF（覆盖具有NVRAM的共享污染变量）实现。</li>
+<li>输入敏感性分析的污点引擎是基于angr构建的，它是一个多架构的二进制分析框架。</li>
+<li>路径选择部分基于Ghidra库实现。为了使SaTC在MIPS架构上更加可用，修复了angr的二进制加载器和KARONTE的寄存器误用问题。</li>
+<li>SaTC和KARONTE在设计层面上有相似处和差异，它们都依赖于公共字符串来连接物联网设备的不同组件。SaTC通过识别前端和后端之间的公共标识符来定位用户输入的条目，从而可以通过分析前端文件揭示后端的输入项，提高了污点分析的能力，进而增强了bug检测能力。相比之下，KARONTE使用多个后端二进制文件之间的公共字符串来连接数据流，但这些公共字符串并不能保证与用户输入相关，导致了分析效率低下和错过bug的情况。</li>
+</ul>
+<p>satc 是否能够有效的检测漏洞,效率与其他类似软件相比怎么样?</p>
+<p><img src="/2024/01/26/1-26/Users\26645\AppData\Roaming\Typora\typora-user-images\image-20240127160151731.png" alt="image-20240127160151731"></p>
+<p>对比情况</p>
+<p><img src="/2024/01/26/1-26/Users\26645\AppData\Roaming\Typora\typora-user-images\image-20240127160221277.png" alt="image-20240127160221277"></p>
+<h2 id="5、总结展望"><a href="#5、总结展望" class="headerlink" title="5、总结展望"></a>5、总结展望</h2><ul>
+<li>可扩展性</li>
+</ul>
+<p>​    只要系统符合通过关键字在前后端传递信息,就可以使用satc的思想进行BUG探索</p>
+<ul>
+<li>隐式关键字处理</li>
+</ul>
+<p>​    尝试寻找隐藏模式,更好的处理前后端之间的关系</p>
+<ul>
+<li>效率 &amp; 准确率</li>
+</ul>
+<p>​    satc得到的了很好的平衡</p>
+<ul>
+<li>加密和模糊</li>
+</ul>
+<p>​    satc未来的工作,对于加密或模糊后的数据,不能很好的识别,关注现有的反混淆技术</p>
 
       
 
