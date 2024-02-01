@@ -63,7 +63,7 @@
                                                总文章数 30
                                 </nav>
                                 <nav>
-	总字数 <span class="post-count">47.1k</span>
+	总字数 <span class="post-count">47.3k</span>
                                 </nav>
 		<nav class="header-smart-menu">
     		
@@ -264,7 +264,7 @@
     
       <header class="article-header">
         <div align="center" class="post-count">
-    字数：548字 | 预计阅读时长：2分钟
+    字数：740字 | 预计阅读时长：3分钟
 </div>
         
   
@@ -299,17 +299,38 @@
 <p>分析这段代码</p>
  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ( apmib_get(<span class="number">7026</span>, v13) )</span><br><span class="line">&#123;</span><br><span class="line">  <span class="built_in">snprintf</span>(v16, <span class="number">6</span>, <span class="string">&quot;ping  &quot;</span>);</span><br><span class="line">  v1 = <span class="built_in">strlen</span>(v13);</span><br><span class="line">  <span class="built_in">strncat</span>(v16, v13, v1);</span><br><span class="line">  <span class="keyword">if</span> ( apmib_get(<span class="number">7027</span>, &amp;v17) )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">strcat</span>(v16, <span class="string">&quot; -c &quot;</span>);</span><br><span class="line">    <span class="built_in">sprintf</span>(v14, <span class="string">&quot;%d -w %d&quot;</span>, v17, v17);</span><br><span class="line">    v2 = <span class="built_in">strlen</span>(v14);</span><br><span class="line">    <span class="built_in">strncat</span>(v16, v14, v2);</span><br><span class="line">    <span class="keyword">if</span> ( apmib_get(<span class="number">7028</span>, &amp;v18) )</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="built_in">strcat</span>(v16, <span class="string">&quot; -s &quot;</span>);</span><br><span class="line">      <span class="built_in">sprintf</span>(v15, <span class="string">&quot;%d&quot;</span>, v18);</span><br><span class="line">      v3 = <span class="built_in">strlen</span>(v15);</span><br><span class="line">      <span class="built_in">strncat</span>(v16, v15, v3);</span><br><span class="line">      <span class="built_in">strcat</span>(v16, <span class="string">&quot; &gt; /tmp/ping.txt 2&gt;&gt;/tmp/ping.txt&quot;</span>);</span><br><span class="line">      <span class="built_in">puts</span>(v16);</span><br><span class="line">      system(v16);</span><br><span class="line">      v10 = fopen(<span class="string">&quot;/tmp/ping.txt&quot;</span>, <span class="string">&quot;r&quot;</span>);</span><br><span class="line">      <span class="keyword">if</span> ( v10 )</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="keyword">if</span> ( !fread(v12, <span class="number">1</span>, <span class="number">49152</span>, v10) )</span><br><span class="line">          <span class="built_in">puts</span>(<span class="string">&quot;fread ping.txt is error &quot;</span>);</span><br><span class="line">        fclose(v10);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">else</span></span><br><span class="line">      &#123;</span><br><span class="line">        <span class="built_in">puts</span>(<span class="string">&quot;/tmp/ping.txt is NULL&quot;</span>);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 
+<p>ghidra中的分析</p>
+<p><img src="/2024/01/31/CVE-2019-7297%E6%BC%8F%E6%B4%9E/image-20240201150521809.png"></p>
 <p>伪代码：</p>
 <p><img src="/2024/01/31/CVE-2019-7297%E6%BC%8F%E6%B4%9E/image-20240131204354056.png"></p>
 <p>上述代码执行以下操作</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ping address -c number -w number -s size &gt; /tmp/ping.txt 2&gt;&gt;/tmp/ping.txt</span><br></pre></td></tr></table></figure>
 
 <p>在system之前并没有对这些外来参数进行检查，如果address为<code>;telnetd;</code>就能启动Telnet服务。</p>
-<h2 id="复现"><a href="#复现" class="headerlink" title="复现"></a>复现</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./fap.py -q ./qemu-builds/2.5.0/ ./DIR823GA1_FW102B03.bin </span><br></pre></td></tr></table></figure>
+<h2 id="复现"><a href="#复现" class="headerlink" title="复现"></a>复现</h2><p>ghidra看一下</p>
+<p><img src="/2024/01/31/CVE-2019-7297%E6%BC%8F%E6%B4%9E/image-20240201133626818.png"></p>
+<p>在ida中alt+t查找0x1b72等关键变量，定位到apmib_set的位置，结合ghidra的反汇编代码，确定在<code>SetNetworkTomographySettings</code>函数中可以对这些参数进行设置。</p>
+<p><img src="/2024/01/31/CVE-2019-7297%E6%BC%8F%E6%B4%9E/image-20240201140047127.png"></p>
+<p><img src="/2024/01/31/CVE-2019-7297%E6%BC%8F%E6%B4%9E/image-20240201134459964.png"></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./fap.py -q ./qemu-builds/2.5.0/ ./DIR823GA1_FW102B03.bin </span><br></pre></td></tr></table></figure>
 
 <p>开启仿真</p>
 <p><img src="/2024/01/31/CVE-2019-7297%E6%BC%8F%E6%B4%9E/image-20240131181248151.png"></p>
-<p>未完。</p>
+<p>设置浏览器代理127.0.0.1:8080,使用mitproxy抓包</p>
+<p><img src="/2024/01/31/CVE-2019-7297%E6%BC%8F%E6%B4%9E/image-20240201142402762.png"></p>
+<p>回车进入查看包的具体信息</p>
+<p><img src="/2024/01/31/CVE-2019-7297%E6%BC%8F%E6%B4%9E/image-20240201142657842.png"></p>
+<p>按e选择request-body</p>
+<p><img src="/2024/01/31/CVE-2019-7297%E6%BC%8F%E6%B4%9E/image-20240201144036136.png"></p>
+<p>修改包</p>
+<p><img src="/2024/01/31/CVE-2019-7297%E6%BC%8F%E6%B4%9E/image-20240201143159910.png"></p>
+<p><img src="/2024/01/31/CVE-2019-7297%E6%BC%8F%E6%B4%9E/image-20240201143455241.png"></p>
+<p>退出编辑后按r重新发送，访问192.168.0.1&#x2F;hack.txt，可以看到攻击成功了。</p>
+<p><img src="/2024/01/31/CVE-2019-7297%E6%BC%8F%E6%B4%9E/image-20240201143735916.png"></p>
+<p>参考：<a target="_blank" rel="noopener" href="https://github.com/leonW7/D-Link/blob/master/Vul_1.md">https://github.com/leonW7/D-Link/blob/master/Vul_1.md</a></p>
+<p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/5705?time__1311=n4+xnD07DtKYq0K0=G8Dlhjeo84=eiDui6ioD&alichlgref=https://cn.bing.com/">https://xz.aliyun.com/t/5705?time__1311=n4%2BxnD07DtKYq0K0%3DG8Dlhjeo84%3DeiDui6ioD&amp;alichlgref=https%3A%2F%2Fcn.bing.com%2F</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/zzgslh/article/details/105214670">https://blog.csdn.net/zzgslh/article/details/105214670</a></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>由于system函数缺乏对参数的过滤，用户构造的输入也可能被执行，命令注入错误。</p>
 
       
 
