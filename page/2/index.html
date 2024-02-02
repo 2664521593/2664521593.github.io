@@ -60,10 +60,10 @@
 			</ul>
 		</nav>
                                 <nav>
-                                               总文章数 30
+                                               总文章数 31
                                 </nav>
                                 <nav>
-	总字数 <span class="post-count">47.3k</span>
+	总字数 <span class="post-count">50.4k</span>
                                 </nav>
 		<nav class="header-smart-menu">
     		
@@ -157,6 +157,135 @@
           </div>
           <div id="js-content" class="content-ll">
             
+  
+    <article id="post-Target-Fuzz" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        <div align="center" class="post-count">
+    字数：1.4k字 | 预计阅读时长：5分钟
+</div>
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2023/10/12/Target-Fuzz/">Target-Fuzz</a>
+    </h1>
+  
+
+        
+        <a href="/2023/10/12/Target-Fuzz/" class="archive-article-date">
+  	<time datetime="2023-10-12T08:23:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-10-12</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>TargetFuzz: Using DARTs to Guide Directed Greybox Fuzzers</p>
+<p>ASIA CCS ’22, May 30–June 3, 2022, Nagasaki, Japan</p>
+<p>DART语料库是TargetFuzz中的一个概念，它指的是面向目标的种子语料库（Directed Automated Random Testing Corpus）。</p>
+<p>本篇论文聚焦于Directed Greybox Fuzzing(定向灰盒模糊测试)的种子语料库的选取上。</p>
+<p>Coverage-based Greybox Fuzzing（覆盖率导向的灰盒模糊测试）：旨在最大化整个程序中的代码覆盖率。</p>
+<p>Directed Greybox Fuzzing（定向灰盒模糊测试）：目标是覆盖潜在的错误代码区域（例如，最近修改的程序区域）。</p>
+<p>大多数的灰盒模糊测试都是使用种子的覆盖率进行引导的，在有限的时间内覆盖尽可能多的路径。</p>
+<p>这么做的主要原因是因为代码的覆盖率和bug的覆盖率是呈正相关的。</p>
+<p>当一个模糊测试工具能够覆盖更多的代码的时候往往能找到更多的bug。</p>
+<p>但是，并不能将程序中所有的代码同等或者说等权重的对待。</p>
+<p>模糊测试工具覆盖的绝大多数代码都是不包含bug的。</p>
+<p>而且在实际的应用过程中，想要覆盖完整的代码分布，是十分困难的或者说是完全不可能的。</p>
+<p>为了克服这种问题，就提出了导向型模糊测试。</p>
+<p>导向型模糊测试就是针对程序中有可能会出现bug的特定目标位置上，并想法设法到达这些位置。</p>
+<p>问题提出：</p>
+<p>软件开发是一个持续的、渐进的过程。开发人员以小批量的方式不断改进他们的软件，小批量的高频率使得在有限的测试时间内检测错误变得至关重要。</p>
+<p>之前的工作主要聚焦于目标选择、种子能量分配和种子调度上，但是很少关注DGF的种子语料库，现有的DGF工具使用主要为CGF定制的种子语料库（即，覆盖程序的不同区域的一组种子），这显然会限制DGF的查找能力。</p>
+<p>提出TargetFuzz，一种机制，提供了一个DGF工具与面向目标的种子语料库。这个语料库称为DART语料库，它只包含与目标“接近”的种子。</p>
+<p>背景：</p>
+<p>Coverage-based Greybox Fuzzing和Directed Greybox Fuzzing</p>
+<p><img src="/2023/10/12/Target-Fuzz/image-20231012162544557.png"></p>
+<p>种子选择的相关策略：</p>
+<p>作用：用于进一步压缩和优化Fuzz测试生成的输入样本集</p>
+<p>AFL-cmin：</p>
+<p>对于具有相同覆盖率的种子，只保留最小的（可以减小突变的搜索空间）。</p>
+<p>用于减少种子库的大小和测试资源消耗。</p>
+<p>MINSET（执行贪心算法以选择覆盖最多未覆盖边的种子）:</p>
+<p>从包含已覆盖边缘的集合中选择具有最大未覆盖元素数量的集合，并不断将其添加到覆盖集合中，直到所有边缘都被覆盖。选取有代表性和差异性的种子。</p>
+<p><img src="/2023/10/12/Target-Fuzz/wps6.jpg"> </p>
+<p>设计概述：</p>
+<p><img src="/2023/10/12/Target-Fuzz/wps7.jpg"> </p>
+<p>Baseline Seed Corpus Generator (BSCG)：</p>
+<p>BSCG分配相对长的时间来使用多个基于覆盖的灰盒模糊器来执行模糊化，并且收集任何增加覆盖率的种子，将这个大型种子池称为基线种子语料库，并且将这些语料库的元素称为基线种子。</p>
+<p>Seed Refiner and Accumulator (SRA)：</p>
+<p>当开发人员提交修改程序源的新提交时，SRA首先检查基线种子语料库中的任何可用种子是否触发由新提交引入的错误。接下来，SRA仅保留导致相同代码覆盖的种子的最小集合。形成累积种子语料库。</p>
+<p>Target-oriented Seed Selector (TSS)：</p>
+<p>TSS主要用于从累积种子语料库中选取距离目标比较近的种子生成DART语料库，将改变的区域作为目标，开始测试。结束后，TargetFuzz首先检查是否检测到新的bug，并且使用过程中增加了代码覆盖率的种子丰富累积种子语料库。</p>
+<p>特别地，当新代码提交时，会直接对更新后的累积种子语料库重新蒸馏，之后在TSS生成DART语料库后直接进行测试。</p>
+<p>实现：</p>
+<p>利用magma（一个模糊测试套件），集成了许多模糊测试工具和具有不同bug的程序。</p>
+<p>BSGG:</p>
+<p>对于测试的每个软件,使用magma中的AFL、Angora 、MOpt-AFL、honggfuzz 在限定时间内（7天）进行测试，并在结束后收集所有增加了覆盖率的种子，组成基线种子库。</p>
+<p>SRA:</p>
+<p>这一步会先除去会使程序挂起的和超过内存限制（100MB）的种子，接下来使用afl-cmin工具去除具有相似覆盖率的种子，生成累积种子库。</p>
+<p>TSS:</p>
+<p>主要是设定目标站点，基于距离选择种子集以生成DART语料库。</p>
+<p>主要是权衡种子的数量和质量，由于没有适用于所有程序和目标位点的明确的种子距离截止值，Targetfuzz使用基于百分位的种子选择策略。</p>
+<p><img src="/2023/10/12/Target-Fuzz/wps8.jpg"> </p>
+<p>评估：</p>
+<p>实验设置：</p>
+<p>选取magma中的7个库，并选取了拥有最多bug（34&#x2F;118）的7个驱动程序进行测试。</p>
+<p><img src="/2023/10/12/Target-Fuzz/wps9.jpg"> </p>
+<p>语料库选取：</p>
+<p><img src="/2023/10/12/Target-Fuzz/wps10.jpg"> </p>
+<p><img src="/2023/10/12/Target-Fuzz/wps11.jpg"><img src="/2023/10/12/Target-Fuzz/wps12.jpg"> </p>
+<p>语料库大小</p>
+<p>结果：</p>
+<p><img src="/2023/10/12/Target-Fuzz/wps13.jpg"> </p>
+<p>对于34个bug，每个测试24小时，有9个三者都无法触发，而Targetfuzz一共触发了22&#x2F;25个，magma和minset分别是14和15个。</p>
+<p>而0.1st、1st、10th分别触发了16、19、18个。</p>
+<p><img src="/2023/10/12/Target-Fuzz/wps14.jpg"> </p>
+<p>速度对比</p>
+<p>在真实世界中的代码覆盖率</p>
+<p><img src="/2023/10/12/Target-Fuzz/wps15.jpg"> </p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2023/10/12/Target-Fuzz/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
   
     <article id="post-SROP" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
@@ -1141,126 +1270,9 @@
 
 
   
-    <article id="post-Exercise-7-VLC-Media-Player" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <div align="center" class="post-count">
-    字数：777字 | 预计阅读时长：3分钟
-</div>
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2023/07/20/Exercise-7-VLC-Media-Player/">Exercise-7-VLC Media Player</a>
-    </h1>
-  
-
-        
-        <a href="/2023/07/20/Exercise-7-VLC-Media-Player/" class="archive-article-date">
-  	<time datetime="2023-07-20T04:33:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-07-20</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>本次练习的目标是对VLC媒体播放器进行模糊测试，目的是发现VLC 3.0.7.1版本中 <a target="_blank" rel="noopener" href="https://nvd.nist.gov/vuln/detail/CVE-2019-14776"><strong>CVE-2019-14776</strong></a> 的崩溃&#x2F;PoC</p>
-<p>本次实验主要学习AFL的部分插桩（Partial Instrumentation）功能，允许指定哪些函数&#x2F;文件应该使用插桩或不使用插桩进行编译。这有助于模糊测试器专注于程序的重要部分，避免通过执行无趣的代码路径产生不必要的噪音和干扰。</p>
-<p>假设我们向模糊测试器提供了一个有效的MKV文件。但在经过多次输入文件的变异后，“魔术字节”已经改变，我们的程序现在将该输入文件视为AVI文件。因此，这个“变异的MKV文件”现在将被AVI Demux处理。经过一段时间后，文件的魔术字节再次改变，现在将该文件视为MPEG文件。在这两种情况下，这个新变异文件提高代码覆盖率的潜力非常低，因为这个新文件没有任何有效的语法结构。</p>
-<p>简而言之，如果我们不对代码覆盖率设置限制，模糊测试器很容易选择错误的路径，从而使模糊测试过程效果不佳。</p>
-<p>要使用这个功能，我们在编译时设置环境变量AFL_LLVM_ALLOWLIST。这个环境变量必须指向一个包含所有应该进行插桩的函数&#x2F;文件名的文件。</p>
-<p>实验流程</p>
-<p>首先创建文件夹并下载Vlc-Media-Player3.0.7.1</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mkdir fuzzing_vlc &amp;&amp; cd fuzzing_vlc</span><br><span class="line">wget https://download.videolan.org/pub/videolan/vlc/3.0.7.1/vlc-3.0.7.1.tar.xz</span><br><span class="line">tar -xvf vlc-3.0.7.1.tar.xz</span><br></pre></td></tr></table></figure>
-
-<p>搜索VLC所需的依赖并安装</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install libvlc-dev libavcodec-dev libavformat-dev libswscale-dev libxcb1-dev libxcb-composite0-dev libxcb-xv0-dev libxcb-randr0-dev libasound2-dev libpulse-dev</span><br></pre></td></tr></table></figure>
-
-<p>编译安装，根据提示禁用一些选项</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./configure --prefix=&quot;$HOME/fuzzing_vlc/vlc-3.0.7.1/install&quot; --disable-a52 --disable-lua --disable-qt</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2023/07/20/Exercise-7-VLC-Media-Player/image-20230724110012857.png"></p>
-<p><img src="/2023/07/20/Exercise-7-VLC-Media-Player/image-20230724110349956.png"></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make -j$(nproc)</span><br></pre></td></tr></table></figure>
-
-<p>安装成功</p>
-<p><img src="/2023/07/20/Exercise-7-VLC-Media-Player/image-20230724110434139.png"></p>
-<p>根据fuzzing101的文档对vlc3.0.7.1&#x2F;test&#x2F;vlc-demux-run.c的文件做修改</p>
-<p><img src="/2023/07/20/Exercise-7-VLC-Media-Player/image-20230724104858372.png"></p>
-<p>同时再根据speedup.patch修改文件</p>
-<p><img src="/2023/07/20/Exercise-7-VLC-Media-Player/image-20230724112125871.png"></p>
-<p>下载Partial_instrumentation</p>
-<p><img src="/2023/07/20/Exercise-7-VLC-Media-Player/image-20230724141851324.png"></p>
-<p>重新编译文件</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CC=&quot;afl-clang-fast&quot; CXX=&quot;afl-clang-fast++&quot; ./configure --prefix=&quot;$HOME/fuzzing101/fuzzing_vlc/install&quot; --disable-a52 --disable-lua --disable-qt --with-sanitizer=address</span><br><span class="line">AFL_LLVM_ALLOWLIST=$HOME/fuzzing101/fuzzing_vlc/Partial_instrumentation make -j$(nproc) LDFLAGS=&quot;-fsanitize=address&quot;</span><br></pre></td></tr></table></figure>
-
-<p>编译后出现内存泄漏问题</p>
-<p>下载字典</p>
-<p><img src="/2023/07/20/Exercise-7-VLC-Media-Player/image-20230724144303023.png"></p>
-<p>下载语料库</p>
-<p><img src="/2023/07/20/Exercise-7-VLC-Media-Player/image-20230724144326647.png"></p>
-<p>编译vlc-demux-run</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make vlc-demux-run -j$(nproc) LDFLAGS=&quot;-fsanitize=address&quot;</span><br></pre></td></tr></table></figure>
-
-<p>开始fuzz</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">afl-fuzz -m none -t 100  -i &#x27;./afl_in&#x27; -o &#x27;./afl_out&#x27; -x asf_dictionary.dict -D -- ./vlc-3.0.7.1/test/vlc-demux-run @@</span><br></pre></td></tr></table></figure>
-
-<p> 虽然速度慢，但还是很快出了结果。</p>
-<p><img src="/2023/07/20/Exercise-7-VLC-Media-Player/image-20230731190403621.png"></p>
-<h2 id="crash分析"><a href="#crash分析" class="headerlink" title="crash分析"></a>crash分析</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./vlc-demux-run $HOME/fuzzing101/fuzzing_vlc/afl_out/default/crashes/id:000000,sig:06,src:000003,time:153403,execs:4393,op:flip1,pos:279</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2023/07/20/Exercise-7-VLC-Media-Player/image-20230731191515724.png"></p>
-<p>发现内存泄漏问题</p>
-<p><img src="/2023/07/20/Exercise-7-VLC-Media-Player/image-20230731191928935.png"></p>
-<h2 id="修复"><a href="#修复" class="headerlink" title="修复"></a>修复</h2><p><a target="_blank" rel="noopener" href="https://github.com/videolan/vlc/commit/fdbdd677c1e6262f31771b0ba10afb24aabf108c#diff-a22170125046390274dd33c2cb5bb0e99d485e6708b376f40978de9534ac55a9">https://github.com/videolan/vlc/commit/fdbdd677c1e6262f31771b0ba10afb24aabf108c#diff-a22170125046390274dd33c2cb5bb0e99d485e6708b376f40978de9534ac55a9  </a></p>
-<p><img src="/2023/07/20/Exercise-7-VLC-Media-Player/image-20230731192157373.png"></p>
-<p>看到减少了内存分配的大小</p>
-<h2 id="总结与反思"><a href="#总结与反思" class="headerlink" title="总结与反思"></a>总结与反思</h2><p>通过本次实验，学习到了afl的部分插桩功能，如果要实现这个，需要对程序进行全面分析与理解。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2023/07/20/Exercise-7-VLC-Media-Player/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/">Next &amp;raquo;</a>
+      <a class="extend prev" rel="prev" href="/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/">Next &amp;raquo;</a>
     </nav>
   
 

@@ -60,10 +60,10 @@
 			</ul>
 		</nav>
                                 <nav>
-                                               总文章数 30
+                                               总文章数 31
                                 </nav>
                                 <nav>
-	总字数 <span class="post-count">47.3k</span>
+	总字数 <span class="post-count">50.4k</span>
                                 </nav>
 		<nav class="header-smart-menu">
     		
@@ -157,6 +157,165 @@
           </div>
           <div id="js-content" class="content-ll">
             
+  
+    <article id="post-SeqGAN" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        <div align="center" class="post-count">
+    字数：3.1k字 | 预计阅读时长：10分钟
+</div>
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2024/02/02/SeqGAN/">SeqGAN</a>
+    </h1>
+  
+
+        
+        <a href="/2024/02/02/SeqGAN/" class="archive-article-date">
+  	<time datetime="2024-02-01T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2024-02-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="SeqGAN-Sequence-Generative-Adversarial-Nets-with-Policy-Gradient"><a href="#SeqGAN-Sequence-Generative-Adversarial-Nets-with-Policy-Gradient" class="headerlink" title="SeqGAN: Sequence Generative Adversarial Nets with Policy Gradient"></a>SeqGAN: Sequence Generative Adversarial Nets with Policy Gradient</h1><p>Proceedings of the Thirty-First AAAI Conference on Artificial Intelligence (AAAI-17)</p>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>生成对抗网络（Generative Adversarial Net，GAN）存在局限性</p>
+<p>首先生成模型的离散输出使得从判别模型传递梯度更新变得困难。此外，判别模型只能评估完整的序列，对于部分生成的序列，很难平衡当前得分和完整序列生成后的未来得分。</p>
+<p>将序列生成过程视为顺序决策过程，并将生成模型视为强化学习中的代理（agent）。该方法使用鉴别器来评估序列并反馈评估结果以指导生成模型的学习。为了解决离散输出时梯度难以反向传播的问题，该方法将生成模型视为具有随机参数的策略。在策略梯度中，使用蒙特卡洛（MC）搜索来近似状态-动作值。通过策略梯度直接训练策略（生成模型），自然地避免了传统GAN中离散数据的差分难度问题。</p>
+<h2 id="蒙特卡洛树搜索"><a href="#蒙特卡洛树搜索" class="headerlink" title="蒙特卡洛树搜索"></a>蒙特卡洛树搜索</h2><p>以围棋为例。</p>
+<p>蒙特卡洛树搜索的的工作步骤，一般有四步：</p>
+<p> （1）选择（Selection）：从根节点开始，根据一定的策略（比如UCB公式），向下选择子节点，直到找到叶子节点。</p>
+<p> （2）扩展（Expansion）：对叶子节点进行扩展，生成新的子节点。在围棋程序中，扩展的子节点一般是由神经网络生成的。</p>
+<p> （3）模拟（Simulation）：对新生成的子节点进行模拟对弈。模拟可以采用随机模拟，或者使用神经网络模型进行快速评估，目的是得到新节点的胜负结果。</p>
+<p> （4）反向传播（Backpropagation）：将模拟得到的结果通过回溯的方式，更新所有经过的节点的统计信息，包括模拟对弈次数、获胜次数等。</p>
+<p>  反复的重复上述步骤，蒙特卡洛的搜索树不断的扩展，树中的数据不断的更新，各步棋的优劣信息不断汇总到根节点，最终得到潜力最高的节点，作为最终的决策。</p>
+<p>例子：</p>
+<p>假设有一个棋盘状态，现要决策下一步棋怎么走。假设已将状态放在根节点处，并且已经进行到下图左一的情况，现在要进行下一轮的迭代。见下图</p>
+<p><img src="/2024/02/02/SeqGAN/image-20240202111308811.png"></p>
+<p>图中的每个节点代表一个棋盘状态， 节点中数据A&#x2F;B，表示这个节点被模拟对弈了B次，胜了A次。比如，根节点是12&#x2F;21，表示总共模拟了21 次，胜利了12 次。</p>
+<p>现开始新一论的迭代：</p>
+<p>（1）选择</p>
+<p>根据特定公式计算节点的权重，并据此选择下一个节点，假定选择了7&#x2F;10这个节点，下一步假定选了5&#x2F;6这个节点，接下来选择3&#x2F;3这个节点。</p>
+<p>比如<strong>UCB公式</strong></p>
+<p><img src="/2024/02/02/SeqGAN/image-20240202112101506.png"></p>
+<p>其中<img src="http://mmbiz.qpic.cn/mmbiz/qX2AoDIKJ2VRAOk5hTHFH1WswSBiaBcFHLsfGKFicOgNl7uLtB9iavxVwfhrjWoySo7BzCPS08WXgJ1POduxdEDfA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" alt="图片">是节点估计的预期收益，<img src="http://mmbiz.qpic.cn/mmbiz/qX2AoDIKJ2VRAOk5hTHFH1WswSBiaBcFHz2BcOeWBTf0NcyKrKibKCmKaJdPm8mNQdUz82hvFK3Q60hxEeT4qIVA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" alt="图片">是此节点被访问的次数，而 N 则是其父节点已经被访问的总次数。C 是可调整参数。</p>
+<p>（2）扩展</p>
+<p>因为节点3&#x2F;3下面没有分支（已经是叶子节点），所以在其下添加新的分支 （比如，把节点3&#x2F;3当前的状态输入策略神经网络，网络通过计算，可以输出此状态下的多个比较好的动作。）</p>
+<p>见上图第2个树，在叶子节点 3&#x2F;3下添加子节点，图中只画出了其中的一个。该节点里的数据当然是 0&#x2F;0。这个增加分支节点的过程就是扩展。</p>
+<p>（3）仿真（模拟对弈）</p>
+<p>从新节点0&#x2F;0的状态开始，与对手模拟对弈，直到分出输赢，获得一个准确的回报。假设棋输了，所以得到的是 0&#x2F;1。</p>
+<p>仿真模拟的过程，可采取双方随机走子的策略，或阿尔法GO中的策略网络和价值网络，以及快速走子策略，这可大大加快双方对弈的过程。</p>
+<p>总之，仿真需要快速的完成，这样才能得到尽量多的仿真结果，使统计结果更逼近真实的胜率。</p>
+<p>（4）反向传播</p>
+<p>从0&#x2F;0开始向上，用得到的 0&#x2F;1更新从它到根节点的路径的所有节点中的数据。注意，其它节点不更新。</p>
+<p>见上图第4个树，从0&#x2F;0 节点开始向上遍历父节点，直到根节点，这条路径上的每个节点都增加一个 0&#x2F;1。</p>
+<p> 至此，此轮迭代结束。</p>
+<h2 id="SeqGAN"><a href="#SeqGAN" class="headerlink" title="SeqGAN"></a>SeqGAN</h2><p>SeqGAN的示意图:</p>
+<p><img src="/2024/02/02/SeqGAN/image-20240202120016249.png"></p>
+<p>左：D在真实的数据和G生成的数据上进行训练。</p>
+<p>右：G通过策略梯度进行训练，其中最终奖励信号由D提供，并通过蒙特卡洛搜索传递回中间动作值。</p>
+<p>基于强化学习来解释这一问题，在第t个时间步，状态s是先前已生成的词(y1,…,yt−1)，动作a是如何选择要生成的词yt，这也是生成模型的工作Gθ(yt|Y1:t−1)，它通过前t-1个词以及模型参数θ来选择下一个词，确定了该词之后，状态也随之改变成s’，对应词(y1,…,yt)，以此类推，最终生成的系列(y1,…,yt,…,yT)，对序列的评分就是奖励r，如果生成的系列成功地骗过了判别模型D，则得1分，如果被识别出是机器生成的则得0分。</p>
+<p> 另外，我们训练一个含有参数φ的鉴别器Dφ，Dφ（Y1:T）表示序列为真实的可能性有多大。通过提供来自真实序列数据的正例和来自生成模型Gφ生成的合成序列的反例来训练判别模型Dθ。同时，对生成模型Gθ进行了更新，采用了策略梯度和MC搜索的方法，并根据从判别模型Dφ得到的期望最终报酬对其进行了修正。奖励是根据它欺骗歧视模型Dφ的可能性来估计的。具体的提法在下一小节给出.</p>
+<h3 id="SeqGAN-via-Policy-Gradient"><a href="#SeqGAN-via-Policy-Gradient" class="headerlink" title="SeqGAN via Policy Gradient"></a>SeqGAN via Policy Gradient</h3><p>没有中间奖励，生成器模型 (policy)Gθ(yt|Y1:t−1) 的目标是从起始状态 0 生成一个序列，以最大化其<strong>预期</strong>的最终奖励：</p>
+<p>公式（1）可以这样理解:在初始状态下，策略函数可能选出的每个y,都对应着不同的动作价值，      把这些动作价值根据y的概率分布加权求和，就得到了初始状态的价值（状态价值）。</p>
+<p>公式（1）中的Q代表的是状态s0，动作y1下整个序列的动作价值。动作价值:做该动作对于整个序列来说好不好</p>
+<p><img src="/2024/02/02/SeqGAN/image-20240202203239647.png"></p>
+<p>RT是对完整序列的奖励，奖励来自鉴别器Dφ。Q..是动作价值函数：从状态s开始，执行动作a，遵循策略Gθ的预期累积回报。</p>
+<p>怎么估算动作价值函数：式子中给出的是判别模型对完整序列的打分</p>
+<p>动作价值是由鉴别器D计算的，T是最后一个时刻，公式（2）中给的是完整系列的动作价值，若判别该文本是真实文本，则奖励值最大</p>
+<p><img src="/2024/02/02/SeqGAN/image-20240202203818786.png"></p>
+<p>在生成第t个词时，如何选择（动作）涉及前期已生成的t-1个词（状态ｓ），以及后续可能的情况，假设此时用模型Gβ生成Ｎ个备选词串（Yt:T），再用判别模型D分别对生成的N句（Y1:T）打分，此时使用了蒙特卡洛方法（MC），如下式所示：</p>
+<p><img src="/2024/02/02/SeqGAN/image-20240202204115690.png"></p>
+<p>这里的生成模型Gβ与前面Gθ通常使用同样的模型参数，有时为了优化速度也可使用不同模型参数。这里使用的蒙特卡洛算法，像下棋一样，不仅要考虑当前一步的最优解，还需要考虑接下来多步组合后的最优解，用于探索此节点以及此节点后续节点（Yt:T）的可能性，也叫roll-out展开，即前面提到的仿真模拟阶段，是蒙特卡洛搜索树中的核心技巧。</p>
+<p><img src="/2024/02/02/SeqGAN/image-20240202204607039.png"></p>
+<p>根据不同的时间步，采取不同的价值计算方法：在最后一个时间步t&#x3D;T时，直接使用判别函数D计算价值；在其它时间步，使用生成模型Gβ和蒙特卡洛算法生成Ｎ个后续备选项，用判别函数D打分并计算分数的均值</p>
+<p>为了减小误差，会进行N次模拟，N个模拟结果求平均。最终就可以算出每个时间步下的整个序列的价值</p>
+<p><strong>判别器是怎么算的奖励？答：D只有两个值：1和0</strong></p>
+<p><strong>训练判别器：</strong></p>
+<p><img src="/2024/02/02/SeqGAN/image-20240202205107460.png"></p>
+<p>这是GAN的标准公式，目的是训练网络中的参数φ，使其尽可能分辨不出是真实数据还是生成数据</p>
+<p>每次获得新的鉴别器模型时，我们都准备好更新生成器。所提出的基于策略的方法依赖于优化参数化策略以直接最大化长期奖励。 跟随（Sutton et al. 1999），目标函数 J(θ) w.r.t. 的梯度。生成器的参数θ可以导出为</p>
+<p>两个求和符号：每个时间步都会有很多动作可以选择，第一个求和是每个动作所产生的动作价值×概率分布（概率分布就是策略函数）；第二个求和就是计算整个序列的状态价值</p>
+<p>对目标函数求梯度，其实这个梯度就叫做policy gradient</p>
+<p><img src="/2024/02/02/SeqGAN/image-20240202205219038.png"></p>
+<p>公式（6）的无偏估计：下面是证明过程 </p>
+<p><img src="/2024/02/02/SeqGAN/image-20240202205224021.png"></p>
+<p>更新生成器的参数：其中αh表示第h步对应的学习率</p>
+<p><img src="/2024/02/02/SeqGAN/image-20240202205344729.png"></p>
+<p>算法过程:</p>
+<p>要求：生成策略Gθ；roll-out 策略Gβ；判别器D；一个序列化的数据集S&#x3D;{X1:T}</p>
+<pre><code>随机初始化Gθ，D的参数
+在数据集S上用MLE（极大似然估计）预训练Gθ
+β与θ设置成一样
+用生成器生成用于判别器训练的负样本
+通过最小化交叉熵预训练D
+重复：
+  for g-steps do
+     用生成器Gθ产生一个序列Y1:T=(y1,...yT)
+     for t in 1:T do
+        利用蒙特卡洛的roll-out计算每一个时间步的动作价值（公式4）
+     end for
+     通过gradient policy更新生成器的参数（公式8）
+   end for
+   for d-steps do
+     利用现在的Gθ生成负样本，与数据集S中的正样本结合
+     用公式5训练判别器D，k次迭代
+   end for
+   β←θ
+直到SeqGAN收敛
+</code></pre>
+<h3 id="序列的生成模型"><a href="#序列的生成模型" class="headerlink" title="序列的生成模型"></a>序列的生成模型</h3><p>我们用LSTM作为生成模型，将输入序列x1,x2,….xT转化成隐藏向量h1,h2,…hT,然后用softmax映射出token的分布</p>
+<p><img src="/2024/02/02/SeqGAN/image-20240202210002084.png"></p>
+<h3 id="The-Discriminative-Model-for-Sequences"><a href="#The-Discriminative-Model-for-Sequences" class="headerlink" title="The Discriminative Model for Sequences"></a>The Discriminative Model for Sequences</h3><p>在本文中我们选择CNN作为鉴别器，因为CNN在文本分类任务中是十分有效的。大多数判别模型只能对整个序列而不是未完成的序列进行良好的分类。 在本文中，我们还关注判别器预测完成序列是真实的概率的情况</p>
+<h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><p>未完</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol>
+<li>标准的GAN在处理离散数据时遇到的问题：生成器难以传递梯度更新；鉴别器难以评估非完整序列。对于前者，作者把整个GAN看作一个强化学习系统，用policy gradient更新生成器的参数；对于后者，作者借鉴了蒙特卡洛树的思想，对任意时刻的非完整序列都可以进行评估</li>
+<li>生成器：目标函数-各个状态价值的和，状态价值怎么算？策略函数×动作价值，策略函数是用策略网络训练出来的，动作价值不知道怎么办？用roll-out估算出一整个序列的动作就能用判别器计算其动作价值了</li>
+</ol>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2024/02/02/SeqGAN/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
   
     <article id="post-A-Systematic-Review-of-Network-Protocol-Fuzzing-Techniques" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
@@ -1296,138 +1455,9 @@
 
 
   
-    <article id="post-Target-Fuzz" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <div align="center" class="post-count">
-    字数：1.4k字 | 预计阅读时长：5分钟
-</div>
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2023/10/12/Target-Fuzz/">Target-Fuzz</a>
-    </h1>
-  
-
-        
-        <a href="/2023/10/12/Target-Fuzz/" class="archive-article-date">
-  	<time datetime="2023-10-12T08:23:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-10-12</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>TargetFuzz: Using DARTs to Guide Directed Greybox Fuzzers</p>
-<p>ASIA CCS ’22, May 30–June 3, 2022, Nagasaki, Japan</p>
-<p>DART语料库是TargetFuzz中的一个概念，它指的是面向目标的种子语料库（Directed Automated Random Testing Corpus）。</p>
-<p>本篇论文聚焦于Directed Greybox Fuzzing(定向灰盒模糊测试)的种子语料库的选取上。</p>
-<p>Coverage-based Greybox Fuzzing（覆盖率导向的灰盒模糊测试）：旨在最大化整个程序中的代码覆盖率。</p>
-<p>Directed Greybox Fuzzing（定向灰盒模糊测试）：目标是覆盖潜在的错误代码区域（例如，最近修改的程序区域）。</p>
-<p>大多数的灰盒模糊测试都是使用种子的覆盖率进行引导的，在有限的时间内覆盖尽可能多的路径。</p>
-<p>这么做的主要原因是因为代码的覆盖率和bug的覆盖率是呈正相关的。</p>
-<p>当一个模糊测试工具能够覆盖更多的代码的时候往往能找到更多的bug。</p>
-<p>但是，并不能将程序中所有的代码同等或者说等权重的对待。</p>
-<p>模糊测试工具覆盖的绝大多数代码都是不包含bug的。</p>
-<p>而且在实际的应用过程中，想要覆盖完整的代码分布，是十分困难的或者说是完全不可能的。</p>
-<p>为了克服这种问题，就提出了导向型模糊测试。</p>
-<p>导向型模糊测试就是针对程序中有可能会出现bug的特定目标位置上，并想法设法到达这些位置。</p>
-<p>问题提出：</p>
-<p>软件开发是一个持续的、渐进的过程。开发人员以小批量的方式不断改进他们的软件，小批量的高频率使得在有限的测试时间内检测错误变得至关重要。</p>
-<p>之前的工作主要聚焦于目标选择、种子能量分配和种子调度上，但是很少关注DGF的种子语料库，现有的DGF工具使用主要为CGF定制的种子语料库（即，覆盖程序的不同区域的一组种子），这显然会限制DGF的查找能力。</p>
-<p>提出TargetFuzz，一种机制，提供了一个DGF工具与面向目标的种子语料库。这个语料库称为DART语料库，它只包含与目标“接近”的种子。</p>
-<p>背景：</p>
-<p>Coverage-based Greybox Fuzzing和Directed Greybox Fuzzing</p>
-<p><img src="/2023/10/12/Target-Fuzz/image-20231012162544557.png"></p>
-<p>种子选择的相关策略：</p>
-<p>作用：用于进一步压缩和优化Fuzz测试生成的输入样本集</p>
-<p>AFL-cmin：</p>
-<p>对于具有相同覆盖率的种子，只保留最小的（可以减小突变的搜索空间）。</p>
-<p>用于减少种子库的大小和测试资源消耗。</p>
-<p>MINSET（执行贪心算法以选择覆盖最多未覆盖边的种子）:</p>
-<p>从包含已覆盖边缘的集合中选择具有最大未覆盖元素数量的集合，并不断将其添加到覆盖集合中，直到所有边缘都被覆盖。选取有代表性和差异性的种子。</p>
-<p><img src="/2023/10/12/Target-Fuzz/wps6.jpg"> </p>
-<p>设计概述：</p>
-<p><img src="/2023/10/12/Target-Fuzz/wps7.jpg"> </p>
-<p>Baseline Seed Corpus Generator (BSCG)：</p>
-<p>BSCG分配相对长的时间来使用多个基于覆盖的灰盒模糊器来执行模糊化，并且收集任何增加覆盖率的种子，将这个大型种子池称为基线种子语料库，并且将这些语料库的元素称为基线种子。</p>
-<p>Seed Refiner and Accumulator (SRA)：</p>
-<p>当开发人员提交修改程序源的新提交时，SRA首先检查基线种子语料库中的任何可用种子是否触发由新提交引入的错误。接下来，SRA仅保留导致相同代码覆盖的种子的最小集合。形成累积种子语料库。</p>
-<p>Target-oriented Seed Selector (TSS)：</p>
-<p>TSS主要用于从累积种子语料库中选取距离目标比较近的种子生成DART语料库，将改变的区域作为目标，开始测试。结束后，TargetFuzz首先检查是否检测到新的bug，并且使用过程中增加了代码覆盖率的种子丰富累积种子语料库。</p>
-<p>特别地，当新代码提交时，会直接对更新后的累积种子语料库重新蒸馏，之后在TSS生成DART语料库后直接进行测试。</p>
-<p>实现：</p>
-<p>利用magma（一个模糊测试套件），集成了许多模糊测试工具和具有不同bug的程序。</p>
-<p>BSGG:</p>
-<p>对于测试的每个软件,使用magma中的AFL、Angora 、MOpt-AFL、honggfuzz 在限定时间内（7天）进行测试，并在结束后收集所有增加了覆盖率的种子，组成基线种子库。</p>
-<p>SRA:</p>
-<p>这一步会先除去会使程序挂起的和超过内存限制（100MB）的种子，接下来使用afl-cmin工具去除具有相似覆盖率的种子，生成累积种子库。</p>
-<p>TSS:</p>
-<p>主要是设定目标站点，基于距离选择种子集以生成DART语料库。</p>
-<p>主要是权衡种子的数量和质量，由于没有适用于所有程序和目标位点的明确的种子距离截止值，Targetfuzz使用基于百分位的种子选择策略。</p>
-<p><img src="/2023/10/12/Target-Fuzz/wps8.jpg"> </p>
-<p>评估：</p>
-<p>实验设置：</p>
-<p>选取magma中的7个库，并选取了拥有最多bug（34&#x2F;118）的7个驱动程序进行测试。</p>
-<p><img src="/2023/10/12/Target-Fuzz/wps9.jpg"> </p>
-<p>语料库选取：</p>
-<p><img src="/2023/10/12/Target-Fuzz/wps10.jpg"> </p>
-<p><img src="/2023/10/12/Target-Fuzz/wps11.jpg"><img src="/2023/10/12/Target-Fuzz/wps12.jpg"> </p>
-<p>语料库大小</p>
-<p>结果：</p>
-<p><img src="/2023/10/12/Target-Fuzz/wps13.jpg"> </p>
-<p>对于34个bug，每个测试24小时，有9个三者都无法触发，而Targetfuzz一共触发了22&#x2F;25个，magma和minset分别是14和15个。</p>
-<p>而0.1st、1st、10th分别触发了16、19、18个。</p>
-<p><img src="/2023/10/12/Target-Fuzz/wps14.jpg"> </p>
-<p>速度对比</p>
-<p>在真实世界中的代码覆盖率</p>
-<p><img src="/2023/10/12/Target-Fuzz/wps15.jpg"> </p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2023/10/12/Target-Fuzz/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">Next &amp;raquo;</a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/">Next &amp;raquo;</a>
     </nav>
   
 
