@@ -29,8 +29,10 @@
 <meta property="og:image" content="https://yoursite.com/2024/02/02/SeqGAN/image-20240202205224021.png">
 <meta property="og:image" content="https://yoursite.com/2024/02/02/SeqGAN/image-20240202205344729.png">
 <meta property="og:image" content="https://yoursite.com/2024/02/02/SeqGAN/image-20240202210002084.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/02/SeqGAN/image-20240203160227614.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/02/SeqGAN/image-20240203160342715.png">
 <meta property="article:published_time" content="2024-02-01T16:00:00.000Z">
-<meta property="article:modified_time" content="2024-02-02T13:09:08.488Z">
+<meta property="article:modified_time" content="2024-02-03T13:18:43.547Z">
 <meta property="article:author" content="shy">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://yoursite.com/2024/02/02/SeqGAN/image-20240202111308811.png">
@@ -180,7 +182,7 @@
     
       <header class="article-header">
         <div align="center" class="post-count">
-    字数：3.1k字 | 预计阅读时长：10分钟
+    字数：3.1k字 | 预计阅读时长：11分钟
 </div>
         
   
@@ -287,7 +289,9 @@
 <h3 id="序列的生成模型"><a href="#序列的生成模型" class="headerlink" title="序列的生成模型"></a>序列的生成模型</h3><p>我们用LSTM作为生成模型，将输入序列x1,x2,….xT转化成隐藏向量h1,h2,…hT,然后用softmax映射出token的分布</p>
 <p><img src="/2024/02/02/SeqGAN/image-20240202210002084.png"></p>
 <h3 id="The-Discriminative-Model-for-Sequences"><a href="#The-Discriminative-Model-for-Sequences" class="headerlink" title="The Discriminative Model for Sequences"></a>The Discriminative Model for Sequences</h3><p>在本文中我们选择CNN作为鉴别器，因为CNN在文本分类任务中是十分有效的。大多数判别模型只能对整个序列而不是未完成的序列进行良好的分类。 在本文中，我们还关注判别器预测完成序列是真实的概率的情况</p>
-<h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><p>未完</p>
+<h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><p><img src="/2024/02/02/SeqGAN/image-20240203160227614.png"></p>
+<p><img src="/2024/02/02/SeqGAN/image-20240203160342715.png"></p>
+<p>BLEU（Bilingual Evaluation Understudy）是一种常用的机器翻译质量评估指标，旨在度量机器翻译结果与参考翻译之间的相似程度，BLEU越高越好。</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol>
 <li>标准的GAN在处理离散数据时遇到的问题：生成器难以传递梯度更新；鉴别器难以评估非完整序列。对于前者，作者把整个GAN看作一个强化学习系统，用policy gradient更新生成器的参数；对于后者，作者借鉴了蒙特卡洛树的思想，对任意时刻的非完整序列都可以进行评估</li>
 <li>生成器：目标函数-各个状态价值的和，状态价值怎么算？策略函数×动作价值，策略函数是用策略网络训练出来的，动作价值不知道怎么办？用roll-out估算出一整个序列的动作就能用判别器计算其动作价值了</li>
