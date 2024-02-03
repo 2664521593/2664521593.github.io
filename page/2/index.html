@@ -60,10 +60,10 @@
 			</ul>
 		</nav>
                                 <nav>
-                                               总文章数 31
+                                               总文章数 32
                                 </nav>
                                 <nav>
-	总字数 <span class="post-count">50.4k</span>
+	总字数 <span class="post-count">50.7k</span>
                                 </nav>
 		<nav class="header-smart-menu">
     		
@@ -157,6 +157,89 @@
           </div>
           <div id="js-content" class="content-ll">
             
+  
+    <article id="post-Cachelab" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Cachelab"><a href="#Cachelab" class="headerlink" title="Cachelab"></a>Cachelab</h1><h2 id="Part-A"><a href="#Part-A" class="headerlink" title="Part A"></a>Part A</h2><p>要求模拟cache的行为</p>
+<p><img src="/2023/10/31/Cachelab/image-20231016123057332.png"></p>
+<p><img src="/2023/10/31/Cachelab/image-20231016124651616.png"></p>
+<p><img src="/2023/10/31/Cachelab/Users\26645\AppData\Roaming\Typora\typora-user-images\image-20231016124750210.png" alt="image-20231016124750210"></p>
+<p><img src="/2023/10/31/Cachelab/Users\26645\AppData\Roaming\Typora\typora-user-images\image-20231016123217554.png" alt="image-20231016123217554"></p>
+<p>“L” a data load</p>
+<p>“S” a data store</p>
+<p> “M” a data modify (i.e., a data load followed by a data store).</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&quot;stdio.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&quot;string.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&quot;stdbool.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&quot;stdlib.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&quot;getopt.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&quot;unistd.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;cachelab.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">cache_block</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="type">int</span> valid;</span><br><span class="line">    <span class="type">int</span> tag;</span><br><span class="line">    <span class="type">int</span> time_stamp;</span><br><span class="line">&#125; Cache_block;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">FILE* fp = <span class="literal">NULL</span>;</span><br><span class="line"><span class="type">int</span> s,S,E,B,b;                 <span class="comment">//S表示cache有几组，E表示每个组有几行，B表示数据块大小</span></span><br><span class="line">Cache_block** Cache = <span class="literal">NULL</span>;</span><br><span class="line"><span class="type">int</span> miss = <span class="number">0</span>;</span><br><span class="line"><span class="type">int</span> hit = <span class="number">0</span>;</span><br><span class="line"><span class="type">int</span> eviction = <span class="number">0</span>;</span><br><span class="line"><span class="type">int</span> verbose = <span class="number">0</span>;</span><br><span class="line"><span class="type">int</span> nowtime = <span class="number">0</span>;</span><br><span class="line"><span class="type">char</span> str[<span class="number">256</span>];</span><br><span class="line"><span class="type">void</span> <span class="title function_">init</span><span class="params">()</span>&#123;</span><br><span class="line">Cache = (Cache_block**)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Cache_block*)*S);</span><br><span class="line"><span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;S;i++)</span><br><span class="line">    *(Cache+i) = (Cache_block*)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Cache_block)*E);</span><br><span class="line"><span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;S;i++)</span><br><span class="line"><span class="keyword">for</span>(<span class="type">int</span> j=<span class="number">0</span>;j&lt;E;j++)</span><br><span class="line">&#123;</span><br><span class="line">Cache[i][j].valid = <span class="number">0</span>;</span><br><span class="line">Cache[i][j].tag = <span class="number">0xFFFFFFFF</span>;</span><br><span class="line">Cache[i][j].time_stamp = <span class="number">0</span>;</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line">   &#125;</span><br><span class="line"><span class="type">void</span> <span class="title function_">freecache</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;S;i++)                 </span><br><span class="line">   <span class="built_in">free</span>(*(Cache+i));</span><br><span class="line">	<span class="built_in">free</span>(Cache);</span><br><span class="line">&#125;  </span><br><span class="line"><span class="type">void</span> <span class="title function_">getoptions</span><span class="params">(<span class="type">int</span> argc,<span class="type">char</span>* argv[])</span>&#123;</span><br><span class="line"><span class="type">int</span> op;</span><br><span class="line"><span class="keyword">while</span>((op=getopt(argc,argv,<span class="string">&quot;hvs:E:b:t:&quot;</span>))!=<span class="number">-1</span>)&#123;</span><br><span class="line">   <span class="keyword">switch</span>(op)&#123;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;h&#x27;</span>:</span><br><span class="line">       <span class="built_in">printf</span>(<span class="string">&quot;HELP&quot;</span>);</span><br><span class="line">       <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;v&#x27;</span>:</span><br><span class="line">       verbose=<span class="number">1</span>;</span><br><span class="line">       <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;s&#x27;</span>:</span><br><span class="line">       s = atoi(optarg);</span><br><span class="line">       S = <span class="number">1</span>&lt;&lt;s;</span><br><span class="line">       <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;E&#x27;</span>:</span><br><span class="line">       E = atoi(optarg);</span><br><span class="line">       <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;b&#x27;</span>:</span><br><span class="line">       b = atoi(optarg);</span><br><span class="line">       B = <span class="number">1</span>&lt;&lt;b;</span><br><span class="line">       <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;t&#x27;</span>:</span><br><span class="line">       fp = fopen(optarg,<span class="string">&quot;r&quot;</span>);</span><br><span class="line">       <span class="keyword">if</span>(fp == <span class="literal">NULL</span>)</span><br><span class="line">       &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;cant open this file!&quot;</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">       <span class="keyword">default</span>:</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">   &#125;</span><br><span class="line"> &#125; </span><br><span class="line">&#125;</span><br><span class="line"><span class="type">void</span> <span class="title function_">opt_Cache</span><span class="params">()</span>&#123;</span><br><span class="line"><span class="type">char</span> op;</span><br><span class="line"><span class="type">unsigned</span> <span class="type">long</span> <span class="type">long</span> add;</span><br><span class="line"><span class="type">int</span> size;</span><br><span class="line"><span class="built_in">sscanf</span>(str,<span class="string">&quot;%s %llx,%d&quot;</span>,&amp;op,&amp;add,&amp;size);</span><br><span class="line"><span class="type">unsigned</span> <span class="type">long</span> se = (add&lt;&lt;(<span class="number">64</span>-s-b))&gt;&gt;(<span class="number">64</span>-s);     <span class="comment">//获取组号和tag</span></span><br><span class="line"><span class="type">unsigned</span> <span class="type">long</span> tar = (add&gt;&gt;(b+s));</span><br><span class="line"><span class="type">int</span> min_time = <span class="number">0</span>;</span><br><span class="line"><span class="type">int</span> temp_time = Cache[se][<span class="number">0</span>].time_stamp;</span><br><span class="line"><span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;E;i++)&#123;</span><br><span class="line">  <span class="keyword">if</span>(Cache[se][i].tag==tar&amp;&amp;Cache[se][i].valid)&#123;       <span class="comment">//tag相等且有效表示命中</span></span><br><span class="line">    <span class="keyword">if</span>(verbose)&#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s&quot;</span>,str);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot; hit\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    hit++;</span><br><span class="line">    Cache[se][i].time_stamp = nowtime;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span>(Cache[se][i].time_stamp&gt;temp_time)&#123;     <span class="comment">//还未命中寻找当前组内stamp最大</span></span><br><span class="line">     temp_time=Cache[se][i].time_stamp;                </span><br><span class="line">     min_time = i;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">miss++;                                   <span class="comment">//最终未命中，miss++  </span></span><br><span class="line"><span class="keyword">if</span>(verbose)&#123;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;%s&quot;</span>,str);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot; miss&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span>(Cache[se][min_time].valid==<span class="number">1</span>)&#123;    <span class="comment">//判断是否冲突，若冲突找stamp最大的行存入并将该行stamp置0.</span></span><br><span class="line">   eviction++;</span><br><span class="line">   <span class="keyword">if</span>(verbose)</span><br><span class="line">     <span class="built_in">printf</span>(<span class="string">&quot; eviction&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span>(verbose&amp;&amp;op!=<span class="string">&#x27;M&#x27;</span>)</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">Cache[se][min_time].tag = tar;</span><br><span class="line">Cache[se][min_time].valid = <span class="number">1</span>;</span><br><span class="line">Cache[se][min_time].time_stamp = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">get_input</span><span class="params">()</span>&#123;</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span>(fgets(str,<span class="number">256</span>,fp))&#123;</span><br><span class="line"><span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;S;i++)            <span class="comment">//每次操作将各行stamp++</span></span><br><span class="line"><span class="keyword">for</span>(<span class="type">int</span> j=<span class="number">0</span>;j&lt;E;j++)</span><br><span class="line">Cache[i][j].time_stamp++;</span><br><span class="line"></span><br><span class="line"> <span class="keyword">if</span>(str[<span class="built_in">strlen</span>(str)<span class="number">-1</span>]==<span class="string">&#x27;\n&#x27;</span>)</span><br><span class="line">    str[<span class="built_in">strlen</span>(str)<span class="number">-1</span>]=<span class="string">&#x27;\0&#x27;</span>;</span><br><span class="line"> <span class="keyword">if</span>(<span class="built_in">strlen</span>(str)==<span class="number">0</span>)  <span class="keyword">return</span>;</span><br><span class="line"> <span class="keyword">if</span>(str[<span class="number">0</span>]==<span class="string">&#x27;I&#x27;</span>)  <span class="keyword">continue</span>;</span><br><span class="line"> <span class="keyword">else</span> <span class="keyword">if</span>(str[<span class="number">1</span>]==<span class="string">&#x27;M&#x27;</span>)&#123;</span><br><span class="line"> opt_Cache();</span><br><span class="line"> opt_Cache();</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="keyword">else</span> opt_Cache();</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc,<span class="type">char</span> *argv[])</span>&#123;</span><br><span class="line"></span><br><span class="line">getoptions(argc,argv);</span><br><span class="line">init();</span><br><span class="line">get_input();</span><br><span class="line">fclose(fp);</span><br><span class="line">freecache();</span><br><span class="line">printSummary(hit, miss, eviction);</span><br><span class="line"><span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Part-B"><a href="#Part-B" class="headerlink" title="Part B"></a>Part B</h2><p>编写一个实现矩阵转置的函数,尽可能地减少miss数。</p>
+<p><img src="/2023/10/31/Cachelab/image-20231016123834794.png"></p>
+<p>给定Cache参数  s&#x3D;5,E&#x3D;1,b&#x3D;5</p>
+<p>即Cache共32组，每一组有一行，每行32位，可以放8个数据。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> i, j, tmp;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; N; i++) &#123;</span><br><span class="line">    <span class="keyword">for</span> (j = <span class="number">0</span>; j &lt; M; j++) &#123;</span><br><span class="line">        tmp = A[i][j];</span><br><span class="line">        B[j][i] = tmp;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对于数组A是以行来访问，而对于数组B是以列为访问，又由cahce的存储量可知，一整个cache可以存储的数组的前8行所有元素(8行填满一个cahce)，而在访问数组B第九行的第1个元素之后，又会将之前存储的八行cache全部冲突替换掉，导致没有充分利用cache数据(只用到每个块的1个元素)，只能重新加载之前的cache，造成大量的misses。</p>
+<p><img src="/2023/10/31/Cachelab/image-20231016125142893.png"></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> i,j,a,b,c,d,e,f,g,h;</span><br><span class="line">    <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;N;i+=<span class="number">8</span>)</span><br><span class="line">      <span class="keyword">for</span>(j=<span class="number">0</span>;j&lt;M;j+=<span class="number">8</span>)</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> ii=i;ii&lt;i+<span class="number">8</span>;ii++)</span><br><span class="line">            &#123;</span><br><span class="line">            a = A[ii][j];</span><br><span class="line">            b = A[ii][j+<span class="number">1</span>];</span><br><span class="line">            c = A[ii][j+<span class="number">2</span>];</span><br><span class="line">            d = A[ii][j+<span class="number">3</span>];</span><br><span class="line">            e = A[ii][j+<span class="number">4</span>];</span><br><span class="line">            f = A[ii][j+<span class="number">5</span>];</span><br><span class="line">            g = A[ii][j+<span class="number">6</span>];</span><br><span class="line">            h = A[ii][j+<span class="number">7</span>];        </span><br><span class="line">            B[j][ii] = a;</span><br><span class="line">            B[j+<span class="number">1</span>][ii] = b;</span><br><span class="line">            B[j+<span class="number">2</span>][ii] = c;</span><br><span class="line">            B[j+<span class="number">3</span>][ii] = d;</span><br><span class="line">            B[j+<span class="number">4</span>][ii] = e;</span><br><span class="line">            B[j+<span class="number">5</span>][ii] = f;</span><br><span class="line">            B[j+<span class="number">6</span>][ii] = g;</span><br><span class="line">            B[j+<span class="number">7</span>][ii] = h;</span><br><span class="line">                   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>64X64</p>
+<p>还是按照上面的8x8分组。</p>
+<p><img src="/2023/10/31/Cachelab/image-20231016130233671.png"></p>
+<p>4x4分组</p>
+<p><img src="/2023/10/31/Cachelab/image-20231016131030477.png"></p>
+<p>方法</p>
+<p><img src="/2023/10/31/Cachelab/image-20231016131103659.png"></p>
+<p><img src="/2023/10/31/Cachelab/image-20231016131141397.png"></p>
+<p><img src="/2023/10/31/Cachelab/image-20231016131235827.png"></p>
+<p><img src="/2023/10/31/Cachelab/image-20231016131308131.png"></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> i,j,y,x,x1,x2,x3,x4,x5,x6,x7,x8;</span><br><span class="line">       <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;N;i+=<span class="number">8</span>)</span><br><span class="line">         <span class="keyword">for</span>(j=<span class="number">0</span>;j&lt;M;j+=<span class="number">8</span>)&#123;</span><br><span class="line">           <span class="keyword">for</span>(x=i;x&lt;i+<span class="number">4</span>;x++)&#123;</span><br><span class="line">	     x1=A[x][j];</span><br><span class="line">	     x2=A[x][j+<span class="number">1</span>];</span><br><span class="line">	     x3=A[x][j+<span class="number">2</span>];</span><br><span class="line">	     x4=A[x][j+<span class="number">3</span>];</span><br><span class="line">	     x5=A[x][j+<span class="number">4</span>];</span><br><span class="line">	     x6=A[x][j+<span class="number">5</span>];</span><br><span class="line">	     x7=A[x][j+<span class="number">6</span>];</span><br><span class="line">	     x8=A[x][j+<span class="number">7</span>];</span><br><span class="line"></span><br><span class="line">    B[j][x]=x1;</span><br><span class="line">    B[j+<span class="number">1</span>][x]=x2;</span><br><span class="line">    B[j+<span class="number">2</span>][x]=x3;</span><br><span class="line">    B[j+<span class="number">3</span>][x]=x4;</span><br><span class="line">    B[j][x+<span class="number">4</span>]=x5;</span><br><span class="line">    B[j+<span class="number">1</span>][x+<span class="number">4</span>]=x6;</span><br><span class="line">    B[j+<span class="number">2</span>][x+<span class="number">4</span>]=x7;</span><br><span class="line">    B[j+<span class="number">3</span>][x+<span class="number">4</span>]=x8;</span><br><span class="line">			&#125;</span><br><span class="line">  <span class="keyword">for</span>(y=j;y&lt;j+<span class="number">4</span>;y++)&#123;</span><br><span class="line"></span><br><span class="line">   x1=A[i+<span class="number">4</span>][y];</span><br><span class="line">   x2=A[i+<span class="number">5</span>][y];</span><br><span class="line">   x3=A[i+<span class="number">6</span>][y];</span><br><span class="line">   x4=A[i+<span class="number">7</span>][y];</span><br><span class="line">   x5=B[y][i+<span class="number">4</span>];</span><br><span class="line">   x6=B[y][i+<span class="number">5</span>];</span><br><span class="line">   x7=B[y][i+<span class="number">6</span>];</span><br><span class="line">   x8=B[y][i+<span class="number">7</span>];</span><br><span class="line"></span><br><span class="line">   B[y][i+<span class="number">4</span>]=x1;</span><br><span class="line">   B[y][i+<span class="number">5</span>]=x2;</span><br><span class="line">   B[y][i+<span class="number">6</span>]=x3;</span><br><span class="line">   B[y][i+<span class="number">7</span>]=x4;</span><br><span class="line">   B[y+<span class="number">4</span>][i]=x5;</span><br><span class="line">   B[y+<span class="number">4</span>][i+<span class="number">1</span>]=x6;</span><br><span class="line">   B[y+<span class="number">4</span>][i+<span class="number">2</span>]=x7;</span><br><span class="line">   B[y+<span class="number">4</span>][i+<span class="number">3</span>]=x8;</span><br><span class="line">			&#125;</span><br><span class="line">  <span class="keyword">for</span>(x=i+<span class="number">4</span>;x&lt;i+<span class="number">8</span>;x++)&#123;</span><br><span class="line">	x1=A[x][j+<span class="number">4</span>];</span><br><span class="line">	x2=A[x][j+<span class="number">5</span>];</span><br><span class="line">	x3=A[x][j+<span class="number">6</span>];</span><br><span class="line">	x4=A[x][j+<span class="number">7</span>];</span><br><span class="line">	</span><br><span class="line">	B[j+<span class="number">4</span>][x]=x1;</span><br><span class="line">	B[j+<span class="number">5</span>][x]=x2;</span><br><span class="line">	B[j+<span class="number">6</span>][x]=x3;</span><br><span class="line">	B[j+<span class="number">7</span>][x]=x4;</span><br><span class="line">			&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>61x67</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> i,j,x,y;</span><br><span class="line">	<span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;N;i+=<span class="number">16</span>)</span><br><span class="line">	<span class="keyword">for</span>(j=<span class="number">0</span>;j&lt;M;j+=<span class="number">16</span>)</span><br><span class="line">	<span class="keyword">for</span>(x=i;x&lt;N&amp;&amp;x&lt;i+<span class="number">16</span>;x++)</span><br><span class="line">	<span class="keyword">for</span>(y=j;y&lt;M&amp;&amp;y&lt;j+<span class="number">16</span>;y++）</span><br><span class="line">	   B[y][x]=A[x][y];</span><br></pre></td></tr></table></figure>
+
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2023/10/31/Cachelab/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
   
     <article id="post-Target-Fuzz" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
@@ -1100,147 +1183,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2023/07/21/%E6%8A%A5%E5%91%8A%E7%AC%AC%E4%B8%80%E7%AF%87/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Exercise-8-Adobe-Reader" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <div align="center" class="post-count">
-    字数：1.1k字 | 预计阅读时长：5分钟
-</div>
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2023/07/21/Exercise-8-Adobe-Reader/">Exercise-8-Adobe Reader</a>
-    </h1>
-  
-
-        
-        <a href="/2023/07/21/Exercise-8-Adobe-Reader/" class="archive-article-date">
-  	<time datetime="2023-07-21T07:27:36.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-07-21</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>之前都是针对有源码的程序进行 fuzz，这个例子将对纯二进制文件进行fuzz，需要使用到 AFL 的 qemu-mode。</p>
-<h2 id="目标环境配置"><a href="#目标环境配置" class="headerlink" title="目标环境配置"></a>目标环境配置</h2><p>构建afl-qemu-trace</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install ninja-build libc6-dev-i386</span><br><span class="line">cd $HOME/AFLplusplus/qemu_mode/</span><br><span class="line">CPU_TARGET=i386 ./build_qemu_support.sh</span><br></pre></td></tr></table></figure>
-
-<p>测试安装成功与否</p>
-<p><img src="/2023/07/21/Exercise-8-Adobe-Reader/image-20230722193014122.png"></p>
-<h5 id="构建-Adobe-Reader"><a href="#构建-Adobe-Reader" class="headerlink" title="构建 Adobe Reader"></a>构建 Adobe Reader</h5><p>安装依赖</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install libxml2:i386</span><br></pre></td></tr></table></figure>
-
-<p>下载安装</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget ftp://ftp.adobe.com/pub/adobe/reader/unix/9.x/9.5.1/enu/AdbeRdr9.5.1-1_i386linux_enu.deb</span><br><span class="line">sudo dpkg -i AdbeRdr9.5.1-1_i386linux_enu.deb</span><br></pre></td></tr></table></figure>
-
-<p>测试运行</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/opt/Adobe/Reader9/bin/acroread</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2023/07/21/Exercise-8-Adobe-Reader/image-20230722212323423.png"></p>
-<p>下载语料</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https://corpora.tika.apache.org/base/packaged/pdfs/archive/pdfs_202002/libre_office.zipunzip libre_office.zip -d extracted</span><br></pre></td></tr></table></figure>
-
-<p>选取小于2kb的文件以加快fuzz速度</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p $HOME/fuzzing_adobereader/afl_in</span><br><span class="line">find ./extracted -type f -size -2k \    -exec cp &#123;&#125; $HOME/Desktop/Fuzz/training/fuzzing_adobereader/afl_in \;</span><br></pre></td></tr></table></figure>
-
-<p>开始fuzz</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ACRO_INSTALL_DIR=/opt/Adobe/Reader9/Reader ACRO_CONFIG=intellinux LD_LIBRARY_PATH=$LD_LIBRARY_PATH:&#x27;/opt/Adobe/Reader9/Reader/intellinux/lib&#x27; afl-fuzz -Q -i ./afl_in/ -o ./afl_out/ -t 2000 -- /opt/Adobe/Reader9/Reader/intellinux/bin/acroread -toPostScript @@</span><br></pre></td></tr></table></figure>
-
-<p>&#x2F;opt&#x2F;Adobe&#x2F;Reader9&#x2F;Reader&#x2F;intellinux&#x2F;bin&#x2F;acroread是真正的二进制文件</p>
-<p>ACRO_INSTALL_DIR：Adobe Reader软件的安装目录</p>
-<p>ACRO_CONFIG：Adobe Reader的配置文件,intellinux表示使用基于Intel架构的Linux系统。</p>
-<p>LD_LIBRARY_PATH：用于指定动态链接库搜索路径的环境变量</p>
-<p>但是报错，还未解决。</p>
-<p><img src="/2023/07/21/Exercise-8-Adobe-Reader/image-20230722215519744.png"></p>
-<p>后面学习了使用 AFL 的 persistent 模式。这种模式可以用在有源码的情况下，也可以用在只有二进制文件的情况下。在有源码时，我们可以直接在源码的合适的位置插入如下代码来实现 persistent 模式：</p>
-<p><img src="/2023/07/21/Exercise-8-Adobe-Reader/Users\26645\AppData\Roaming\Typora\typora-user-images\image-20230731004749990.png" alt="image-20230731004749990"></p>
-<p>而对于只有二进制文件的情况，整体思路上是一样的，也是找到合适的位置设置循环。分析二进制文件的函数地址可以使用常规的 IDA 等工具进行反编译来获取，这里使用一种简单的工具 —— valgrind。可以使用其中的 <code>callgrind</code> 来分析程序运行的时间和调用过程，来判断合适的位置：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install valgrindsudo </span><br><span class="line">apt-get install kcachegrind</span><br></pre></td></tr></table></figure>
-
-<p>使用下面的命令来生成一个 callgrind report</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ACRO_INSTALL_DIR=/opt/Adobe/Reader9/Reader ACRO_CONFIG=intellinux LD_LIBRARY_PATH=/opt/Adobe/Reader9/Reader/intellinux/lib valgrind --tool=callgrind /opt/Adobe/Reader9/Reader/intellinux/bin/acroread -toPostScript [samplePDF]</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2023/07/21/Exercise-8-Adobe-Reader/image-20230731005239288.png"></p>
-<p>上述命令会在当前目录下生成一个 <code>callgrind.out</code> 文件，然后使用 <code>kcachegrind</code> 来读取：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kcachegrind callgrind.out.15879</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2023/07/21/Exercise-8-Adobe-Reader/image-20230731005405376.png"></p>
-<p>这里我们选择地址 <code>0x0850ca28</code>。选择的原则是尽可能选择那些只执行了一次，并且可以使得 AFL++ 的 stability 值能在 90% 以上的地址,也就是选择可以覆盖尽可能多的路径的地址。所以使用的命令为：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AFL_QEMU_PERSISTENT_GPR=1 AFL_QEMU_PERSISTENT_ADDR=0x0850ca28 ACRO_INSTALL_DIR=/opt/Adobe/Reader9/Reader ACRO_CONFIG=intellinux LD_LIBRARY_PATH=$LD_LIBRARY_PATH:&#x27;/opt/Adobe/Reader9/Reader/intellinux/lib&#x27; afl-fuzz -Q -i ./afl_in/ -o ./afl_out/ -t 2000 -- /opt/Adobe/Reader9/Reader/intellinux/bin/acroread -toPostScript @@</span><br></pre></td></tr></table></figure>
-
-<p>指定了变量 <code>AFL_QEMU_PERSISTENT_ADDR</code> 为上面选择的地址。</p>
-<h2 id="总结与反思："><a href="#总结与反思：" class="headerlink" title="总结与反思："></a>总结与反思：</h2><p>尽管这次AFL还没有跑起来，但是学习了AFL的对于无源码的纯二进制文件进行fuzz，使用AFL的qemu-mode,借助qemu的模拟能力，其次学习了如何对二进制程序使用persistent_mode以加快fuzz的速度，主要依靠valgrind、kcachegrind，从程序流程图中挑选合适的地址并在fuzz中指定。</p>
-<h2 id="更新："><a href="#更新：" class="headerlink" title="更新："></a>更新：</h2><p>之前问题出在afl的qemu_mode装成了x86_64版本，重新安装i386架构，尝试了多次才成功安装。</p>
-<p><img src="/2023/07/21/Exercise-8-Adobe-Reader/image-20230731153044888.png"></p>
-<p>开始fuzz：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ACRO_INSTALL_DIR=/opt/Adobe/Reader9/Reader ACRO_CONFIG=intellinux LD_LIBRARY_PATH=$LD_LIBRARY_PATH:&#x27;/opt/Adobe/Reader9/Reader/intellinux/lib&#x27; afl-fuzz -Q -i ./afl_in/ -o ./afl_out/ -t 2000 -- /opt/Adobe/Reader9/Reader/intellinux/bin/acroread -toPostScript @@</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2023/07/21/Exercise-8-Adobe-Reader/image-20230731153353530.png"></p>
-<p>可以看到虽然跑出了crash但速度非常慢，使用上述的persistent模式进行fuzz</p>
-<p>指定变量 <code>AFL_QEMU_PERSISTENT_ADDR</code> 为我们选择的地址。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AFL_QEMU_PERSISTENT_GPR=1 AFL_QEMU_PERSISTENT_ADDR=0x08546a00 ACRO_INSTALL_DIR=/opt/Adobe/Reader9/Reader ACRO_CONFIG=intellinux LD_LIBRARY_PATH=$LD_LIBRARY_PATH:&#x27;/opt/Adobe/Reader9/Reader/intellinux/lib&#x27; afl-fuzz -m none -Q -i ./afl_in/ -o ./afl_out1/ -t 2000 -- /opt/Adobe/Reader9/Reader/intellinux/bin/acroread -toPostScript @@</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2023/07/21/Exercise-8-Adobe-Reader/image-20230731161703855.png"></p>
-<p>速度有了一些提升。</p>
-<p>在地址选择上要注意，有的地址会报错，有的stability比较低，有的则是速度比较慢，最后选择0x08546a00效果最好。</p>
-<p><img src="/2023/07/21/Exercise-8-Adobe-Reader/image-20230731170056816.png"></p>
-<p><img src="/2023/07/21/Exercise-8-Adobe-Reader/image-20230731165012194.png"></p>
-<p><img src="/2023/07/21/Exercise-8-Adobe-Reader/image-20230731165349937.png"></p>
-<h2 id="crash分析"><a href="#crash分析" class="headerlink" title="crash分析"></a>crash分析</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ACRO_INSTALL_DIR=/opt/Adobe/Reader9/Reader ACRO_CONFIG=intellinux LD_LIBRARY_PATH=$LD_LIBRARY_PATH:&#x27;/opt/Adobe/Reader9/Reader/intellinux/lib&#x27; /usr/local/bin/afl-qemu-trace -- /opt/Adobe/Reader9/Reader/intellinux/bin/acroread -toPostScript ./afl_out1/default/crashes/id:000000,sig:11,src:000006+000002,time:15770,execs:642,op:splice,rep:5</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2023/07/21/Exercise-8-Adobe-Reader/image-20230731174640741.png"></p>
-<p>可以看到错误</p>
-<p>尝试查看更多信息，利用  <strong>QASan</strong> 。设置  <code>AFL_USE_QASAN=1</code></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AFL_USE_QASAN=1 ACRO_INSTALL_DIR=/opt/Adobe/Reader9/Reader ACRO_CONFIG=intellinux LD_LIBRARY_PATH=/opt/Adobe/Reader9/Reader/intellinux/lib /usr/local/bin/afl-qemu-trace -- /opt/Adobe/Reader9/Reader/intellinux/bin/acroread -toPostScript [crashFilePath]</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2023/07/21/Exercise-8-Adobe-Reader/image-20230731180220346.png"></p>
-<p><img src="/2023/07/21/Exercise-8-Adobe-Reader/image-20230731180538251.png"></p>
-<p>可以看到相似的错误信息，显示是出现了堆缓冲区溢出。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>调试了很久最终完成了本次实验，学习到了许多关于afl的新知识。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2023/07/21/Exercise-8-Adobe-Reader/">展开全文 >></a>
         </p>
       
 
