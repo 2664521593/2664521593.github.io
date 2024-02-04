@@ -63,7 +63,7 @@
                                                总文章数 32
                                 </nav>
                                 <nav>
-	总字数 <span class="post-count">50.7k</span>
+	总字数 <span class="post-count">50.8k</span>
                                 </nav>
 		<nav class="header-smart-menu">
     		
@@ -163,7 +163,7 @@
     
       <header class="article-header">
         <div align="center" class="post-count">
-    字数：321字 | 预计阅读时长：1分钟
+    字数：398字 | 预计阅读时长：1分钟
 </div>
         
   
@@ -209,6 +209,8 @@
 <p><img src="/2024/02/03/CVE-2017-13772%E6%BC%8F%E6%B4%9E/image-20240203180914562.png"></p>
 <p><img src="/2024/02/03/CVE-2017-13772%E6%BC%8F%E6%B4%9E/image-20240203181003226.png"></p>
 <p><img src="/2024/02/03/CVE-2017-13772%E6%BC%8F%E6%B4%9E/image-20240203183055192.png"></p>
+<p>ghidra看一下，能看出漏洞出在local_ac[iVar5] &#x3D;  *pcVar6;如果pcVar6的长度超过local_ac,就会发生溢出。</p>
+<p><img src="/2024/02/03/CVE-2017-13772%E6%BC%8F%E6%B4%9E/image-20240204214412743.png"></p>
 <h2 id="仿真复现"><a href="#仿真复现" class="headerlink" title="仿真复现"></a>仿真复现</h2><p>开启仿真</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./fap.py -q ./qemu-builds/2.5.0/ ./wr940nv4_us_3_16_9_up_boot(160617).bin </span><br></pre></td></tr></table></figure>
 
@@ -216,7 +218,15 @@
 <p><img src="/2024/02/03/CVE-2017-13772%E6%BC%8F%E6%B4%9E/image-20240203175652992.png"></p>
 <p>登陆成功</p>
 <p><img src="/2024/02/03/CVE-2017-13772%E6%BC%8F%E6%B4%9E/image-20240203175928894.png"></p>
+<p>虽然限制了字符个数，但可以抓包绕过</p>
+<p><img src="/2024/02/03/CVE-2017-13772%E6%BC%8F%E6%B4%9E/image-20240204204638335.png"></p>
+<p><img src="/2024/02/03/CVE-2017-13772%E6%BC%8F%E6%B4%9E/image-20240204210616844.png"></p>
+<p>修改，r重发，发现网站不能正常打开了。</p>
+<p><img src="/2024/02/03/CVE-2017-13772%E6%BC%8F%E6%B4%9E/image-20240204210738936.png"></p>
+<p><img src="/2024/02/03/CVE-2017-13772%E6%BC%8F%E6%B4%9E/image-20240204212848496.png"></p>
+<p>成功发起了一次DOS攻击</p>
 <p>参考：<a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1079045">https://cloud.tencent.com/developer/article/1079045</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.sohu.com/a/307355414_120054144">https://www.sohu.com/a/307355414_120054144</a></p>
 
       
 
