@@ -63,7 +63,7 @@
                                                总文章数 33
                                 </nav>
                                 <nav>
-	总字数 <span class="post-count">51.7k</span>
+	总字数 <span class="post-count">51.8k</span>
                                 </nav>
 		<nav class="header-smart-menu">
     		
@@ -163,7 +163,7 @@
     
       <header class="article-header">
         <div align="center" class="post-count">
-    字数：910字 | 预计阅读时长：3分钟
+    字数：1k字 | 预计阅读时长：3分钟
 </div>
         
   
@@ -208,14 +208,17 @@
 <p>算法截图</p>
 <p><img src="/2024/02/05/%E2%80%9CWGAN%E2%80%9D/image-20240205171445732.png"></p>
 <p>WGAN里使用Wasserstein Distance来替换掉JS-Divergence</p>
-<p>Wasserstein距离(推土机距离)</p>
-<p><img src="/2024/02/05/%E2%80%9CWGAN%E2%80%9D/image-20240205170919058.png"></p>
+<h3 id="Wasserstein距离-推土机距离"><a href="#Wasserstein距离-推土机距离" class="headerlink" title="Wasserstein距离(推土机距离)"></a>Wasserstein距离(推土机距离)</h3><p><img src="/2024/02/05/%E2%80%9CWGAN%E2%80%9D/image-20240205170919058.png"></p>
 <p>可以被解释为从Pr变成Pg所需要的最小‘能量’(移动百分比*距离)。</p>
+<p>意思是说如果我有两个分布Q和P，那么我要将两个分布的概率部分推成相同分布，平均推土距离最小的方案则为推土机方案，这个距离也被称为推土机距离。</p>
+<p><img src="/2024/02/05/%E2%80%9CWGAN%E2%80%9D/image-20240205180924510.png"></p>
 <p><strong>Wasserstein距离相比KL散度、JS散度的优越性在于，即便两个分布没有重叠，Wasserstein距离仍然能够反映它们的远近。</strong>WGAN本作通过简单的例子展示了这一点。考虑如下二维空间中的两个分布和P1和P2，P1在线段AB上均匀分布，P2在线段CD上均匀分布，通过控制参数θ可以控制着两个分布的距离远近。</p>
 <p><img src="/2024/02/05/%E2%80%9CWGAN%E2%80%9D/image-20240205172406962.png"></p>
 <p>容易得到</p>
 <p><img src="/2024/02/05/%E2%80%9CWGAN%E2%80%9D/image-20240205172456190.png"></p>
 <p>KL散度和JS散度是突变的，要么最大要么最小，<strong>Wasserstein距离却是平滑的</strong>，如果我们要用梯度下降法优化这个参数，前两者根本提供不了梯度，Wasserstein距离却可以。类似地，在高维空间中如果两个分布不重叠或者重叠部分可忽略，则KL和JS既反映不了远近，也提供不了梯度，<strong>但是Wasserstein却可以提供有意义的梯度</strong>。</p>
+<h3 id="WGAN实现"><a href="#WGAN实现" class="headerlink" title="WGAN实现"></a>WGAN实现</h3><p>Wasserstein距离定义中的<img src="/2024/02/05/%E2%80%9CWGAN%E2%80%9D/image-20240205181859416.png">没法直接求解，不过没关系，作者用了一个已有的定理把它变换为如下形式</p>
+<p><img src="/2024/02/05/%E2%80%9CWGAN%E2%80%9D/image-20240205181908205.png"></p>
 <p><strong>可以构造一个含参数</strong>w、最后一层不是非线性激活层的判别器网络fw，使得</p>
 <p><img src="/2024/02/05/%E2%80%9CWGAN%E2%80%9D/image-20240205173932476.png"></p>
 <p><strong>尽可能取到最大，此时</strong>L就会近似真实分布与生成分布之间的Wasserstein距离。注意原始GAN的判别器做的是真假二分类任务，所以最后一层是sigmoid，但是现在WGAN中的判别器做的是近似拟合Wasserstein距离，属于回归任务，所以要把最后一层的sigmoid拿掉。</p>
