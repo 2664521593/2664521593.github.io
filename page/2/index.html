@@ -60,10 +60,10 @@
 			</ul>
 		</nav>
                                 <nav>
-                                               总文章数 32
+                                               总文章数 33
                                 </nav>
                                 <nav>
-	总字数 <span class="post-count">50.8k</span>
+	总字数 <span class="post-count">51.7k</span>
                                 </nav>
 		<nav class="header-smart-menu">
     		
@@ -157,6 +157,147 @@
           </div>
           <div id="js-content" class="content-ll">
             
+  
+    <article id="post-论文分享-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        <div align="center" class="post-count">
+    字数：1.9k字 | 预计阅读时长：7分钟
+</div>
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/">论文分享-Effective Seed Scheduling for Fuzzing with Graph Centrality Analysis</a>
+    </h1>
+  
+
+        
+        <a href="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/" class="archive-article-date">
+  	<time datetime="2023-11-24T07:46:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-11-24</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis-基于图中心性分析的模糊种子调度算法"><a href="#Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis-基于图中心性分析的模糊种子调度算法" class="headerlink" title="Effective Seed Scheduling for Fuzzing with Graph Centrality Analysis   基于图中心性分析的模糊种子调度算法"></a>Effective Seed Scheduling for Fuzzing with Graph Centrality Analysis   基于图中心性分析的模糊种子调度算法</h1><p>Dongdong She, Abhishek Shah and Suman Jana Columbia University   （2022 IEEE Symposium on Security and Privacy (SP)）</p>
+<p>本篇论文聚焦于fuzz测试的种子调度问题。</p>
+<h2 id="问题引入"><a href="#问题引入" class="headerlink" title="问题引入"></a>问题引入</h2><p>fuzz是一种通过改变一组集合来查找错误的技术。</p>
+<p>fuzzing初始时候会有一个种子池(seed corpus), 里面有很多的测试用例，每个测试用例都是一个种子  (seed)，每次fuzzing需要从种子池里面挑选出来一个种子,  在它的基础上生成很多测试用例变种，然后把这些测试用例变种输入程序中，观察是否有异常的程序行为或者程序崩溃出现，并且保留那些能测试新的代码段的测试用例变种。</p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231115132921585.png"></p>
+<p>​                                                                                                 图1. Fuzzing的基本工作流程</p>
+<p>种子调度，种子被选择的顺序，可以极大地影响模糊器的性能。</p>
+<p>一些种子调度方法：</p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231115133112679.png"></p>
+<p>现有的方法调度种子的历史变异数据的基础上，但忽略了底层的控制流图（CFG）的结构。</p>
+<p>程序控制流图（CFG）作为程序执行过程中所有基本块执行可能流向的表现，反映着基本块节点之间的相互关系。一个好的种子，在程序流程图(CFG)中, 它的的执行路径可以连通到大量的未测试代码段，检查CFG可以通过揭示突变种子的潜在边缘覆盖增益来帮助种子调度。</p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231115133626633.png"></p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231115133659743.png"></p>
+<p>一个理想的策略将基于从种子到突变的所有可达和可行边的计数来调度种子，但是沿着所有边计算可行性是非常昂贵且复杂的。</p>
+<p>因此需要采取一种近似的算法，根据观察，算法需要满足以下几个条件：</p>
+<ol>
+<li>如果一个种子可以到达更多节点，增加其权重</li>
+<li>如果其中的节点实际上很难到达或是距离过远，减少其权重</li>
+<li>可以进行高效地计算</li>
+</ol>
+<p>这个问题可以抽象成在一个动态的大规模图中，如何去高效地计算可以连通到的节点数量，我们想到了社交网络中的中心性算法。</p>
+<h2 id="图中心性算法"><a href="#图中心性算法" class="headerlink" title="图中心性算法"></a>图中心性算法</h2><p>中心性算法可以测量每个节点在社交网络中的连通性和影响力。比如在社交网络分析中，图中心性可以用于识别最有影响力的人物或关键人物。这些人物可能具有更大的影响力、信息传播能力或社会地位。</p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231115140039584.png"></p>
+<p>文章采用katz中心性计算每个节点的权重，katz中心性分析可以较好地解决以上三个问题。</p>
+<p>katz公式：</p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231115152605717.png"></p>
+<p>α表示衰退因子(0~1)，可以为远的节点赋更低的权重，A表示邻接矩阵，cj为相邻节点的权值，βi为当前节点的权值，用于减少难以到达节点的权重。</p>
+<p>矩阵形式：</p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231115154420605.png"></p>
+<p>进一步整理：</p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231115171311577.png"></p>
+<p>可以用幂方法近似，简化计算：</p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231115154056140.png"></p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231115153055844.png"></p>
+<h2 id="具体例子"><a href="#具体例子" class="headerlink" title="具体例子"></a>具体例子</h2><p>具体程序</p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231115154717093.png"></p>
+<p>由于初始的CFG图中包含已访问和未访问的节点，而我们更关心未访问节点的情况，而且CFG中缺少种子相关的信息，因此需要对CFG做进一步的处理</p>
+<p>首先删除掉已访问的节点，其中A B为边缘节点，特点是他们本身没有被访问但是具有已被访问过的父节点，将对应访问了其父节点的种子连接上，插入种子节点，生成edge horizon graph(边缘分界线图)。</p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231115154833205.png"></p>
+<p>为节点分配权重，对于边缘节点根据历史访问数据赋权重，其余赋权重为默认值1。</p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231115201756772.png"></p>
+<p>Ri度量到达节点i的父节点的突变数量，T度量种子的突变总数，以此衡量一个节点是否容易到达。比如我们假设在100个突变中，有70个到达了水平节点A的父节点，所以它的β &#x3D; 1− 70&#x2F;100 &#x3D; 0.3，30个到达了水平节点B的父节点，所以它的β &#x3D; 1− 30&#x2F;100 &#x3D; 0.7。这表明水平节点A更难通过突变到达，因为模糊器无法通过其70%的突变到达它。</p>
+<p>计算</p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231115160011216.png"></p>
+<p>Cs2(0) &#x3D; 1</p>
+<p>Cs2(1) &#x3D; α(Ca(0)+Cb(0))+βs2 &#x3D; 0.5∗(0.3+0.7)+1 &#x3D; 1.5</p>
+<p>Cs2(2) &#x3D; α(Ca(1) + Cb(1)) +βs2 &#x3D;0.5 ∗ (0.3 + 1.7) + 1 &#x3D; 2</p>
+<p>Cs2(3) &#x3D; α(Ca(2) + Cb(2)) +βs2 &#x3D;0.5 ∗ (0.3 + 1.7) + 1 &#x3D; 2</p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231115153055844.png"></p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231115155933047.png"></p>
+<h2 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h2><p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231115165143771.png"></p>
+<p>给定程序、种子语料库和目标程序的过程间CFG，K-Scheduler首先修改CFG以生成仅由种子、边界节点和非边界未访问节点组成的边缘分界线图。然后，使用Katz中心性对边缘分界线图进行中心性分析。模糊器优先选择中心性得分最高的种子。</p>
+<p>当模糊器的突变到达以前未访问的节点时，删除这些新访问的节点，并在更新后的边缘分界线图上重新计算Katz中心性。因为我们不希望已访问节点对中心性结果造成影响，特别地，给定一个图A → B → C，如果B被访问过，我们通过添加一条产生A → C的边来保持连通性。此时A → C现在有距离1。</p>
+<p>或者在过去给定的时间后，更新中心性值，以便虽然没有新到达的节点，K-Scheduler也能及时地指导fuzz。</p>
+<h2 id="评估"><a href="#评估" class="headerlink" title="评估"></a>评估</h2><p>使用Google FuzzBench基准测试，选取其中的12个程序，作者将K-Scheduler分别集成到AFL和LibFuzzer中，在底层模糊器相同的情况下比较种子调度策略。</p>
+<h3 id="RQ1、和其他的调度策略相比如何？"><a href="#RQ1、和其他的调度策略相比如何？" class="headerlink" title="RQ1、和其他的调度策略相比如何？"></a>RQ1、和其他的调度策略相比如何？</h3><p>对于与基于Libfuzzer的种子调度策略，作者将K-Scheduler与Entropic和Libfuzzer默认种子调度器（Defalult）进行对比，将24小时作为一轮的循行周期，共计运行了10次，并取10次运行结果的算术平均值。该实验结果如表1所示，可以看出，在运行了24小时后，K-Scheduler的特征覆盖率与边覆盖率与Entropic和Libfuzzer默认种子调度器相比都要更高。</p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231116164914495.png"></p>
+<p>对于与基于AFL的种子调度策略，作者将K-Scheduler与RarePath、RareEdges、NewPath、SecurityCov和AFL默认种子调度策略（Default）进行24小时一轮、10次实验</p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231116170059380.png"></p>
+<p>我们认为性能差异减少是因为底层的模糊器AFL在24小时模糊活动期间多次迭代种子队列，因此将频繁地调度几乎所有的种子，从而降低了种子选择的效果。</p>
+<h3 id="RQ2：能否提高fuzzer发现漏洞的能力"><a href="#RQ2：能否提高fuzzer发现漏洞的能力" class="headerlink" title="RQ2：能否提高fuzzer发现漏洞的能力"></a>RQ2：能否提高fuzzer发现漏洞的能力</h3><p>在12个程序上运行10次，每次24h，对结果取算术平均值。</p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231116172137743.png"></p>
+<h3 id="RQ3运行开销"><a href="#RQ3运行开销" class="headerlink" title="RQ3运行开销"></a>RQ3运行开销</h3><p>运行开销主要分为</p>
+<ul>
+<li>fuzz维护开销：记录边缘的命中计数并计算种子的能量</li>
+<li>图形分析：构造边缘分界线图并执行Katz中心性分析</li>
+</ul>
+<p>由于katz中心性可以用幂方法高效计算同时边缘分界线图不用每次从0构建，所以图形分析开销较小。</p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231116193314921.png"></p>
+<h3 id="RQ4每个设计的影响"><a href="#RQ4每个设计的影响" class="headerlink" title="RQ4每个设计的影响"></a>RQ4每个设计的影响</h3><p>(1)、β值的影响</p>
+<p>文中是根据历史变异数据改变β，通过比较使用统一β值的K-Scheduler与使用非统一β值的K-Scheduler的效果展示该方法的作用。</p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231116200140444.png"></p>
+<p>(2)、删除已访问的节点</p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231116200336125.png"></p>
+<p>(3)、α的取值</p>
+<p><img src="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/image-20231116200508021.png"></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2023/11/24/%E8%AE%BA%E6%96%87%E5%88%86%E4%BA%AB-Effective-Seed-Scheduling-for-Fuzzing-with-Graph-Centrality-Analysis/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
   
     <article id="post-Cachelab" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
@@ -1090,99 +1231,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2023/07/24/%E7%B3%BB%E7%BB%9F%E8%AE%BA%E6%96%87%E4%B8%8E%E5%86%99%E4%BD%9C%E7%AC%AC%E4%B8%80%E7%AF%87/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-报告第一篇" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <div align="center" class="post-count">
-    字数：887字 | 预计阅读时长：2分钟
-</div>
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2023/07/21/%E6%8A%A5%E5%91%8A%E7%AC%AC%E4%B8%80%E7%AF%87/">报告第一篇</a>
-    </h1>
-  
-
-        
-        <a href="/2023/07/21/%E6%8A%A5%E5%91%8A%E7%AC%AC%E4%B8%80%E7%AF%87/" class="archive-article-date">
-  	<time datetime="2023-07-21T10:40:01.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-07-21</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="Pointers-on-giving-a-talk"><a href="#Pointers-on-giving-a-talk" class="headerlink" title="Pointers on giving a talk"></a>Pointers on giving a talk</h2><p>参考文章：<a target="_blank" rel="noopener" href="https://people.eecs.berkeley.edu/~messer/Bad_talk.html">https://people.eecs.berkeley.edu/~messer/Bad_talk.html</a></p>
-<p>文章主要给出一场好的汇报和不好的汇报之间的关键点以及对比。</p>
-<table>
-<thead>
-<tr>
-<th>不好的报告</th>
-<th>好的报告</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>在没有说明目标或目的的情况下进入材料。<br>在最后一点之后突然结束。<br>自始至终，让你的听众对你在做什么以及为什么不了解。</td>
-<td>首先明确演讲的三个阶段（开始、中间和结束）：<br>开头：明确报告的范围和目标 <br>中间：主要的概念和结论 <br>结尾：总结希望观众记住的要点并提供更进一步的信息</td>
-</tr>
-<tr>
-<td>在分配的时间内，试图讲述比实际情况多得多的材料。  <br> 在材料进行到一半时突然结束报告。  <br> 讲的过快以确保每一个细节都被涵盖。</td>
-<td>确定时间限制内可以涵盖的内容范围，为问题和讨论留出时间。<br>根据时间分配，决定可以充分传达的概念或要点的数量（经验上看每5分钟一个概念是合理的），并将重点放在最重要的内容上。<br>将您的演讲视为激发听众自主学习更多关于该主题的机会（并提供相关指引），而不是试图在演讲中教给他们所有的知识。</td>
-</tr>
-<tr>
-<td>只根据自己的知识、兴趣和熟悉度做报告而不关心听众的感受<br>要么太无聊要么只是通过花言巧语华而不实的信息让听众记住<br>不关心观众是否学到了东西或是激发了兴趣</td>
-<td>了解你的听众，以及你试图教会听众什么，并相应地仔细调整演讲内容：  <br>他们对这个话题已经了解多少了？<br>他们需要多少背景才能理解这个主题？<br>从他们的角度来看，他们可能会觉得什么有趣和令人兴奋？<br>观众的多样性有多大？你能同时为见多识广和无知的人提供一些有价值的东西吗？</td>
-</tr>
-<tr>
-<td>向听众投射大量文字的视觉图表，迫使他们在听你讲话和阅读之间做出选择。<br>不要浪费时间在图片和图表上。</td>
-<td>在演讲中，视觉图表和文字之间应该有良好的平衡。可以利用视觉图表来呈现概念、实验结果或数据，并通过口头表达来解释和强调重点。 <br>语言和图像是相互补充的。可以设计一个视觉化的概念图、流程图、实验装置示意图等，以帮助听众更好地理解您的观点和研究成果。 <br>确保演讲的主要焦点仍然是口头表达。通过清晰、简洁和生动的语言描述您的研究内容，使听众能够直接从您的口头表达中获取信息。 <br>注意言之有物，避免过度使用文字或视觉元素，以免分散听众的注意力。确保每个图表、图片或文本都与您的演讲目标直接相关，并能够支持您的观点。</td>
-</tr>
-</tbody></table>
-<p>从该文章中我了解到了一场报告怎么样做好，需要条理清晰，权衡好时间，把握关键点，在观众的角度上思考问题，尽量让观众能理解，同时表达上也要注意，需要充足的准备。</p>
-<h3 id><a href="#" class="headerlink" title></a></h3><p>报告中应该注意</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2023/07/21/%E6%8A%A5%E5%91%8A%E7%AC%AC%E4%B8%80%E7%AF%87/">展开全文 >></a>
         </p>
       
 

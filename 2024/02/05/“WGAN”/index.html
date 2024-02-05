@@ -6,32 +6,33 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="https://yoursite.com">
-  <title>Exercise-7-VLC Media Player | 欢迎来到我的博客！</title>
+  <title>WGAN | 欢迎来到我的博客！</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="本次练习的目标是对VLC媒体播放器进行模糊测试，目的是发现VLC 3.0.7.1版本中 CVE-2019-14776 的崩溃&#x2F;PoC 本次实验主要学习AFL的部分插桩（Partial Instrumentation）功能，允许指定哪些函数&#x2F;文件应该使用插桩或不使用插桩进行编译。这有助于模糊测试器专注于程序的重要部分，避免通过执行无趣的代码路径产生不必要的噪音和干扰。 假设我们向">
+  <meta name="description" content="GAN和WGANGAN存在的问题  损失函数  将V(G.D)展开为积分形式  固定G，对D求导 φV&#x2F;φD &#x3D; Pdata&#x2F;D(x) + -Pg&#x2F;1-D(x) &#x3D; 0 得D^*^ &#x3D; Pdata&#x2F;Pdata+Pg 将D*带回V，根据KL散度公式，由于log上下值的范围都在[0,1],所以上下同乘1&#x2F;2,再提出log2">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Exercise-7-VLC Media Player">
-<meta property="og:url" content="https://yoursite.com/2023/07/20/Exercise-7-VLC-Media-Player/index.html">
+<meta property="og:title" content="WGAN">
+<meta property="og:url" content="https://yoursite.com/2024/02/05/%E2%80%9CWGAN%E2%80%9D/index.html">
 <meta property="og:site_name" content="欢迎来到我的博客！">
-<meta property="og:description" content="本次练习的目标是对VLC媒体播放器进行模糊测试，目的是发现VLC 3.0.7.1版本中 CVE-2019-14776 的崩溃&#x2F;PoC 本次实验主要学习AFL的部分插桩（Partial Instrumentation）功能，允许指定哪些函数&#x2F;文件应该使用插桩或不使用插桩进行编译。这有助于模糊测试器专注于程序的重要部分，避免通过执行无趣的代码路径产生不必要的噪音和干扰。 假设我们向">
+<meta property="og:description" content="GAN和WGANGAN存在的问题  损失函数  将V(G.D)展开为积分形式  固定G，对D求导 φV&#x2F;φD &#x3D; Pdata&#x2F;D(x) + -Pg&#x2F;1-D(x) &#x3D; 0 得D^*^ &#x3D; Pdata&#x2F;Pdata+Pg 将D*带回V，根据KL散度公式，由于log上下值的范围都在[0,1],所以上下同乘1&#x2F;2,再提出log2">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://yoursite.com/2023/07/20/Exercise-7-VLC-Media-Player/image-20230724110012857.png">
-<meta property="og:image" content="https://yoursite.com/2023/07/20/Exercise-7-VLC-Media-Player/image-20230724110349956.png">
-<meta property="og:image" content="https://yoursite.com/2023/07/20/Exercise-7-VLC-Media-Player/image-20230724110434139.png">
-<meta property="og:image" content="https://yoursite.com/2023/07/20/Exercise-7-VLC-Media-Player/image-20230724104858372.png">
-<meta property="og:image" content="https://yoursite.com/2023/07/20/Exercise-7-VLC-Media-Player/image-20230724112125871.png">
-<meta property="og:image" content="https://yoursite.com/2023/07/20/Exercise-7-VLC-Media-Player/image-20230724141851324.png">
-<meta property="og:image" content="https://yoursite.com/2023/07/20/Exercise-7-VLC-Media-Player/image-20230724144303023.png">
-<meta property="og:image" content="https://yoursite.com/2023/07/20/Exercise-7-VLC-Media-Player/image-20230724144326647.png">
-<meta property="og:image" content="https://yoursite.com/2023/07/20/Exercise-7-VLC-Media-Player/image-20230731190403621.png">
-<meta property="og:image" content="https://yoursite.com/2023/07/20/Exercise-7-VLC-Media-Player/image-20230731191515724.png">
-<meta property="og:image" content="https://yoursite.com/2023/07/20/Exercise-7-VLC-Media-Player/image-20230731191928935.png">
-<meta property="og:image" content="https://yoursite.com/2023/07/20/Exercise-7-VLC-Media-Player/image-20230731192157373.png">
-<meta property="article:published_time" content="2023-07-20T04:33:26.000Z">
-<meta property="article:modified_time" content="2023-08-06T16:41:07.333Z">
+<meta property="og:image" content="https://yoursite.com/2024/02/05/%E2%80%9CWGAN%E2%80%9D/image-20240205164038699.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/05/%E2%80%9CWGAN%E2%80%9D/image-20240205164049358.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/05/%E2%80%9CWGAN%E2%80%9D/image-20240205154729142.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/05/%E2%80%9CWGAN%E2%80%9D/image-20240205154837754.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/05/%E2%80%9CWGAN%E2%80%9D/image-20240205163949791.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/05/%E2%80%9CWGAN%E2%80%9D/image-20240205165220605.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/05/%E2%80%9CWGAN%E2%80%9D/image-20240205171445732.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/05/%E2%80%9CWGAN%E2%80%9D/image-20240205170919058.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/05/%E2%80%9CWGAN%E2%80%9D/image-20240205172406962.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/05/%E2%80%9CWGAN%E2%80%9D/image-20240205172456190.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/05/%E2%80%9CWGAN%E2%80%9D/image-20240205173932476.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/05/%E2%80%9CWGAN%E2%80%9D/image-20240205173527687.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/05/%E2%80%9CWGAN%E2%80%9D/image-20240205173542315.png">
+<meta property="article:published_time" content="2024-02-04T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-02-05T09:53:49.305Z">
 <meta property="article:author" content="shy">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://yoursite.com/2023/07/20/Exercise-7-VLC-Media-Player/image-20230724110012857.png">
+<meta name="twitter:image" content="https://yoursite.com/2024/02/05/%E2%80%9CWGAN%E2%80%9D/image-20240205164038699.png">
   
     <link rel="alternative" href="/atom.xml" title="欢迎来到我的博客！" type="application/atom+xml">
   
@@ -173,81 +174,77 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-Exercise-7-VLC-Media-Player" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-“WGAN”" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         <div align="center" class="post-count">
-    字数：777字 | 预计阅读时长：3分钟
+    字数：910字 | 预计阅读时长：3分钟
 </div>
         
   
     <h1 class="article-title" itemprop="name">
-      Exercise-7-VLC Media Player
+      WGAN
     </h1>
   
 
         
-        <a href="/2023/07/20/Exercise-7-VLC-Media-Player/" class="archive-article-date">
-  	<time datetime="2023-07-20T04:33:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-07-20</time>
+        <a href="/2024/02/05/%E2%80%9CWGAN%E2%80%9D/" class="archive-article-date">
+  	<time datetime="2024-02-04T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2024-02-05</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>本次练习的目标是对VLC媒体播放器进行模糊测试，目的是发现VLC 3.0.7.1版本中 <a target="_blank" rel="noopener" href="https://nvd.nist.gov/vuln/detail/CVE-2019-14776"><strong>CVE-2019-14776</strong></a> 的崩溃&#x2F;PoC</p>
-<p>本次实验主要学习AFL的部分插桩（Partial Instrumentation）功能，允许指定哪些函数&#x2F;文件应该使用插桩或不使用插桩进行编译。这有助于模糊测试器专注于程序的重要部分，避免通过执行无趣的代码路径产生不必要的噪音和干扰。</p>
-<p>假设我们向模糊测试器提供了一个有效的MKV文件。但在经过多次输入文件的变异后，“魔术字节”已经改变，我们的程序现在将该输入文件视为AVI文件。因此，这个“变异的MKV文件”现在将被AVI Demux处理。经过一段时间后，文件的魔术字节再次改变，现在将该文件视为MPEG文件。在这两种情况下，这个新变异文件提高代码覆盖率的潜力非常低，因为这个新文件没有任何有效的语法结构。</p>
-<p>简而言之，如果我们不对代码覆盖率设置限制，模糊测试器很容易选择错误的路径，从而使模糊测试过程效果不佳。</p>
-<p>要使用这个功能，我们在编译时设置环境变量AFL_LLVM_ALLOWLIST。这个环境变量必须指向一个包含所有应该进行插桩的函数&#x2F;文件名的文件。</p>
-<p>实验流程</p>
-<p>首先创建文件夹并下载Vlc-Media-Player3.0.7.1</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mkdir fuzzing_vlc &amp;&amp; cd fuzzing_vlc</span><br><span class="line">wget https://download.videolan.org/pub/videolan/vlc/3.0.7.1/vlc-3.0.7.1.tar.xz</span><br><span class="line">tar -xvf vlc-3.0.7.1.tar.xz</span><br></pre></td></tr></table></figure>
-
-<p>搜索VLC所需的依赖并安装</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install libvlc-dev libavcodec-dev libavformat-dev libswscale-dev libxcb1-dev libxcb-composite0-dev libxcb-xv0-dev libxcb-randr0-dev libasound2-dev libpulse-dev</span><br></pre></td></tr></table></figure>
-
-<p>编译安装，根据提示禁用一些选项</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./configure --prefix=&quot;$HOME/fuzzing_vlc/vlc-3.0.7.1/install&quot; --disable-a52 --disable-lua --disable-qt</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2023/07/20/Exercise-7-VLC-Media-Player/image-20230724110012857.png"></p>
-<p><img src="/2023/07/20/Exercise-7-VLC-Media-Player/image-20230724110349956.png"></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make -j$(nproc)</span><br></pre></td></tr></table></figure>
-
-<p>安装成功</p>
-<p><img src="/2023/07/20/Exercise-7-VLC-Media-Player/image-20230724110434139.png"></p>
-<p>根据fuzzing101的文档对vlc3.0.7.1&#x2F;test&#x2F;vlc-demux-run.c的文件做修改</p>
-<p><img src="/2023/07/20/Exercise-7-VLC-Media-Player/image-20230724104858372.png"></p>
-<p>同时再根据speedup.patch修改文件</p>
-<p><img src="/2023/07/20/Exercise-7-VLC-Media-Player/image-20230724112125871.png"></p>
-<p>下载Partial_instrumentation</p>
-<p><img src="/2023/07/20/Exercise-7-VLC-Media-Player/image-20230724141851324.png"></p>
-<p>重新编译文件</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CC=&quot;afl-clang-fast&quot; CXX=&quot;afl-clang-fast++&quot; ./configure --prefix=&quot;$HOME/fuzzing101/fuzzing_vlc/install&quot; --disable-a52 --disable-lua --disable-qt --with-sanitizer=address</span><br><span class="line">AFL_LLVM_ALLOWLIST=$HOME/fuzzing101/fuzzing_vlc/Partial_instrumentation make -j$(nproc) LDFLAGS=&quot;-fsanitize=address&quot;</span><br></pre></td></tr></table></figure>
-
-<p>编译后出现内存泄漏问题</p>
-<p>下载字典</p>
-<p><img src="/2023/07/20/Exercise-7-VLC-Media-Player/image-20230724144303023.png"></p>
-<p>下载语料库</p>
-<p><img src="/2023/07/20/Exercise-7-VLC-Media-Player/image-20230724144326647.png"></p>
-<p>编译vlc-demux-run</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make vlc-demux-run -j$(nproc) LDFLAGS=&quot;-fsanitize=address&quot;</span><br></pre></td></tr></table></figure>
-
-<p>开始fuzz</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">afl-fuzz -m none -t 100  -i &#x27;./afl_in&#x27; -o &#x27;./afl_out&#x27; -x asf_dictionary.dict -D -- ./vlc-3.0.7.1/test/vlc-demux-run @@</span><br></pre></td></tr></table></figure>
-
-<p> 虽然速度慢，但还是很快出了结果。</p>
-<p><img src="/2023/07/20/Exercise-7-VLC-Media-Player/image-20230731190403621.png"></p>
-<h2 id="crash分析"><a href="#crash分析" class="headerlink" title="crash分析"></a>crash分析</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./vlc-demux-run $HOME/fuzzing101/fuzzing_vlc/afl_out/default/crashes/id:000000,sig:06,src:000003,time:153403,execs:4393,op:flip1,pos:279</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2023/07/20/Exercise-7-VLC-Media-Player/image-20230731191515724.png"></p>
-<p>发现内存泄漏问题</p>
-<p><img src="/2023/07/20/Exercise-7-VLC-Media-Player/image-20230731191928935.png"></p>
-<h2 id="修复"><a href="#修复" class="headerlink" title="修复"></a>修复</h2><p><a target="_blank" rel="noopener" href="https://github.com/videolan/vlc/commit/fdbdd677c1e6262f31771b0ba10afb24aabf108c#diff-a22170125046390274dd33c2cb5bb0e99d485e6708b376f40978de9534ac55a9">https://github.com/videolan/vlc/commit/fdbdd677c1e6262f31771b0ba10afb24aabf108c#diff-a22170125046390274dd33c2cb5bb0e99d485e6708b376f40978de9534ac55a9  </a></p>
-<p><img src="/2023/07/20/Exercise-7-VLC-Media-Player/image-20230731192157373.png"></p>
-<p>看到减少了内存分配的大小</p>
-<h2 id="总结与反思"><a href="#总结与反思" class="headerlink" title="总结与反思"></a>总结与反思</h2><p>通过本次实验，学习到了afl的部分插桩功能，如果要实现这个，需要对程序进行全面分析与理解。</p>
+        <h1 id="GAN和WGAN"><a href="#GAN和WGAN" class="headerlink" title="GAN和WGAN"></a>GAN和WGAN</h1><h2 id="GAN存在的问题"><a href="#GAN存在的问题" class="headerlink" title="GAN存在的问题"></a>GAN存在的问题</h2><p><img src="/2024/02/05/%E2%80%9CWGAN%E2%80%9D/image-20240205164038699.png"></p>
+<p><img src="/2024/02/05/%E2%80%9CWGAN%E2%80%9D/image-20240205164049358.png"></p>
+<p>损失函数</p>
+<p><img src="/2024/02/05/%E2%80%9CWGAN%E2%80%9D/image-20240205154729142.png"></p>
+<p>将V(G.D)展开为积分形式</p>
+<p><img src="/2024/02/05/%E2%80%9CWGAN%E2%80%9D/image-20240205154837754.png"></p>
+<p>固定G，对D求导</p>
+<p>φV&#x2F;φD &#x3D; P<del>data</del>&#x2F;D(x) + -P<del>g</del>&#x2F;1-D(x) &#x3D; 0</p>
+<p>得D^*^ &#x3D; P<del>data</del>&#x2F;P<del>data</del>+P<del>g</del></p>
+<p>将D*带回V，根据KL散度公式，由于log上下值的范围都在[0,1],所以上下同乘1&#x2F;2,再提出log2，得</p>
+<p><img src="/2024/02/05/%E2%80%9CWGAN%E2%80%9D/image-20240205163949791.png"></p>
+<p>由于KL散度大于0，所以两个KL散度为0时，即P<del>data</del> &#x3D; P<del>g</del>时，V最小，即为-2log2（上图应为-2log2）</p>
+<p>上述进一步化为 2JS(P<del>g</del>||P<del>data</del>) - 2log2</p>
+<p>当P<del>data</del>和P<del>g</del>不重叠时，即有一者为0时，JS为常数，会导致梯度为0，无法更新。</p>
+<p>证明：</p>
+<p><img src="/2024/02/05/%E2%80%9CWGAN%E2%80%9D/image-20240205165220605.png"></p>
+<p>为了解决这个问题，提出WGAN</p>
+<h2 id="WGAN"><a href="#WGAN" class="headerlink" title="WGAN"></a>WGAN</h2><p>WGAN<strong>相比原始GAN的算法实现流程只改了四点</strong>：</p>
+<ul>
+<li>判别器最后一层去掉sigmoid</li>
+<li>生成器和判别器的loss不取log</li>
+<li>每次更新判别器的参数之后把它们的绝对值截断到不超过一个固定常数c</li>
+<li>不要用基于动量的优化算法（包括momentum和Adam），推荐RMSProp，SGD也行</li>
+</ul>
+<p>算法截图</p>
+<p><img src="/2024/02/05/%E2%80%9CWGAN%E2%80%9D/image-20240205171445732.png"></p>
+<p>WGAN里使用Wasserstein Distance来替换掉JS-Divergence</p>
+<p>Wasserstein距离(推土机距离)</p>
+<p><img src="/2024/02/05/%E2%80%9CWGAN%E2%80%9D/image-20240205170919058.png"></p>
+<p>可以被解释为从Pr变成Pg所需要的最小‘能量’(移动百分比*距离)。</p>
+<p><strong>Wasserstein距离相比KL散度、JS散度的优越性在于，即便两个分布没有重叠，Wasserstein距离仍然能够反映它们的远近。</strong>WGAN本作通过简单的例子展示了这一点。考虑如下二维空间中的两个分布和P1和P2，P1在线段AB上均匀分布，P2在线段CD上均匀分布，通过控制参数θ可以控制着两个分布的距离远近。</p>
+<p><img src="/2024/02/05/%E2%80%9CWGAN%E2%80%9D/image-20240205172406962.png"></p>
+<p>容易得到</p>
+<p><img src="/2024/02/05/%E2%80%9CWGAN%E2%80%9D/image-20240205172456190.png"></p>
+<p>KL散度和JS散度是突变的，要么最大要么最小，<strong>Wasserstein距离却是平滑的</strong>，如果我们要用梯度下降法优化这个参数，前两者根本提供不了梯度，Wasserstein距离却可以。类似地，在高维空间中如果两个分布不重叠或者重叠部分可忽略，则KL和JS既反映不了远近，也提供不了梯度，<strong>但是Wasserstein却可以提供有意义的梯度</strong>。</p>
+<p><strong>可以构造一个含参数</strong>w、最后一层不是非线性激活层的判别器网络fw，使得</p>
+<p><img src="/2024/02/05/%E2%80%9CWGAN%E2%80%9D/image-20240205173932476.png"></p>
+<p><strong>尽可能取到最大，此时</strong>L就会近似真实分布与生成分布之间的Wasserstein距离。注意原始GAN的判别器做的是真假二分类任务，所以最后一层是sigmoid，但是现在WGAN中的判别器做的是近似拟合Wasserstein距离，属于回归任务，所以要把最后一层的sigmoid拿掉。</p>
+<p><strong>接下来生成器要近似地最小化Wasserstein距离，可以最小化</strong>L，由于Wasserstein距离的优良性质，我们不需要担心生成器梯度消失的问题。再考虑到L的第一项与生成器无关，就得到了WGAN的两个loss。</p>
+<p><strong>WGAN生成器loss函数</strong></p>
+<p><img src="/2024/02/05/%E2%80%9CWGAN%E2%80%9D/image-20240205173527687.png"></p>
+<p><strong>WGAN判别器loss函数</strong></p>
+<p><img src="/2024/02/05/%E2%80%9CWGAN%E2%80%9D/image-20240205173542315.png"></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>为了解决GAN中训练不稳定的问题，WGAN使用Wasserstein距离代替JS散度，其中涉及许多复杂的数学证明，但宏观上也比较容易理解，即最小化真实数据和生成数据之间的距离，这样就解决了JS散度二者没有交叉的情况下也不能反映距离大小的问题。</p>
+<p>参考：</p>
+<p>Wasserstein generative adversarial networks（<a target="_blank" rel="noopener" href="https://dl.acm.org/doi/abs/10.5555/3305381.3305404%EF%BC%89[ICML'17">https://dl.acm.org/doi/abs/10.5555/3305381.3305404）[ICML&#39;17</a>: Proceedings of the 34th International Conference on Machine Learning - Volume 70](<a target="_blank" rel="noopener" href="https://dl.acm.org/doi/proceedings/10.5555/3305381">https://dl.acm.org/doi/proceedings/10.5555/3305381</a>) August 2017Pages   214–223</p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/MorStar/p/14882813.html">https://www.cnblogs.com/MorStar/p/14882813.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/149815753">https://zhuanlan.zhihu.com/p/149815753</a></p>
 
       
 
@@ -327,7 +324,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=https://yoursite.com/2023/07/20/Exercise-7-VLC-Media-Player/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=https://yoursite.com/2024/02/05/%E2%80%9CWGAN%E2%80%9D/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -341,18 +338,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2023/07/21/Exercise-8-Adobe-Reader/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          Exercise-8-Adobe Reader
-        
-      </div>
-    </a>
   
-  
-    <a href="/2023/07/18/Exercise-6-GIMP/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Exercise-6-GIMP</div>
+    <a href="/2024/02/03/CVE-2017-13772%E6%BC%8F%E6%B4%9E/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">CVE-2017-13772漏洞</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -379,7 +367,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#crash%E5%88%86%E6%9E%90"><span class="toc-number">1.</span> <span class="toc-text">crash分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%AE%E5%A4%8D"><span class="toc-number">2.</span> <span class="toc-text">修复</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93%E4%B8%8E%E5%8F%8D%E6%80%9D"><span class="toc-number">3.</span> <span class="toc-text">总结与反思</span></a></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#GAN%E5%92%8CWGAN"><span class="toc-number">1.</span> <span class="toc-text">GAN和WGAN</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#GAN%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">1.1.</span> <span class="toc-text">GAN存在的问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#WGAN"><span class="toc-number">1.2.</span> <span class="toc-text">WGAN</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">1.3.</span> <span class="toc-text">总结</span></a></li></ol></li></ol>
                     </div>
                 </span>
             </div>
