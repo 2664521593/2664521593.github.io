@@ -60,10 +60,10 @@
 			</ul>
 		</nav>
                                 <nav>
-                                               总文章数 33
+                                               总文章数 34
                                 </nav>
                                 <nav>
-	总字数 <span class="post-count">51.8k</span>
+	总字数 <span class="post-count">54.3k</span>
                                 </nav>
 		<nav class="header-smart-menu">
     		
@@ -157,6 +157,126 @@
           </div>
           <div id="js-content" class="content-ll">
             
+  
+    <article id="post-ENIPFuzz-A-SeqGAN-based-EtherNet-IP-Protocol-Fuzzing-Test-Framework" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        <div align="center" class="post-count">
+    字数：2.5k字 | 预计阅读时长：8分钟
+</div>
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2024/02/07/ENIPFuzz-A-SeqGAN-based-EtherNet-IP-Protocol-Fuzzing-Test-Framework/">ENIPFuzz_A_SeqGAN-based_EtherNet_IP_Protocol_Fuzzing_Test_Framework</a>
+    </h1>
+  
+
+        
+        <a href="/2024/02/07/ENIPFuzz-A-SeqGAN-based-EtherNet-IP-Protocol-Fuzzing-Test-Framework/" class="archive-article-date">
+  	<time datetime="2024-02-06T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2024-02-07</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="ENIPFuzz-A-SeqGAN-based-EtherNet-x2F-IP-Protocol-Fuzzing-Test-Framework"><a href="#ENIPFuzz-A-SeqGAN-based-EtherNet-x2F-IP-Protocol-Fuzzing-Test-Framework" class="headerlink" title="ENIPFuzz: A SeqGAN-based EtherNet&#x2F;IP Protocol Fuzzing Test Framework"></a>ENIPFuzz: A SeqGAN-based EtherNet&#x2F;IP Protocol Fuzzing Test Framework</h1><h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>如何有效地挖掘通信协议中潜在的漏洞是提高工业控制系统安全性的关键。然而，传统的模糊检测方法在挖掘新漏洞时存在一定的局限性。此外，在公共漏洞数据库中，EtherNet&#x2F;IP协议漏洞很少。本文介绍了一种基于序列生成对抗网络（SeqGAN）的EtherNet&#x2F;IP协议模糊测试框架，该框架能够自动学习协议语法并生成测试用例。我们的贡献是双重的。首先，提出了一种基于SeqGAN的EtherNet&#x2F;IP协议模糊测试框架ENIPFuzz，该框架不依赖于现有的漏洞数据库。然后，为了增加生成的测试用例的多样性，我们提出了三种聚类策略来构建训练集。此外，为了验证框架的可用性，我们将ENIPFuzz部署到使用EtherNet&#x2F;IP协议的ICS中，并发现了一些漏洞。</p>
+<h2 id="绪论"><a href="#绪论" class="headerlink" title="绪论"></a>绪论</h2><p>随着工业互联网的发展，原本与互联网隔离的工业控制系统（ICS）越来越多地连接到互联网上。如何有效地挖掘工业网络协议的潜在漏洞是提高工业网络安全性的关键。</p>
+<p>传统的模糊测试方法存在两个问题：</p>
+<ol>
+<li>测试用例完全依赖于手动设计，这是耗时且劳动密集的，测试用例的质量完全取决于人们的先前知识，因此测试用例的代码覆盖率和通过率差异很大；</li>
+<li>大多数测试用例是基于公共漏洞数据库构建的，这对于挖掘新漏洞存在一定的局限性。此外，在公共漏洞数据库中很少有EtherNet&#x2F;IP协议的漏洞，如CVE、CNVD等。</li>
+</ol>
+<p>本文结合GANFuzz探索深度学习在EtherNet&#x2F;IP协议模糊中的应用。</p>
+<p>下表是不同的输入模糊测试工具和框架的概要信息，只有一个商业模糊器支持EtherNet&#x2F;IP协议（EtherNet&#x2F;IP是一种工业以太网协议，它是基于TCP&#x2F;IP协议栈的一种实时通讯协议。它被广泛应用于工业自动化领域，用于在工业设备之间进行数据传输和通信）。</p>
+<p><img src="/2024/02/07/ENIPFuzz-A-SeqGAN-based-EtherNet-IP-Protocol-Fuzzing-Test-Framework/image-20240207150321175.png"></p>
+<h2 id="主要框架"><a href="#主要框架" class="headerlink" title="主要框架"></a>主要框架</h2><h3 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h3><p>ENIPFuzz框架旨在学习从工业控制系统（ICS）中收集的EtherNet&#x2F;IP数据包的格式。</p>
+<p>实现这一目标的第一个问题是收集数据包并通过不同的聚类策略将它们预处理成不同的训练数据集。</p>
+<p>然后，他们将在不同的训练数据集上训练SeqGAN生成模型。</p>
+<p>接着，生成模型被用来生成格式良好的ENIP数据帧。最后，他们将发送生成的ENIP数据帧到目标程序，并监视异常响应。</p>
+<p>1、ENIP数据包预处理：</p>
+<p>从工业控制系统中捕获的原始EtherNet&#x2F;IP数据包不能直接用于训练对抗网络。首先，我们需要从原始ENIP数据包中提取十六进制协议数据，然后将其逐位转换为十进制。其次，我们利用提出的三种聚类策略从不同的角度构建训练数据集：</p>
+<p>2、对抗训练：这一步的目标是训练一个基于SeqGAN框架的生成模型，生成与真实世界数据格式相同但内容不同的伪数据作为模糊测试用例。</p>
+<p>3、对抗训练：这一步的目标是训练一个基于SeqGAN框架的生成模型，生成与真实世界数据格式相同但内容不同的伪数据作为模糊测试用例。</p>
+<h3 id="具体做法"><a href="#具体做法" class="headerlink" title="具体做法"></a>具体做法</h3><h4 id="数据包预处理："><a href="#数据包预处理：" class="headerlink" title="数据包预处理："></a>数据包预处理：</h4><p>本文从一个真实的工业控制系统（行李自动分拣系统）中捕获完整的原始数据包，然后将其从16进制转化为10进制，接下来采取三种预处理方法：</p>
+<ul>
+<li>相同帧长度</li>
+</ul>
+<p>根据帧的长度将帧聚合到不同数据集中，并使用数据增强策略加强这些数据集，可以更好地关注和处理这些帧。这种分簇策略简洁高效，对于许多工业网络协议，相同或相似类型的帧具有相同的消息长度，有利于生成具有较高通过率的测试用例。</p>
+<ul>
+<li>相同功能的帧</li>
+</ul>
+<p>根据EtherNet&#x2F;IP协议的固定功能码数量，将具有相同命令的帧聚集到同一组中，以便训练生成器生成相同命令的测试用例。EtherNet&#x2F;IP协议除了保留字段外，还包含8个功能码，如表II所示。然后根据填充策略将不同的训练集进行填充。</p>
+<p><img src="/2024/02/07/ENIPFuzz-A-SeqGAN-based-EtherNet-IP-Protocol-Fuzzing-Test-Framework/image-20240207153527387.png"></p>
+<p>填充策略：</p>
+<p><img src="/2024/02/07/ENIPFuzz-A-SeqGAN-based-EtherNet-IP-Protocol-Fuzzing-Test-Framework/image-20240207153651900.png"></p>
+<p>其中S0是原始数据，S1是填充数据，len（）表示测量数据长度的函数，MaxLen表示当前训练集中消息的最大长度，x表示填充字符。</p>
+<p>该策略能够充分测试EtherNet&#x2F;IP协议各功能的鲁棒性。</p>
+<ul>
+<li>混合所有帧</li>
+</ul>
+<p>为了充分利用模糊测试的随机性，将所有帧数据作为一个训练数据集，可以使生成的测试用例具有较高的覆盖率，策略可以训练模型生成更多样化的测试用例。</p>
+<h4 id="对抗训练"><a href="#对抗训练" class="headerlink" title="对抗训练"></a>对抗训练</h4><p>由于GAN无法处理离散数据，文章利用SeqGAN，SeqGAN利用强化学习技术和策略梯度算法来更新生成器的权重，而不是直接从鉴别器到生成器进行反向传播，这避免了非可微分性的问题。SeqGAN使用强化学习方法，具体来说是策略梯度算法，通过对生成的序列进行采样和评估，然后根据奖励信号来调整生成器的参数，以使生成的序列更符合预期的标准。</p>
+<p>生成器用于处理输入的随机噪声（Z）并生成文本序列。该算法判断输入样本是真实世界的数据还是生成的序列，然后将判断概率作为奖励反馈给G，以指导G的梯度更新。</p>
+<p><img src="/2024/02/07/ENIPFuzz-A-SeqGAN-based-EtherNet-IP-Protocol-Fuzzing-Test-Framework/image-20240207170101262.png"></p>
+<p>“x1x2…x24”表示生成的数据，“y1y2…y24”代表真实世界的数据，“Ry^1^Ry^2^…Ry^n^”表示用户将生成的数据视为真实的数据的可能性的概率值。重复上述步骤，直到G能够生成与真实的序列相似的文本序列。</p>
+<p>将前一时刻ct-1的隐藏状态ht-1和当前时刻xt的词向量映射到当前时刻ct的隐藏状态ht可以形式上为以下公式：ht &#x3D; g(ht−1, xt)，g 是一个函数，用来表示从 ht−1 和 xt 到 ht 的映射关系。这个函数通常是 LSTM 网络中的更新规则。</p>
+<p>然后将计算的隐藏状态ht映射到输出单词的概率分布：p(yt|x1 · · · xt) &#x3D; softmax(Vht + b)<br>其中V是权重矩阵，B是偏置向量。即可得到下个生成单词的概率。</p>
+<p>ENIPFuzz框架使用LSTM模型作为生成模型。LSTM参考：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/564057405">https://zhuanlan.zhihu.com/p/564057405</a></p>
+<p>使用CNN作为判别模型来区分生成的数据和真实世界的数据。在我们的方案中，CNN模型依次包括嵌入层、卷积层、最大池化层和sigmoid层。在训练集中，原始协议数据是正样本，生成的数据是负样本。给定协议数据X，我们将其视为序列向量X &#x3D;（x1，x2 · · · xt）。所有的序列向量都由一个矩阵X<del>1:T</del>组成，也称为序列集，xij ∈ V，其中V是序列集的特征集。</p>
+<p>利用卷积层对序列向量进行卷积，提取序列特征。最后，序列特征依次通过最大池层和全连通sigmoid层，得到输入序列为真实的序列的概率。</p>
+<p>可以通过采用如上所述的SeqGAN框架来生成与尽可能多的协议数据相似的数据。LSTM模型和CNN模型的细节（层数和细胞数）应该根据协议结构的复杂程度来确定，比如协议消息的长度，协议消息越长，模型越复杂。</p>
+<p>接下来开始训练，包含三个步骤。</p>
+<ol>
+<li>生成器预训练（Generator pre-training）: 在这一步中，真实的协议消息 X<del>1:T</del> 被用作生成器模型的输入，以学习其特征。在经过数据包预处理后，数据集中训练协议消息的长度是相等的。</li>
+<li>判别器预训练（Discriminator pre-training）: 我们使用预训练的生成器生成一些负样本，这些样本的标签为 0，表示这些数据是虚假的。真实的协议消息是正样本，并且被标记为 1。然后，将正样本和负样本作为输入，对判别器进行预训练，以区分虚假数据和真实数据。</li>
+<li>交替训练（Alternate training）: 在预训练之后，我们交替训练生成器和判别器，动态调整学习率，直到生成器能够生成类似于真实协议消息的序列。</li>
+</ol>
+<h3 id="测试用例生成与模糊测试"><a href="#测试用例生成与模糊测试" class="headerlink" title="测试用例生成与模糊测试"></a>测试用例生成与模糊测试</h3><p>为了平衡测试用例的通过率和随机性，在我们的工作中，我们保存不同时期的生成器模型。不同时期的生成器模型对协议语法的学习程度不同，可以生成相似度不同的测试用例，很好地保持了测试用例的多样性和随机性。</p>
+<p>到目前为止，我们已经获得了不同程度地覆盖协议语法的生成器模型。随后，我们向目标程序发送测试用例，记录异常或错误响应，并捕获导致目标程序异常的ENIP数据包。在模糊测试中，利用PING命令来监控工业控制系统的运行状态。</p>
+<h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>未完、、、</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2024/02/07/ENIPFuzz-A-SeqGAN-based-EtherNet-IP-Protocol-Fuzzing-Test-Framework/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
   
     <article id="post-“WGAN”" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
@@ -1297,140 +1417,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2024/01/25/1-25/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Intelligent-Fuzzy-Attack-Vector-Generation-Framework-Based-on-Deep-Adversarial-Learning" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <div align="center" class="post-count">
-    字数：1.9k字 | 预计阅读时长：6分钟
-</div>
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2024/01/24/Intelligent-Fuzzy-Attack-Vector-Generation-Framework-Based-on-Deep-Adversarial-Learning/">Intelligent Fuzzy Attack Vector Generation Framework Based on Deep Adversarial Learning</a>
-    </h1>
-  
-
-        
-        <a href="/2024/01/24/Intelligent-Fuzzy-Attack-Vector-Generation-Framework-Based-on-Deep-Adversarial-Learning/" class="archive-article-date">
-  	<time datetime="2024-01-23T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2024-01-24</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>#Intelligent Fuzzy Attack Vector Generation Framework Based on Deep Adversarial Learning</p>
-<h2 id="1、摘要"><a href="#1、摘要" class="headerlink" title="1、摘要"></a>1、摘要</h2><p>本文主要提出一种基于GAN(对抗生成网络)的工业控制协议模糊测试框架，针对于协议测试，传统的模糊测试需要研究人员对协议规范的具体细节有清晰的了解。本文的框架可以快速生成大量虚假但可信的测试协议信息，并对Modbus协议进行有效测试。</p>
-<p>##2、引言</p>
-<p>该框架的核心模块，对抗生成模块，主要采用改进的GAN网络来训练模型以学习协议的语法。在对抗网络中引入自注意机制，快速准确地生成模糊测试用例。经过训练的网络生成伪造但看似合理的测试协议消息。</p>
-<h3 id="对抗神经网络GAN"><a href="#对抗神经网络GAN" class="headerlink" title="对抗神经网络GAN"></a>对抗神经网络GAN</h3><p><img src="/2024/01/24/Intelligent-Fuzzy-Attack-Vector-Generation-Framework-Based-on-Deep-Adversarial-Learning/image-20240124153025899.png"></p>
-<p>生成网络（Generator）负责生成模拟数据；判别网络Discriminator）负责判断输入的数据是真实的还是生成的。生成网络要不断优化自己生成的数据让判别网络判断不出来，判别网络也要优化自己让自己判断得更准确。二者关系形成对抗，因此叫对抗网络。</p>
-<p>GAN的训练过程可以分为两个部分：</p>
-<ul>
-<li>判别器的训练：固定生成器G，更新判别器D的参数，使得判别器能够准确地将真实样本与虚假样本区分开来；</li>
-<li>生成器的训练：固定判别器D，更新生成器G的参数，使得生成器能够伪造出更加逼真的虚假样本，使得判别器难以区分真假样本。</li>
-</ul>
-<p>通过不断迭代判别器和生成器的训练过程，GAN最终能够得到一个平衡状态，生成器可以生成与真实数据相似的样本，判别器无法准确区分真实数据和生成数据。</p>
-<h3 id="注意力机制"><a href="#注意力机制" class="headerlink" title="注意力机制"></a>注意力机制</h3><p>根据K和Q，key和query求得权重，再根据权重求得value。</p>
-<p><img src="/2024/01/24/Intelligent-Fuzzy-Attack-Vector-Generation-Framework-Based-on-Deep-Adversarial-Learning/image-20240124163140312.png"></p>
-<p>若KQV是同一个矩阵，则成为了自注意力机制，可表示为</p>
-<p><img src="/2024/01/24/Intelligent-Fuzzy-Attack-Vector-Generation-Framework-Based-on-Deep-Adversarial-Learning/image-20240124163300092.png"></p>
-<p>比如可以用来求某个句子中最重要的词。</p>
-<h3 id="物联网协议Modbus"><a href="#物联网协议Modbus" class="headerlink" title="物联网协议Modbus"></a>物联网协议Modbus</h3><p>MODBUS 是 OSI 模型第 7 层上的应用层报文传输协议，它在连接至不同类型总线或网络的设备之间提供客户机&#x2F;服务器通信。</p>
-<p>报文格式：</p>
-<p><img src="/2024/01/24/Intelligent-Fuzzy-Attack-Vector-Generation-Framework-Based-on-Deep-Adversarial-Learning/image-20240124172358205.png"></p>
-<h2 id="3、框架设计"><a href="#3、框架设计" class="headerlink" title="3、框架设计"></a>3、框架设计</h2><p><img src="/2024/01/24/Intelligent-Fuzzy-Attack-Vector-Generation-Framework-Based-on-Deep-Adversarial-Learning/image-20240124173114182.png"></p>
-<p>框架由四个模块组成：捕获模块，GAN训练模块，Fuzzing测试模块和日志模块。</p>
-<ul>
-<li>捕获模块能够拦截和过滤网络流量。捕获模块拦截物联网设备和服务器之间的通信流量，过滤和处理流量，然后将其传递给GAN训练模块进行网络训练。</li>
-<li>过滤后的流量被馈送到GAN训练模块中，用于后续的模型训练。</li>
-<li>Fuzzing测试模块通过调用GAN训练模块中训练好的生成器生成Fuzzing测试用例。生成的数据被转换为协议特定的数据包，然后通过通信信道发送到被测系统。</li>
-<li>Logging模块记录发送的测试用例的内容、测试用例ID和发送时间戳等信息。在测试用例发送之后，它监视并记录任何生成的异常信息。产生异常信息的测试用例被保存并添加到生成对抗模型的训练集中，以生成高质量的测试用例。</li>
-</ul>
-<h2 id="4、GAN训练模块ICGAN"><a href="#4、GAN训练模块ICGAN" class="headerlink" title="4、GAN训练模块ICGAN"></a>4、GAN训练模块ICGAN</h2><p>###整体框架</p>
-<p><img src="/2024/01/24/Intelligent-Fuzzy-Attack-Vector-Generation-Framework-Based-on-Deep-Adversarial-Learning/image-20240124173517832.png"></p>
-<h3 id="生成器和判别器"><a href="#生成器和判别器" class="headerlink" title="生成器和判别器"></a>生成器和判别器</h3><h4 id="生成器部分："><a href="#生成器部分：" class="headerlink" title="生成器部分："></a>生成器部分：</h4><ul>
-<li><p>在生成器部分，使用高斯分布的随机噪声作为输入。噪声经过一个全连接层，将词嵌入的维度映射和调整到模型所需的维度。</p>
-</li>
-<li><p>接下来是一个重塑层，用于转换序列的长度和每个位置的向量维度。</p>
-</li>
-<li><p>为了表示序列中的相对位置信息，创建了一个形状为 (步长，E) 的位置编码矩阵，其中步长代表序列长度，E代表每个位置的向量维度。对于序列中的每个位置，从位置编码矩阵中检索相应的位置编码向量，并将其添加到该位置的向量中。</p>
-</li>
-<li><p>然后数据进入多头自注意力层和前馈层进行处理，其中多头自注意力层主要捕捉序列中的全局依赖关系并整合不同位置的信息，前馈层则对此信息进行本地变换和处理以增强模型的表达能力。</p>
-</li>
-<li><p>最后，在经过一个全连接层和一个softmax层之后，生成器并不直接输出消息帧数据，而是产生一个概率向量max_len×17，其中max_len表示最长数据帧的长度，17表示词汇表中的单词数。</p>
-<p>（文章使用词汇表[0，1，2，3，4，5，6，7，8，9，a，b，c，d，e，f，p]来映射数据帧的十六进制值。符号“p”用于填充数据帧以匹配最长数据帧的长度。然后，我们将它们转换为one-hot向量，其中每个数据帧都成为一个大小为length×17的向量。）</p>
-</li>
-</ul>
-<p>生成器的损失函数：</p>
-<p><img src="/2024/01/24/Intelligent-Fuzzy-Attack-Vector-Generation-Framework-Based-on-Deep-Adversarial-Learning/image-20240124202017895.png"></p>
-<p>x是生成器生成的数据，D是判别器，生成器目的是让D(x)尽可能的大，意味着尽可能让D判断x是真实的数据，E是取均值，加负号意味着使L损失函数最小。</p>
-<h4 id="判别器部分："><a href="#判别器部分：" class="headerlink" title="判别器部分："></a>判别器部分：</h4><p><img src="/2024/01/24/Intelligent-Fuzzy-Attack-Vector-Generation-Framework-Based-on-Deep-Adversarial-Learning/image-20240124202353827.png"></p>
-<p>使W尽可能的大，即使第一项真实x的值尽可能大，而第二项生成的x的值尽可能小。</p>
-<ul>
-<li>判别器模型包含五个Conv1D层、五个自注意力层和一个全连接层。</li>
-<li>Conv1D层用来捕获消息头，因为消息头往往包含重要信息，并且由于消息头长度在不同的协议中可能不同，所以修改了Conv1D层的滤波器大小以更好地捕捉这些信息。</li>
-<li>自我注意力层考虑输入中每个位置的注意力权重，并能够捕获长期依赖关系。由于Conv1D层更关注边界信息，自注意力层更关注消息头和消息正文之间的关联性。</li>
-<li>最后，Critic输出一个标量分数。</li>
-</ul>
-<p>判别器的损失函数：</p>
-<p><img src="/2024/01/24/Intelligent-Fuzzy-Attack-Vector-Generation-Framework-Based-on-Deep-Adversarial-Learning/image-20240124203438041.png"></p>
-<p>在损失函数中加了一个惩罚项，通过抑制过大的梯度来控制学习率，从而更好地保留模型特征，避免丢失重要信息和梯度消失的问题。</p>
-<h2 id="5、实验"><a href="#5、实验" class="headerlink" title="5、实验"></a>5、实验</h2><p><img src="/2024/01/24/Intelligent-Fuzzy-Attack-Vector-Generation-Framework-Based-on-Deep-Adversarial-Learning/image-20240124204242443.png"><br>W在逐步增大，而损失函数都在减小</p>
-<p>将本文中的ICGAN模型与其他模型或模糊测试器进行了比较，包括GAN，DCGAN 和Peach。GAN和DCGAN是两种生成对抗模型，而Peach是常用的模糊测试器。</p>
-<p><img src="/2024/01/24/Intelligent-Fuzzy-Attack-Vector-Generation-Framework-Based-on-Deep-Adversarial-Learning/image-20240124204352704.png"></p>
-<p>可以看到ICGAN速率最快</p>
-<p>数据不被接受主要有两个原因</p>
-<ul>
-<li>第一个原因是异常代码03的返回，表示接收到无效的数据值。</li>
-<li>第二个原因是异常代码01，表示无效的函数代码。</li>
-</ul>
-<p><img src="/2024/01/24/Intelligent-Fuzzy-Attack-Vector-Generation-Framework-Based-on-Deep-Adversarial-Learning/image-20240124204500175.png"></p>
-<p>生成样本的质量也是最高的</p>
-<h2 id="6、总结"><a href="#6、总结" class="headerlink" title="6、总结"></a>6、总结</h2><p>本文将注意力机制加入GAN之中以此生成用于测试协议的有效的数据，在速率和质量上均相较于之前有所提高。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2024/01/24/Intelligent-Fuzzy-Attack-Vector-Generation-Framework-Based-on-Deep-Adversarial-Learning/">展开全文 >></a>
         </p>
       
 

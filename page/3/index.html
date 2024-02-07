@@ -60,10 +60,10 @@
 			</ul>
 		</nav>
                                 <nav>
-                                               总文章数 33
+                                               总文章数 34
                                 </nav>
                                 <nav>
-	总字数 <span class="post-count">51.8k</span>
+	总字数 <span class="post-count">54.3k</span>
                                 </nav>
 		<nav class="header-smart-menu">
     		
@@ -157,6 +157,121 @@
           </div>
           <div id="js-content" class="content-ll">
             
+  
+    <article id="post-系统论文与写作第一篇" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        <div align="center" class="post-count">
+    字数：4.5k字 | 预计阅读时长：15分钟
+</div>
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2023/07/24/%E7%B3%BB%E7%BB%9F%E8%AE%BA%E6%96%87%E4%B8%8E%E5%86%99%E4%BD%9C%E7%AC%AC%E4%B8%80%E7%AF%87/">系统论文与写作第一篇</a>
+    </h1>
+  
+
+        
+        <a href="/2023/07/24/%E7%B3%BB%E7%BB%9F%E8%AE%BA%E6%96%87%E4%B8%8E%E5%86%99%E4%BD%9C%E7%AC%AC%E4%B8%80%E7%AF%87/" class="archive-article-date">
+  	<time datetime="2023-07-24T07:40:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-07-24</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="How-and-How-Not-to-Write-a-Good-Systems-Paper"><a href="#How-and-How-Not-to-Write-a-Good-Systems-Paper" class="headerlink" title="How (and How Not) to Write a Good Systems Paper"></a>How (and How Not) to Write a Good Systems Paper</h2><p>Roy Levin and David D. Redell,Ninth SOSP Program Committee Co-chairmen</p>
+<h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p>首先文章提到操作系统原理研讨会的程序委员会从83篇论文中选出了16篇进行展示，接受率约为五分之一，委员会成员发现将好论文与差论文分开是惊人地容易的。事实上，十个委员会成员很快就就对超过80%的论文达成了一致意见。</p>
+<p>在委员会完成评估过程后，一些成员对提交论文的总体质量感到失望。许多被拒绝的论文都表现出相似的缺点，而这些缺点委员会认为作者应该能够自己发现。为了提高未来SOSP提交论文和系统论文的质量，委员会决定描述其用于评估论文的标准。这篇文章结合了所有委员会成员使用的标准，而不仅仅是作者的标准。</p>
+<h3 id="论文的种类"><a href="#论文的种类" class="headerlink" title="论文的种类"></a>论文的种类</h3><p>你的论文很可能自然地属于以下三个类别之一：</p>
+<p>1.一个真实的系统，可以是对整个系统进行全面调查，也可以是对系统中体现的特定主题进行选择性审查。</p>
+<p>2.介绍了一个未实现的系统，但利用了你认为技术界应该了解的思想或技术。</p>
+<p>3.涉及理论领域的一个主题，例如性能建模或安全验证。</p>
+<p>显然，不同类别的论文无法统一应用一套评估标准；然而，许多标准同样适用于这三类论文。在下面描述每个标准时，我们将尽量强调其适用的论文类别，通常从上下文中可以看出。</p>
+<h3 id="评估标准"><a href="#评估标准" class="headerlink" title="评估标准"></a>评估标准</h3><h4 id="原创性的观点"><a href="#原创性的观点" class="headerlink" title="原创性的观点"></a>原创性的观点</h4><ol>
+<li>论文中的观点是否新颖？如果论文不包含至少一个新观点，那么将其提交给关注原创工作的会议或期刊就没有意义。为了判断自己的工作是否具有原创性，你必须熟悉相关领域的现有技术和当前研究。在第一类（真实系统）的投稿中，最常见的问题之一是缺乏新观点；所描述的系统往往与文献中有记录的少数几个开创性系统同构。</li>
+<li>你如何确定观点是新的？你必须熟悉该领域的最新研究成果和现有技术，以判断自己的工作是否具有原创性。尝试将每个观点以一个段落的形式写下来，这样一般对该领域有所了解的人就能理解。如果你做不到这一点，可能意味着你自己并没有真正理解这个观点。当你有了这些段落后，可以将它们用于论文的摘要中。</li>
+<li>正在解决的确切问题是什么？如果只描述解决方案而不提及所面临的问题，读者无法猜测出你所面临的问题。要具体说明问题，并解释为什么以前发表的技术无法解决你的问题。</li>
+<li>观点是否足够重要，值得发表论文？很多描述真实系统的论文只包含一两个现有技术的小改进。新观点可以用几个段落来描述；二十页的论文是不必要的，而且经常会掩盖实际的创新。由于构建真实系统需要大量工作，论文的作者有时会不自觉地将整个工作量与实际上的创新混淆在一起。（”我的团队在这个系统上工作了两年，我们终于完成了。让我们向全世界展示它有多么棒。”）如果创新很小，那么在适当的期刊上发表一篇小论文或技术报告比 SOSP 的投稿更合适。</li>
+<li>所描述的工作与现有相关工作有显著区别吗？一个明显的对先前发表的算法、技术或系统进行扩展并不一定能够证明其值得发表。当然，“明显”这个词必须谨慎使用。（还记得哥伦布怎样演示如何使一个蛋直立起来（轻轻地压碎它）的故事吗：“一旦我告诉你怎么做，就很明显了。”）你必须证明自己的工作与现有技术的状态有显著差异。如果你无法做到这一点，你应该问问自己为什么要写这篇论文。</li>
+<li>是否引用了所有相关工作，并且是否真正阅读了所引用的材料？除非你明确将自己的工作与先前发表的工作区分开来，否则你将很难说服怀疑论者相信你的创新性。这就需要引用参考文献。此外，如果读者已经阅读了这些引用的作品而你没有阅读，则更难说服读者相信你的方法优于其他方法。</li>
+<li>对以前的工作进行了清晰明确的比较吗？你不能简单地说：“我们的方法与 BagOfBits 系统[3] 采用的方法有些不同。”要具体说明：“我们的虚拟内存管理方法使用磁介质而不是 BagOfBits 系统[3] 中的纸带，可以提高传输速率和清洁成本。”</li>
+<li>这项工作是否包含对先前但尚未经过验证的观点的重要扩展、验证或推翻？支持或否定先前发表的论文设计的实施经验非常有价值，也是值得发表的候选论文。设计是廉价的，而实施（特别是基于不严谨设计的实施）是昂贵且复杂的。</li>
+<li>在引用参考文献时应注意的一些问题，包括引用最旧和最新的论文、引用其他机构的类似工作，以及避免引用技术报告、未发表备忘录、个人交流等未经评审或难以获取的材料。通过引用最旧和最新的论文，作者能够展示对该领域历史发展的了解，并避免重复已有的研究成果。只引用古老的论文可能导致作者忽略了最新研究成果，而只引用最新的论文可能会“重新发现”一些已经过时的观点。引用技术报告、未发表备忘录、个人交流等未经评审或难以获取的材料可能会限制论文的可信度和可靠性。因此，在可能的情况下，应避免使用这些材料作为参考资料。在引用参考文献时应注意的一些原则，以确保论文的可靠性、广泛性和可读性。它提醒作者避免引用过时或无法可靠获取的材料，并鼓励引用既有历史意义又具有最新价值的文献。</li>
+</ol>
+<h4 id="实践方面"><a href="#实践方面" class="headerlink" title="实践方面"></a>实践方面</h4><p>首先，文本指出了一些学术论文在15页中使用现在时来描述一个假设性系统，而直到结尾（如果有的话）才提及该系统仅处于初始实施或考虑阶段。这种做法被认为是不可接受的，因为读者有权在一开始就知道讨论的系统是否真实存在。</p>
+<p>如果一个系统已经实现，学术论文应该详细说明该系统的实际应用和对所提出想法的实际重要性的反映。仅仅因为投入了大量人力和时间的实施工作，并不能使论文值得发表。如果实现的系统包含了新的想法，那么解释这些想法在实践中的实际效果非常重要。</p>
+<p>学术论文需要具体描述系统的实际运行情况和效果，特别是对于包含新想法的实现系统。这样做可以更好地展示系统的价值和成果，并使读者对论文的内容产生信任和兴趣。</p>
+<h4 id="启发"><a href="#启发" class="headerlink" title="启发"></a>启发</h4><p>强调了从工作中学到的教训，明确指出读者应从论文中学到什么，并强调了这些教训的普遍适用性以及建立在哪些前提假设上。这样做可以确保作者所得出的结论具有可靠性和适用性，并帮助读者更好地理解和应用论文的内容。如果作者从工作中没有学到任何东西，那么很可能读者也不会学到什么，这样发表论文就是对读者时间和资源的浪费。因此，作者需要明确地指出读者应该从论文中学到什么，清晰地阐述教训。</p>
+<h4 id="选择"><a href="#选择" class="headerlink" title="选择"></a>选择</h4><p>强调了需要解释在不同阶段考虑的备选方案以及选择的原因，并强调通过讨论选择和原因来提供有价值的信息给读者。这样做可以让读者更好地理解研究是如何进行的，并帮助他们避免重复已知的错误或开辟新的研究领域。</p>
+<p>对于已经做出的选择，它们是否被证明是正确的，如果是，是否基于最初的动机？如果不是，你从这个经验中学到了什么教训？你是否经常发现自己说“这个方法有效，但原因却是错误的”？这样的论断代表了智慧（至少一点），可能会对读者有益。许多论文从最初的假设开始进行理性论证，直到最终结果，但实际上，结果可能是通过完全不同的途径获得的，并且后来形成了推导论证。这种“修正主义历史”接近于不诚实，阻碍了读者理解研究的真实工作方式。</p>
+<h4 id="前提"><a href="#前提" class="headerlink" title="前提"></a>前提</h4><p>在研究中，不仅需要明确和评估假设的现实性，还需要考虑到这些假设对研究结果的影响以及所采用方法的有效性。这种审慎和有意识的思考有助于确保研究的可靠性和可重复性，以及对读者的理解和接受度。</p>
+<p>在研究中，无论是修正主义还是其他领域，都存在着一些关键的假设或前提。这些假设可能包括对数据的可靠性、研究对象的特征、研究方法的有效性等方面。对于每项研究，作者应该明确阐明这些假设，并且读者也应该对这些前提持审慎态度，并判断它们是否现实，并对研究结果的敏感性产生影响。</p>
+<h4 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h4><p>写作中应该注意避免引入主题无关的内容，并在引用文献时恰到好处地提供必要的信息，使读者能够理解作者的论证思路，而不会被冗长的描述或引用所困扰。增强文章的流畅性和可读性。</p>
+<p>首先，引言部分应该避免包含与主要论述无关的内容。如果研究的主题是分布式文件系统，那么计算机与通信网络之间的物理特性可能并不相关。因此，在撰写引言时，应该集中精力介绍与研究的核心技术内容相关的新颖或不寻常的方面。</p>
+<p>其次，引用前人的工作应该恰到好处，以便读者能够理解作者的论证线索。不要假设读者最近阅读了所有参考文献，并随时可以参考。如果希望读者能够持续阅读，就不要使用类似于”我们采用Brown [4]对事务的定义，结合Green [7, 18]对文件的描述，使用Black [10]和White  [12]对记录和数据库的概念，并在后来由Gray [6]进行修改”的引言句式。然而，也不要过多地引用或转述文献中的内容，给读者带来不必要的负担。</p>
+<h4 id="发布"><a href="#发布" class="headerlink" title="发布"></a>发布</h4><p>讨论了论文写作中的一些关键问题，如组织和呈现方式、术语定义、引用和参考文献、摘要和论文的完成度。这些问题是写作过程中需要注意的重要方面，以确保文章的质量和可读性。</p>
+<ol>
+<li>是否以清晰和逻辑的方式组织和呈现思想？</li>
+<li>是否在使用术语之前进行了定义？</li>
+<li>是否尽量避免提前引用？读者会感到烦恼，如果他们反复遭遇像“每个文件由一系列条目组成，将在后面的章节中详细描述”这样的陈述。读者必须记住技术术语“条目”，但该术语还没有具体的含义。在某些情况下，可以要求读者这样做一两次，但只有在绝对必要时才可以这样做。即使您目前不能深入解释“条目”，也应该为读者提供足够的信息，使他们能够将一些意义附加到该术语上：“每个文件由一系列条目组成，这些条目是可变大小、自我识别的位序列，其详细解释将在下文的“多媒体文件”部分讨论。”您的读者可能尚未完全理解您对文件的概念，但至少他们对您引导他们的方向有一些了解。</li>
+<li>在写论文时，需要考虑替代的组织方式。对于理论性论文，特别是数学性论文，可以使用定义、引理、定理、例证和推论的顺序来组织论证，效果较好。但对于描述性的论文来说，这种顺序可能不太适用。在描述真实系统的论文中，如何组织取决于作者的意图，是进行全面调查还是选择性处理。作者可能在选择组织结构时遇到困难，因为他们不愿意确认任何一种方法。因此，作者需要明确是在调查整个系统还是专注于特定方面，并相应地构建论文结构。</li>
+<li>是否首先编写了摘要？它是否传达了论文的重要思想？在描述系统的论文中，摘要经常被滥用。摘要更像是一份散文目录，而不是对论文技术内容的简介。它通常会变成这样：“基于Keysworth对用户交互的概念化[4]，我们设计并实现了一个系统。我们展示了一些初步结果，并考虑了未来工作的方向。”没有读者会在阅读到这样的摘要后继续阅读下去。避免使用被动语态（尽管传统如此），并包含对假设和结果的简单陈述。”我们设计并实现了一个用户界面，遵循Keysworth的思想，并发现将空格键转换为脚踏能够提高15%的输入速度。然而，当我们将摇滚音乐而不是音乐背景声传送到办公室时，准确性显著下降了。”将讨论和争论留给正文。</li>
+<li>论文是否完成，审稿人可以帮助改进论文，但他们无法替你写论文。此外，他们也不能期望在标有“待包含在最终草稿中”的部分进行补充。在数学论文中，如果一个定理没有给出证明，审稿人会对其持怀疑态度，尤其是如果该定理意在为之前的发展做总结。同样，在描述系统的论文中，审稿人无法容忍遗漏重要的解释或理由。承诺以后填补遗漏部分通常是不可接受的。因此，在提交论文时要保证论文时完整的。</li>
+</ol>
+<h4 id="写作风格"><a href="#写作风格" class="headerlink" title="写作风格"></a>写作风格</h4><ol>
+<li>写作应当清晰明了，没有冗余的内容。作者需要用简洁明了的语言表达自己的思想，避免含糊不清或过度复杂的表达方式。</li>
+<li>应当确保单词的拼写和使用都是正确的，避免出现拼写错误或词义不当的情况。</li>
+<li>句子应当结构完整，并且符合语法规则。这可以增强文章的可读性和专业性。</li>
+<li>论文中应该避免使用模棱两可、俚语或可爱的表达方式。这是因为这些风格可能会导致表达不清晰或缺乏专业性，影响论文的质量和可理解性。</li>
+<li>作者应在提交论文之前对语法、拼写和用法错误进行修正。如果作者对自己的材料没有足够的关注，不愿意在发表之前修正这些错误，那么为什么期望审稿人会仔细阅读论文呢？有些审稿人认为这种粗心大意很可能不仅仅体现在表达上，而且在技术上也会存在一些不连贯之处。因此，作者在提交论文之前应该对细节进行关注和修正，以提高文章的质量和受审稿人的好感度。</li>
+</ol>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>文章总结了30多个问题，可以帮助人们写出更好的技术论文。在组织演示文稿、撰写初稿和完善论文最终形式时，经常参考这些问题。其中一些问题针对”系统”论文中的特定问题，而其他问题适用于技术论文的一般情况。写一篇好的论文是一项艰苦的工作，但是你会得到回报，你的想法会在期刊和论文集的读者群体中得到更广泛的传播和更好的理解。</p>
+<p>本文在审稿人的视角上总结了一篇好的论文应注意什么，在今后的学习和写作中我会注意。</p>
+<hr>
+<p>参考文章：<a target="_blank" rel="noopener" href="https://www.usenix.org/legacy/events/samples/submit/advice.html">https://www.usenix.org/legacy/events/samples/submit/advice.html</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2023/07/24/%E7%B3%BB%E7%BB%9F%E8%AE%BA%E6%96%87%E4%B8%8E%E5%86%99%E4%BD%9C%E7%AC%AC%E4%B8%80%E7%AF%87/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
   
     <article id="post-报告第一篇" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
@@ -1207,146 +1322,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2023/07/12/Exercise-2-libexif/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Exercise-1-Xpdf" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <div align="center" class="post-count">
-    字数：812字 | 预计阅读时长：3分钟
-</div>
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2023/07/11/Exercise-1-Xpdf/">Exercise 1 - Xpdf</a>
-    </h1>
-  
-
-        
-        <a href="/2023/07/11/Exercise-1-Xpdf/" class="archive-article-date">
-  	<time datetime="2023-07-11T03:27:42.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-07-11</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="安装调试目标"><a href="#安装调试目标" class="headerlink" title="安装调试目标"></a>安装调试目标</h1><p>首先安装xpdf-3.02和AFL++</p>
-<p>具体安装可以参考：<a target="_blank" rel="noopener" href="https://baijiahao.baidu.com/s?id=1732606199627602999&wfr=spider&for=pc">https://baijiahao.baidu.com/s?id=1732606199627602999&amp;wfr=spider&amp;for=pc</a></p>
-<p><img src="/2023/07/11/Exercise-1-Xpdf/QQ%E5%9B%BE%E7%89%8720230711113804.png"></p>
-<p>AFL 是一个覆盖引导的模糊器（<strong>coverage-guided fuzzer</strong>），这意味着它收集每个变异输入的覆盖信息，来发现新的执行路径和潜在的错误。当源代码可用时，AFL 可以使用插桩（instrumentation），在每个基本块（函数、循环等）的开头插入函数调用。</p>
-<p><img src="/2023/07/11/Exercise-1-Xpdf/QQ%E5%9B%BE%E7%89%8720230711114031.png"></p>
-<h1 id="获取样本"><a href="#获取样本" class="headerlink" title="获取样本"></a>获取样本</h1><p>从网上（github、官网、压缩包自带）找现成的样本sample，随便下载一个</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget http://www.africau.edu/images/default/sample.pdf</span><br></pre></td></tr></table></figure>
-
-<p>测试一下xpdf</p>
-<p><img src="/2023/07/11/Exercise-1-Xpdf/image-20230711114742210.png"></p>
-<h1 id="使用fuzz编译器编译（afl-clang-fast）并进行fuzz"><a href="#使用fuzz编译器编译（afl-clang-fast）并进行fuzz" class="headerlink" title="使用fuzz编译器编译（afl-clang-fast）并进行fuzz"></a>使用fuzz编译器编译（afl-clang-fast）并进行fuzz</h1><p>要为我们的目标程序启用检测，我们需要使用 AFL 的编译器编译源代码。</p>
-<p>首先，我们要清理所有之前编译的目标文件和可执行文件：</p>
-<p><img src="/2023/07/11/Exercise-1-Xpdf/image-20230711120622616.png"></p>
-<p>使用 <code>afl-clang-fast</code> 编译器构建 xpdf：</p>
-<p><img src="/2023/07/11/Exercise-1-Xpdf/image-20230711121046858.png"></p>
-<p><img src="/2023/07/11/Exercise-1-Xpdf/image-20230711121217125.png"></p>
-<p>配置configure时有各种环境变量需要设置，比较常用的有</p>
-<ul>
-<li>AS：汇编程序名称</li>
-<li>CC：C编译器名称</li>
-<li>CXX：C++编译器名称</li>
-<li>CPP：C预编译器名称</li>
-<li><strong>FLAGS：</strong>为不同编译器名称，表示对应编译器的参数</li>
-<li>LD：链接器名称</li>
-<li>AR：归档器archiver名称</li>
-<li>RANLIB：符号表添加器名称</li>
-</ul>
-<p>开始fuzz</p>
-<p><img src="/2023/07/11/Exercise-1-Xpdf/image-20230711121456860.png"></p>
-<p>　每个选项的简要说明</p>
-<ul>
-<li><code>-i</code> 表示输入示例的目录</li>
-<li><code>-o</code> 表示 AFL + + 将存储的变异文件的目录</li>
-<li><code>-s</code> 表示要使用的静态随机种子</li>
-<li><code>@@</code> 是占位符目标的命令行，AFL 将用每个输入文件名替换</li>
-</ul>
-<p>这里的<code>@@</code>不能少，虽然初始输入都来源于设置的-i参数，但我们需要根据程序读取输入的方式进行调整此参数</p>
-<ul>
-<li>加<code>@@</code>：被fuzz的程序从文件读取输入</li>
-<li>不加<code>@@</code>：被fuzz的程序从标准输入输出流读取输入</li>
-</ul>
-<p>发现报错，根据报错信息执行</p>
-<p><img src="/2023/07/11/Exercise-1-Xpdf/image-20230711121704024.png"></p>
-<p><img src="/2023/07/11/Exercise-1-Xpdf/image-20230711121924911.png"></p>
-<p>然后开始执行</p>
-<p>跑了一会，发现两个crash</p>
-<p><img src="/2023/07/11/Exercise-1-Xpdf/image-20230711125250931.png"></p>
-<h1 id="重现崩溃"><a href="#重现崩溃" class="headerlink" title="重现崩溃"></a>重现崩溃</h1><p>在<code>$HOME/fuzzing_xpdf/out/</code>目录下找到 crash 对应的文件。</p>
-<p><img src="/2023/07/11/Exercise-1-Xpdf/image-20230711131104849-16890568551851.png"></p>
-<p>将此文件作为输入传递给 pdftotext</p>
-<p><img src="/2023/07/11/Exercise-1-Xpdf/image-20230711134641846-16890568657432.png"></p>
-<p>报错</p>
-<p><img src="/2023/07/11/Exercise-1-Xpdf/image-20230711134712462-16890568734713.png"></p>
-<h3 id="调试"><a href="#调试" class="headerlink" title="调试"></a>调试</h3><p>使用 gdb 找出程序因该输入而崩溃的原因。</p>
-<p>首先使用调试信息重建 Xpdf 来获得符号堆栈跟踪：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">make clean</span><br><span class="line">CFLAGS=&quot;-g -O0&quot; CXXFLAGS=&quot;-g -O0&quot; ./configure --prefix=&quot;$HOME/fuzz_target/fuzzing_xpdf/install/&quot;</span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
-
-<p>运行gdb</p>
-<p><code>gdb --args $HOME/fuzzing_xpdf/install/bin/pdftotext $HOME/fuzzing_xpdf/out/default/crashes/id:000000,sig:11,src:001772+001895,time:1459810,execs:663833,op:splice,rep:8 $HOME/fuzzing_xpdf/output</code></p>
-<p>run</p>
-<p><img src="/2023/07/11/Exercise-1-Xpdf/image-20230711140431940-16890568931474.png"></p>
-<p>然后输入<code>bt</code>回溯查看栈帧</p>
-<p><img src="/2023/07/11/Exercise-1-Xpdf/image-20230711140549990-16890569003765.png"></p>
-<p>发现有许多次<code>Parser::getObj</code>的调用，它们似乎表示一个无限递归。</p>
-<p>根据报错从xpdf&#x2F;Parse.cc 94行的makeStream调用发现问题</p>
-<p><img src="/2023/07/11/Exercise-1-Xpdf/image-20230711140849588-16890569098686.png"></p>
-<h1 id="漏洞修复"><a href="#漏洞修复" class="headerlink" title="漏洞修复"></a>漏洞修复</h1><p>下载xpdf-4.02源码对比</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https://dl.xpdfreader.com/old/xpdf-4.02.tar.gz</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2023/07/11/Exercise-1-Xpdf/image-20230711141250018-16890569239437.png"></p>
-<p><img src="/2023/07/11/Exercise-1-Xpdf/image-20230711141310794-16890569326648.png"></p>
-<p>修复方式为加了变量recursion，记录循环次数，超过一定次数就结束进程。</p>
-<h1 id="总结思考"><a href="#总结思考" class="headerlink" title="总结思考"></a>总结思考</h1><p>通过本次实验学习到了AFL++的基本用法，同时也学习到了调试和编译的一些选项，但是还很不熟练，需要进一步加强。</p>
-<h2 id="参考资料："><a href="#参考资料：" class="headerlink" title="参考资料："></a>参考资料：</h2><p><a target="_blank" rel="noopener" href="https://baijiahao.baidu.com/s?id=1732606199627602999&wfr=spider&for=pc">https://baijiahao.baidu.com/s?id=1732606199627602999&amp;wfr=spider&amp;for=pc</a></p>
-<p><a target="_blank" rel="noopener" href="https://bbs.kanxue.com/thread-273810.htm#msg_header_h1_0">https://bbs.kanxue.com/thread-273810.htm#msg_header_h1_0</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2023/07/11/Exercise-1-Xpdf/">展开全文 >></a>
         </p>
       
 
