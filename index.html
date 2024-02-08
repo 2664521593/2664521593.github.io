@@ -63,7 +63,7 @@
                                                总文章数 34
                                 </nav>
                                 <nav>
-	总字数 <span class="post-count">54.3k</span>
+	总字数 <span class="post-count">55k</span>
                                 </nav>
 		<nav class="header-smart-menu">
     		
@@ -163,7 +163,7 @@
     
       <header class="article-header">
         <div align="center" class="post-count">
-    字数：2.5k字 | 预计阅读时长：8分钟
+    字数：3.2k字 | 预计阅读时长：11分钟
 </div>
         
   
@@ -235,7 +235,36 @@
 </ol>
 <h3 id="测试用例生成与模糊测试"><a href="#测试用例生成与模糊测试" class="headerlink" title="测试用例生成与模糊测试"></a>测试用例生成与模糊测试</h3><p>为了平衡测试用例的通过率和随机性，在我们的工作中，我们保存不同时期的生成器模型。不同时期的生成器模型对协议语法的学习程度不同，可以生成相似度不同的测试用例，很好地保持了测试用例的多样性和随机性。</p>
 <p>到目前为止，我们已经获得了不同程度地覆盖协议语法的生成器模型。随后，我们向目标程序发送测试用例，记录异常或错误响应，并捕获导致目标程序异常的ENIP数据包。在模糊测试中，利用PING命令来监控工业控制系统的运行状态。</p>
-<h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>未完、、、</p>
+<h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><p>在EtherNet&#x2F;IP协议上重新实现了基于WGAN的模型，与ENIPFuzz做对比。</p>
+<p><strong>数据包捕获</strong></p>
+<p>使用 Wireshark 这个网络数据包分析工具，捕获了来自真实工业控制系统的 EtherNet&#x2F;IP 协议消息。在数据采集过程中，共捕获了 49,165 个数据包，其中 32,652 个是 EtherNet&#x2F;IP 数据包，包括 8  种命令类型。然而，某些类型的数据包数量很少，为了提高模型训练的多样性和测试用例的覆盖率和深度，需要增加这些数据的比例。最后，训练数据集总共有  24,000 条数据，每个功能有 3,000 条数据。</p>
+<p><strong>TCP段中的EtherNet&#x2F;IP帧封装</strong></p>
+<p><img src="/2024/02/07/ENIPFuzz-A-SeqGAN-based-EtherNet-IP-Protocol-Fuzzing-Test-Framework/image-20240208115935423.png"></p>
+<p><strong>评价指标：</strong></p>
+<ul>
+<li>测试输入接受率（TIAR）：TIAR表示测试目标程序接受的测试用例的百分比。</li>
+</ul>
+<p>在ENIP封装报头中，由4字节的“状态”组成，存储执行命令的目标程序返回的状态代码。只有当状态为0x0000时，才表示ENIP包是合法的，命令执行成功。</p>
+<p>b表示三种训练数据集聚类策略的接受率</p>
+<p><img src="/2024/02/07/ENIPFuzz-A-SeqGAN-based-EtherNet-IP-Protocol-Fuzzing-Test-Framework/image-20240208145017781.png"></p>
+<p>不接受时的次数和原因</p>
+<p><img src="/2024/02/07/ENIPFuzz-A-SeqGAN-based-EtherNet-IP-Protocol-Fuzzing-Test-Framework/image-20240208145110330.png"></p>
+<ul>
+<li>生成数据的多样性（DGD）：DGD代表生成模型保持生成数据多样性的能力。</li>
+</ul>
+<p><img src="/2024/02/07/ENIPFuzz-A-SeqGAN-based-EtherNet-IP-Protocol-Fuzzing-Test-Framework/image-20240208145203854.png"></p>
+<p>可以看到文章的方法可以保持多样性，而WGAN并不能保证。</p>
+<ul>
+<li>漏洞检测能力（AVD）：AVD表示生成模型发现测试目标程序漏洞的能力。</li>
+</ul>
+<p>使用 SeqGAN-based 模型生成了 30,000 个测试用例，并将其发送到 Micro820 PLC 进行攻击。在攻击过程中，研究者发现 PLC 的指示灯异常闪烁，导致程序与 PLC 之间的通信被中断，即使重启 PLC 也无法恢复。经过分析，发现这是由于 PLC 程序崩溃引起的。</p>
+<p>但文中并没有用数据对AVD加以说明。</p>
+<p><img src="/2024/02/07/ENIPFuzz-A-SeqGAN-based-EtherNet-IP-Protocol-Fuzzing-Test-Framework/image-20240208150745788.png"></p>
+<p>在训练时间上，文中的方法也更快，说明其效率和可行性。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>提出了一种基于SeqGAN的EtherNet&#x2F;IP协议模糊测试框架ENIPFuzz。</p>
+<p>首先，引入序列生成对抗网络，减少协议分析的人工劳动，实现高效智能的模糊推理。</p>
+<p>然后，我们提出了三种聚类策略来构建训练集，可以充分测试的EtherNet&#x2F;IP协议的鲁棒性。</p>
+<p>文中提出的数据聚类方法十分新颖和有效，可以在其他方向加以运用。</p>
 
       
 
