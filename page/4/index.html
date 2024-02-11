@@ -60,10 +60,10 @@
 			</ul>
 		</nav>
                                 <nav>
-                                               总文章数 34
+                                               总文章数 35
                                 </nav>
                                 <nav>
-	总字数 <span class="post-count">55k</span>
+	总字数 <span class="post-count">56.2k</span>
                                 </nav>
 		<nav class="header-smart-menu">
     		
@@ -157,6 +157,127 @@
           </div>
           <div id="js-content" class="content-ll">
             
+  
+    <article id="post-Exercise-2-libexif" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        <div align="center" class="post-count">
+    字数：722字 | 预计阅读时长：3分钟
+</div>
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2023/07/12/Exercise-2-libexif/">Exercise 2 - libexif</a>
+    </h1>
+  
+
+        
+        <a href="/2023/07/12/Exercise-2-libexif/" class="archive-article-date">
+  	<time datetime="2023-07-12T04:56:18.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-07-12</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="漏洞"><a href="#漏洞" class="headerlink" title="漏洞"></a>漏洞</h1><p><a target="_blank" rel="noopener" href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-3895"><strong>CVE-2009-3895</strong></a> <strong>（heap-based buffer overflow</strong>）and <a target="_blank" rel="noopener" href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2012-2836"><strong>CVE-2012-2836</strong></a> <strong>（Out-of-bounds Read）</strong>in libexif 0.6.14</p>
+<p>CVE-2009-3895：</p>
+<p>libexif 0.6.18 中的 libexif&#x2F;exif-entry.c 中的 <code>exif_entry_fix</code> 函数中基于堆的缓冲区溢出允许远程攻击者导致拒绝服务或可能通过无效的 EXIF 图像执行任意代码</p>
+<p>CVE-2012-2836：</p>
+<p>0.6.21 之前的 EXIF 标签解析库（又名 libexif）中的 exif-data.c 中的 <code>exif_data_load_data</code> 函数允许远程攻击者造成拒绝服务（越界读取）或可能通过精心设计的方式从进程内存中获取敏感信息图像中的 EXIF 标签。简单来说也就是存在越界访问漏洞</p>
+<h1 id="实验目的"><a href="#实验目的" class="headerlink" title="实验目的"></a>实验目的</h1><ul>
+<li>使用外部应用程序Fuzz库文件</li>
+<li>使用<code>afl-clang-lto</code>，这是一种无碰撞检测，它比<code>afl-clang-fast</code>更快并提供更好的结果</li>
+</ul>
+<h1 id="实验过程"><a href="#实验过程" class="headerlink" title="实验过程"></a>实验过程</h1><p>创建目录结构</p>
+<p>cd $HOME<br>mkdir fuzzing_libexif &amp;&amp; cd fuzzing_libexif&#x2F;</p>
+<p>下载并解压libexif-0.6.14</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https://github.com/libexif/libexif/archive/refs/tags/libexif-0_6_14-release.tar.gz</span><br><span class="line">tar -xzvf libexif-0_6_14-release.tar.gz</span><br></pre></td></tr></table></figure>
+
+<p>因为libexif编译后是一个库文件，所以还需要下载使用库接口的应用程序，这里选择exif-0.6.15</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https://github.com/libexif/exif/archive/refs/tags/exif-0_6_15-release.tar.gz</span><br><span class="line">tar -xzvf exif-0_6_15-release.tar.gz</span><br></pre></td></tr></table></figure>
+
+<p>使用fuzz编译器编译目标库（afl-clang-lto）</p>
+<p>使用afl-clang-lto作为编译器来构建程序，afl-clang-lto相比于afl-clang-fast是更好的选择，因为它是一种无碰撞检测，而且比afl-clang-fast 快。</p>
+<p>编译器选取参考：</p>
+<p><img src="/2023/07/12/Exercise-2-libexif/image-20230712161820462.png"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">cd libexif-libexif-0_6_14-release/</span><br><span class="line">sudo apt-get install autopoint libtool gettext libpopt-dev</span><br><span class="line">export LLVM_CONFIG=&quot;llvm-config-12&quot;</span><br><span class="line">autoreconf -fvi     //用于适配系统环境，简化config命令</span><br><span class="line">CC=afl-clang-lto ./configure --enable-shared=no --prefix=&quot;$HOME/fuzzing_libexif/install/&quot;</span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+
+<p>编译exif-0_6_15</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">export LLVM_CONFIG=&quot;llvm-config-12&quot;</span><br><span class="line">autoreconf -fvi</span><br><span class="line">CC=afl-clang-lto ./configure --enable-shared=no --prefix=&quot;$HOME/fuzzing_libexif/install/&quot; PKG_CONFIG_PATH=$HOME/fuzzing_libexif/install/lib/pkgconfig</span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/07/12/Exercise-2-libexif/image-20230712141812484.png"></p>
+<p>下载测试用例</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https://github.com/ianare/exif-samples/archive/refs/heads/master.zip</span><br><span class="line">unzip exif-samples-master.zip</span><br></pre></td></tr></table></figure>
+
+<p>测试该应用能否正常运行</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$HOME/fuzzing_libexif/install/bin/exif $HOME/fuzzing_libexif/exif-samples-master/jpg/Canon_40D_photoshop_import.jpg</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/07/12/Exercise-2-libexif/image-20230712142147550.png"></p>
+<p>开始fuzz</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">afl-fuzz -i $HOME/fuzzing_libexif/exif-samples-master/jpg/ -o $HOME/fuzzing_libexif/out/ -s 123 -- $HOME/fuzzing_libexif/install/bin/exif @@</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/07/12/Exercise-2-libexif/image-20230712144522426.png"></p>
+<h1 id="漏洞复现及修复"><a href="#漏洞复现及修复" class="headerlink" title="漏洞复现及修复"></a>漏洞复现及修复</h1><p>使用GDB将crash文件输入到程序中：</p>
+<p>crash1：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gdb --args ./install/bin/exif ./out/default/crashes/id:000002,sig:11,src:000539,time:395594,execs:344395,op:havoc,rep:16</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/07/12/Exercise-2-libexif/image-20230712163354690.png"></p>
+<ul>
+<li>报错信息<code>Program received signal SIGSEGV, Segmentation fault.</code>，存在内存泄露</li>
+<li>报错位置__memmove_avx_unaligned_erms () at ..&#x2F;sysdeps&#x2F;x86_64&#x2F;multiarch&#x2F;memmove-vec-unaligned-erms.S:326</li>
+</ul>
+<p>crash2：</p>
+<p><img src="/2023/07/12/Exercise-2-libexif/image-20230712164141607.png"></p>
+<p><img src="/2023/07/12/Exercise-2-libexif/image-20230712165020448.png"></p>
+<p>可以看到该代码处没有对缓冲区大小做判断，存在越界访问问题。</p>
+<h2 id="漏洞修复"><a href="#漏洞修复" class="headerlink" title="漏洞修复"></a>漏洞修复</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/libexif/libexif/commit/8ce72b7f81e61ef69b7ad5bdfeff1516c90fa361">https://github.com/libexif/libexif/commit/8ce72b7f81e61ef69b7ad5bdfeff1516c90fa361</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/libexif/libexif/commit/00986f6fa979fe810b46e376a462c581f9746e06">https://github.com/libexif/libexif/commit/00986f6fa979fe810b46e376a462c581f9746e06</a></li>
+</ul>
+<h1 id="总结与思考"><a href="#总结与思考" class="headerlink" title="总结与思考"></a>总结与思考</h1><p>对AFL++有了进一步的学习，要复现一个漏洞，需要先了解程序的构建过程、使用流程，对于漏洞的分析和复现等还需要进一步加强。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2023/07/12/Exercise-2-libexif/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
   
     <article id="post-Exercise-1-Xpdf" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
