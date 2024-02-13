@@ -60,10 +60,10 @@
 			</ul>
 		</nav>
                                 <nav>
-                                               总文章数 35
+                                               总文章数 36
                                 </nav>
                                 <nav>
-	总字数 <span class="post-count">56.2k</span>
+	总字数 <span class="post-count">56.6k</span>
                                 </nav>
 		<nav class="header-smart-menu">
     		
@@ -157,6 +157,127 @@
           </div>
           <div id="js-content" class="content-ll">
             
+  
+    <article id="post-Exercise-9-7-Zip" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        <div align="center" class="post-count">
+    字数：1k字 | 预计阅读时长：4分钟
+</div>
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2023/08/02/Exercise-9-7-Zip/">Exercise-9-7-Zip</a>
+    </h1>
+  
+
+        
+        <a href="/2023/08/02/Exercise-9-7-Zip/" class="archive-article-date">
+  	<time datetime="2023-08-02T13:11:10.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-08-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>benci本次实验的目的是发现在7-Zip 15.05中的 <a target="_blank" rel="noopener" href="https://nvd.nist.gov/vuln/detail/CVE-2016-2334"><strong>CVE-2016-2334</strong></a> .在 7-zip 中，它发生在操作的 HFS+ 镜像文件中。</p>
+<p>首先，需要安装  <strong>Visual Studio编译器</strong>  </p>
+<p>链接 [在这里 ](<a target="_blank" rel="noopener" href="https://github.com/CKExploits/Fuzzing101/blob/main/Exercise">https://github.com/CKExploits/Fuzzing101/blob/main/Exercise</a> 9&#x2F;Resources&#x2F;vs_community.exe). </p>
+<p>安装时需要选择C++的桌面开发。</p>
+<p><img src="/2023/08/02/Exercise-9-7-Zip/image-20230802213121981.png"></p>
+<p>还需要安装  DynamoRIO8.0.0，链接在  <a target="_blank" rel="noopener" href="https://github.com/DynamoRIO/dynamorio/releases/download/release_8.0.0-1/DynamoRIO-Windows-8.0.0-1.zip">这里 </a>. </p>
+<p>DynamoRIO是一个开源的动态二进制工具套件，用于进行程序插桩、分析和修改。它提供了一个灵活的框架，用于在应用程序运行时对其进行操作。</p>
+<p>DynamoRIO可以用于各种用途，包括调试、代码覆盖率分析、指令跟踪、内存错误检测、性能分析等。它通过在应用程序的指令级别插入额外的代码来实现这些功能，从而能够监视和修改程序的行为。</p>
+<h2 id="下载并建立WinAFL"><a href="#下载并建立WinAFL" class="headerlink" title="下载并建立WinAFL"></a>下载并建立WinAFL</h2><p>下载WinAFL </p>
+<p><a target="_blank" rel="noopener" href="https://github.com/googleprojectzero/winafl">https://github.com/googleprojectzero/winafl </a></p>
+<p>解压后使用VS执行</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mkdir build32</span><br><span class="line">cd build32</span><br><span class="line">cmake -G&quot;Visual Studio 16 2019&quot; -A Win32 .. -DDynamoRIO_DIR=C:\DynamoRIO-Windows-8.0.0-1\cmake</span><br><span class="line">cmake --build . --config Release</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/08/02/Exercise-9-7-Zip/image-20230802215644886.png"></p>
+<p>创建完毕</p>
+<p><img src="/2023/08/02/Exercise-9-7-Zip/image-20230802220413717.png"></p>
+<h2 id="下载7-Zip15-05"><a href="#下载7-Zip15-05" class="headerlink" title="下载7-Zip15.05"></a>下载7-Zip15.05</h2><p>点击[here](<a target="_blank" rel="noopener" href="https://github.com/CKExploits/Fuzzing101/blob/main/Exercise">https://github.com/CKExploits/Fuzzing101/blob/main/Exercise</a> 9&#x2F;Resources&#x2F;7z1505.exe).下载</p>
+<p>下载后安装</p>
+<h2 id="种子语料库创建"><a href="#种子语料库创建" class="headerlink" title="种子语料库创建"></a>种子语料库创建</h2><p>官方提供了HFS示例，点击[here](<a target="_blank" rel="noopener" href="https://github.com/CKExploits/Fuzzing101/blob/main/Exercise">https://github.com/CKExploits/Fuzzing101/blob/main/Exercise</a> 9&#x2F;Resources&#x2F;example.img).下载，也可以自己创建一些 HFS+ 镜像文件来生成种子语料库。</p>
+<p>可以使用**Paragon HFS+**软件。</p>
+<h2 id="开始Fuzz"><a href="#开始Fuzz" class="headerlink" title="开始Fuzz"></a>开始Fuzz</h2><p>一些选项的含义：</p>
+<ul>
+<li><em>-coverage_module</em> : 用于记录覆盖率的模块。可以使用多个模块标志，表示您可以指定多个模块来记录代码覆盖情况。</li>
+<li><em>-target_module</em> : 包含要进行模糊测试的目标函数的模块。这个选项用于指定包含目标函数的模块，模糊测试将会针对该模块进行。</li>
+<li>-target_offset : 从模块开始处到要进行模糊测试的方法的偏移量。通过这个选项，您可以指定从目标模块的起始位置开始的一个特定函数的偏移量。这个偏移量将用于确定模糊器在模块中开始执行模糊测试的位置。</li>
+</ul>
+<p>我们要像exercise8一样寻找一个函数，使fuzz从该函数处循环执行以加快速度</p>
+<p>使用IDA查看</p>
+<p><img src="/2023/08/02/Exercise-9-7-Zip/image-20230802223603804.png"></p>
+<p>可以看出基址是0x400000</p>
+<p><img src="/2023/08/02/Exercise-9-7-Zip/image-20230802223750082.png"></p>
+<p>那么偏移就是0x42F3B3-0x400000&#x3D;0x02F3B3</p>
+<p>使用 DynamoRIO 来验证目标函数是否正常运行</p>
+<p>该命令使用 DynamoRIO 和 WinAFL 对 7z.exe 进行模糊测试，从指定的偏移量开始进行 10 次迭代，并对 <code>C:\Users\IEUser\Desktop\input\test.img</code> 文件中的内容进行列出和提取操作。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd bin</span><br><span class="line">cd release</span><br><span class="line">C:\DynamoRIO-Windows-8.0.0-1\bin32\drrun.exe -c winafl.dll -debug -target_module 7z.exe -target_offset 0x02F3B3 -fuzz_iterations 10 -nargs 2 -- &quot;C:\Program Files (x86)\7-Zip\7z.exe&quot; l C:\example.img</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/08/02/Exercise-9-7-Zip/image-20230802224952705.png"></p>
+<ul>
+<li><code>C:\DynamoRIO-Windows-8.0.0-1\bin32\drrun.exe</code> 是 DynamoRIO 的可执行文件路径，用于启动 DynamoRIO。</li>
+<li><code>-c winafl.dll</code> 表示要加载的插件（winafl.dll），这是一个与 DynamoRIO 集成的用于模糊测试的工具。</li>
+<li><code>-fuzz_iterations 10</code> 指定了模糊测试的迭代次数，这里是 10 次。即进行 10 次模糊测试迭代。</li>
+<li><code>&quot;C:\Program Files (x86)\7-Zip\7z.exe&quot; l C:\example.img</code> 是指定了运行 <code>7z.exe</code> 的参数。在这个例子中，使用 <code>l</code> 命令列出 <code>C:\example.img</code> 文件的内容。</li>
+</ul>
+<p>显示执行了10次，验证通过，下面开始fuzz。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">afl-fuzz.exe -i C:\Users\xiaofang\Desktop\afl_in -o C:\Users\xiaofang\Desktop\afl_out -t 2000 -D C:\DynamoRIO-Windows-8.0.0-1\lib32 -- -coverage_module 7z.exe -coverage_module 7z.dll -target_module 7z.exe -target_offset 0x02F3B3 -nargs 2 -- &quot;C:\Program Files (x86)\7-Zip\7z.exe&quot; e -y @@</span><br></pre></td></tr></table></figure>
+
+<p>​    <img src="/2023/08/02/Exercise-9-7-Zip/image-20230803125713171.png"></p>
+<p>出现报错，暂未解决。</p>
+<p>又在示例中的win10 1809版本进行了测试，还是报一样的错误。</p>
+<p>纠错：</p>
+<p>上方命令打错了，应该是bin32，不知道为什么打成了lib32，还是不够细心。(ノAヽ)</p>
+<p>命令改为：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">afl-fuzz.exe -i C:\Users\xiaofang\Desktop\afl_in -o C:\Users\xiaofang\Desktop\afl_out -t 2000 -D C:\DynamoRIO-Windows-8.0.0-1\bin32 -- -coverage_module 7z.exe -coverage_module 7z.dll -target_module 7z.exe -target_offset 0x02F3B3 -nargs 2 -- &quot;C:\Program Files (x86)\7-Zip\7z.exe&quot; e -y @@</span><br></pre></td></tr></table></figure>
+
+<p>成功运行：</p>
+<p><img src="/2023/08/02/Exercise-9-7-Zip/image-20230810005614814.png"></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2023/08/02/Exercise-9-7-Zip/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
   
     <article id="post-论文写作第二篇10 top writing tips and the psychology behind them" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
@@ -1210,99 +1331,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2023/07/15/Exercise-4-libtiff%EF%BC%88coverage%E4%BC%98%E5%8C%96%EF%BC%89/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Exercise-3-tcpdump-使用ASAN" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <div align="center" class="post-count">
-    字数：629字 | 预计阅读时长：2分钟
-</div>
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2023/07/13/Exercise-3-tcpdump-%E4%BD%BF%E7%94%A8ASAN/">Exercise 3 - tcpdump(使用ASAN)</a>
-    </h1>
-  
-
-        
-        <a href="/2023/07/13/Exercise-3-tcpdump-%E4%BD%BF%E7%94%A8ASAN/" class="archive-article-date">
-  	<time datetime="2023-07-13T05:31:33.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-07-13</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a target="_blank" rel="noopener" href="https://www.cvedetails.com/cve/CVE-2017-13028/"><strong>CVE-2017-13028</strong></a> in TCPdump 4.9.2（Out-of-bounds Read）</p>
-<p>libcap是tcpdump的依赖库，可以不install，但需要保证目录位置与tcpdump根目录相同，且名称可识别</p>
-<h1 id="使用ASAN编译"><a href="#使用ASAN编译" class="headerlink" title="使用ASAN编译"></a>使用ASAN编译</h1><p>ASAN（AddressSanitizer）是一种用于发现内存错误和检测程序中的内存安全问题的工具。它是由Google开发的，作为LLVM&#x2F;Clang编译器的一个特性。</p>
-<p>ASAN在编译时会注入额外的代码，用于在运行时检测常见的内存错误，例如缓冲区溢出、使用已释放的内存、内存对齐问题等。它通过监视程序运行时的内存访问情况，包括读取和写入操作，以及动态分配和释放内存的过程，来检测潜在的内存错误。</p>
-<p>分别下载安装libcap-1.8.0和tcpdump-4.9.2</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">wget https://github.com/the-tcpdump-group/libpcap/archive/refs/tags/libpcap-1.8.0.tar.gz</span><br><span class="line">tar -xzvf libpcap-1.8.0.tar.gz</span><br><span class="line">cd cd libpcap-libpcap-1.8.0</span><br><span class="line">export LLVM_CONFIG=&quot;llvm-config-12&quot;</span><br><span class="line">CC=afl-clang-lto ./configure --enable-shared=no --prefix=&quot;$HOME/fuzzing_tcpdump/install/&quot;</span><br><span class="line">AFL_USE_ASAN=1 make</span><br><span class="line">AFL_USE_ASAN=1 make install</span><br></pre></td></tr></table></figure>
-
-
-
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">AFL_USE_ASAN=1 CC=afl-clang-lto ./configure --prefix=&quot;$HOME/fuzzing_tcpdump/install/&quot;   //配置tcpdump的configure时也要加AFL_USE_ASAN=1，因为它的依赖库也加了ASAN</span><br><span class="line">AFL_USE_ASAN=1 make</span><br><span class="line">AFL_USE_ASAN=1 make install</span><br></pre></td></tr></table></figure>
-
-<p>fuzz</p>
-<p>在tests文件中有许多样本</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">afl-fuzz -m none -i ./tcpdump-4.9.2/tests/ -o ./out/ -s 123 -- ./install/sbin/tcpdump -vvvvXX -ee -nn -r @@    //使用-m none不限制内存使用</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2023/07/13/Exercise-3-tcpdump-%E4%BD%BF%E7%94%A8ASAN/image-20230713170050257.png"></p>
-<h1 id="动态调试"><a href="#动态调试" class="headerlink" title="动态调试"></a>动态调试</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./install/sbin/tcpdump -vvvvXX -ee -nn -r ./out/default/crashes/id:000000,sig:06,src:002508,time:9116318,execs:3209104,op:havoc,rep:16</span><br></pre></td></tr></table></figure>
-
-<p><code>-vvvv</code>: 设置详细输出模式。使用多个<code>v</code>可以增加输出的详细程度。更多的<code>v</code>表示更详细的输出信息。</p>
-<p><code>-XX</code>: 显示以十六进制形式输出的数据包内容。其中，它会展示每个数据包的十六进制和ASCII码值，并且将源和目的MAC地址、IP地址和端口解析为可读的格式。</p>
-<p><code>-ee</code>: 打印以太网帧头部的扩展信息。包括以太网帧的状态和各种以太网协议字段的解析。</p>
-<p><code>-nn</code>:禁用主机名解析。将IP地址和端口号显示为数字格式，而不是尝试解析为主机名或服务名称。</p>
-<p><code>-r &lt;file&gt;</code>: 从指定的文件中读取数据包进行分析</p>
-<p><img src="/2023/07/13/Exercise-3-tcpdump-%E4%BD%BF%E7%94%A8ASAN/image-20230713174150850.png"></p>
-<p>“ERROR: AddressSanitizer: heap-buffer-overflow”：发生了堆缓冲区溢出错误。</p>
-<p><img src="/2023/07/13/Exercise-3-tcpdump-%E4%BD%BF%E7%94%A8ASAN/image-20230713175303018.png"></p>
-<h2 id="漏洞修复"><a href="#漏洞修复" class="headerlink" title="漏洞修复"></a>漏洞修复</h2><p><a target="_blank" rel="noopener" href="https://github.com/the-tcpdump-group/tcpdump/commit/85078eeaf4bf8fcdc14a4e79b516f92b6ab520fc#diff-05f854a9033643de07f0d0059bc5b98f3b314eeb1e2499ea1057e925e6501ae8L381">https://github.com/the-tcpdump-group/tcpdump/commit/85078eeaf4bf8fcdc14a4e79b516f92b6ab520fc#diff-05f854a9033643de07f0d0059bc5b98f3b314eeb1e2499ea1057e925e6501ae8L381</a></p>
-<h1 id="思考总结"><a href="#思考总结" class="headerlink" title="思考总结"></a>思考总结</h1><p>进一步加深了AFL的学习，并了解了ASAN这种编译方式。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2023/07/13/Exercise-3-tcpdump-%E4%BD%BF%E7%94%A8ASAN/">展开全文 >></a>
         </p>
       
 
