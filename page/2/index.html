@@ -60,10 +60,10 @@
 			</ul>
 		</nav>
                                 <nav>
-                                               总文章数 36
+                                               总文章数 37
                                 </nav>
                                 <nav>
-	总字数 <span class="post-count">56.6k</span>
+	总字数 <span class="post-count">57.3k</span>
                                 </nav>
 		<nav class="header-smart-menu">
     		
@@ -157,6 +157,114 @@
           </div>
           <div id="js-content" class="content-ll">
             
+  
+    <article id="post-1-27" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        <div align="center" class="post-count">
+    字数：1.6k字 | 预计阅读时长：5分钟
+</div>
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2024/01/27/1-27/">1.27</a>
+    </h1>
+  
+
+        
+        <a href="/2024/01/27/1-27/" class="archive-article-date">
+  	<time datetime="2024-01-26T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2024-01-27</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="CGFuzzer-A-Fuzzing-Approach-Based-on-Coverage-Guided-Generative-Adversarial-Networks-for-Industrial-IoT-Protocols"><a href="#CGFuzzer-A-Fuzzing-Approach-Based-on-Coverage-Guided-Generative-Adversarial-Networks-for-Industrial-IoT-Protocols" class="headerlink" title="CGFuzzer: A Fuzzing Approach Based on Coverage-Guided Generative Adversarial Networks for Industrial IoT Protocols"></a>CGFuzzer: A Fuzzing Approach Based on Coverage-Guided Generative Adversarial Networks for Industrial IoT Protocols</h1><p><strong>Published in:</strong> <a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=6488907">IEEE Internet of Things Journal</a> ( Volume: 9, <a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/xpl/tocresult.jsp?isnumber=9926222&punumber=6488907">Issue: 21</a>, 01 November 2022) </p>
+<h2 id="1、简介"><a href="#1、简介" class="headerlink" title="1、简介"></a><strong>1、简介</strong></h2><p>随着工业物联网（IIoT）的广泛应用，工业控制系统（ICS）大大提高了工业生产力、效率和产品质量。然而，IIoT协议作为ICS不同部分的桥梁，由于其脆弱性而容易受到攻击。为了减少网络攻击威胁，我们需要通过使用高效的漏洞挖掘方法（例如模糊测试）来发现IIoT协议的漏洞。模糊测试通常用于挖掘 IIoT  协议的漏洞。然而，传统的IIoT协议模糊测试方法具有通过率低、代码覆盖率低等特点。为了解决这些问题，我们提出了一种生成对抗网络（GAN），这里称为覆盖引导GAN（CovGAN），旨在通过学习IIoT协议规范来生成具有高通过率和代码覆盖率的测试用例。</p>
+<p><strong>本文的主要聚焦于DNP3协议，一种用于远程监控和控制系统的通信协议，特别适用于电力系统、水务系统和其他基础设施领域。</strong></p>
+<p>DNP3模型如下</p>
+<p><img src="/2024/01/27/1-27/image-20240128164217876.png"></p>
+<p><strong>主要贡献如下</strong></p>
+<p>1)提出了一种用于DNP3的覆盖引导生成对抗网络（CovGAN），它将应用于树的置信上限（UCT）与序列生成对抗网络[24]（SeqGAN）相结合，以提高通过率和代码覆盖率。</p>
+<p>2)我们提出了一个模糊化框架CovGAN模糊（CGFuzzer）的基础上CovGAN，以提高DNP3的模糊自动化。为了评估其有效性，我们开发了一些性能指标，如触发异常的数量，代码覆盖率，测试用例的通过率。</p>
+<p>3)构建DNP3模拟器以比较CGFuzzer与Peach，GANFuzz和SeqFuzzer的性能。仿真结果表明，CGFuzzer具有较高的触发异常数，代码覆盖率和测试用例通过率比其他方法。</p>
+<h2 id="2、GANFUZZ相关的工作"><a href="#2、GANFUZZ相关的工作" class="headerlink" title="2、GANFUZZ相关的工作"></a><strong>2、GANFUZZ相关的工作</strong></h2><p>GAN结构可以应用任何网络作为生成器，而无需特定的函数形式。在该框架中，我们采用长短期记忆神经网络作为生成器来生成有效的协议，从而提高了模糊测试的通过率。</p>
+<p>Wasserstein GAN（WGAN）用于生成工业控制协议的模糊数据，它可以学习真实世界数据帧的结构和分布，并在不知道详细协议规范的情况下生成相似的数据帧。</p>
+<p>CAGFuzz，用于模糊基于图像的深度学习系统。</p>
+<p>DLFuzz将模糊测试引入了对深度学习系统的对抗性测试。</p>
+<p>SeqGAN：将GAN网络中的生成器换成LSTM，来更好的生成序列数据。</p>
+<p>同时使用CNN作为鉴别器，CNN在文本特征提取方面具有优势。</p>
+<p>参考：<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/aa35177ca72c">https://www.jianshu.com/p/aa35177ca72c</a></p>
+<h2 id="3、CovGAN"><a href="#3、CovGAN" class="headerlink" title="3、CovGAN"></a>3、CovGAN</h2><p><img src="/2024/01/27/1-27/image-20240128172502636.png"></p>
+<p><strong>首先在生成器上：</strong></p>
+<p>采用LSTM作为生成器，提高了序列数据处理的效率。</p>
+<p><img src="/2024/01/27/1-27/image-20240128174523558.png"><br><strong>在判别器上：</strong></p>
+<p>CovGAN也将CNN用作搜索引擎。为了使CNN训练向量数据，将具有令牌序列的嵌入层从n × 1向量化到n × n，这与one-hot编码相比降低了维度。我们可以把这个二维序列看作一个矩阵。嵌入层如图所示，相比于one-hot维度等于词汇表以及稀疏性有所改善。</p>
+<p><img src="/2024/01/27/1-27/image-20240128174637181.png"></p>
+<p><strong>生成器参数优化</strong>：</p>
+<p>由于数据的离散性，梯度计算困难，需要使用强化学习中的策略梯度（policy gradient）方法，即根据当前序列的奖励来直接优化LSTM生成器的参数。生成一个单词可以被表示为一个动作，由于网络有固定的输出长度，因此奖励必须在生成整个序列后才能计算。为了解决这个问题，使用UCT算法填充不完整的序列，并通过选择UCB值选择一个动作。对于代码模糊任务，奖励的计算需要加入目标程序的覆盖率。</p>
+<p><strong>也就是说通过UCT算法将每次生成的单词但是不完整的序列填充完整后测试然后根据覆盖率优化参数</strong></p>
+<p>CovGAN（Coverage-guided GAN）中使用的UCT算法的具体步骤：</p>
+<ol>
+<li>首先，通过选择具有最大UCB（Upper Confidence Bound）值的下一个令牌来生成序列，直到序列的长度达到T。UCB值是根据历史模拟结果和探索因子计算得出的，用于衡量选择某个令牌的优势。</li>
+<li>重复上述步骤N次，可以扩展出N个不同的生成序列。</li>
+<li>将这N个生成的序列输入到鉴别器（discriminator）和DNP3模拟器中进行评估。鉴别器用于判断生成的序列的真实性和质量，DNP3模拟器用于评估生成的序列在代码库中的代码覆盖率。</li>
+<li>根据评估结果，更新各个令牌的UCB值。奖励信号可以通过鉴别器的输出和DNP3模拟器的代码覆盖率来计算得出，用于指导选择更好的令牌。</li>
+</ol>
+<p><strong>判别器参数优化：</strong></p>
+<p><img src="/2024/01/27/1-27/image-20240128183405704.png"></p>
+<p>##4、CovFuzz框架</p>
+<p><img src="/2024/01/27/1-27/image-20240128204934268.png"></p>
+<p>数据采集：采集DNP3的协议数据。将在预设IP和端口捕获的流量输出到文件中</p>
+<p>测试用例生成：采用模块来生成、过滤和变异DNP3数据。</p>
+<p><img src="/2024/01/27/1-27/image-20240128204638068.png"></p>
+<p>调试：使用调试工具在测试过程中检测异常。</p>
+<p>监控（监控系统状态）：它包括监控数据包方法，进程监控和嗅探。监控包方法是每隔一段时间向基于DNP3的ICS发送正常数据，以检查它们是否正常。进程监视通过获取有关CPU和内存的信息来确定ICS的状态。</p>
+<p>漏洞验证：验证模糊过程中的异常数据是否为漏洞。</p>
+<h2 id="5、总结"><a href="#5、总结" class="headerlink" title="5、总结"></a>5、总结</h2><p>本文创新点在于将GAN的生成器模块改为LSTM，以方便的生成序列数据，为了解决离散数据梯度无法计算的问题，采用强化学习中的梯度策略，每生成一个数据即视为一个动作，通过UCT算法填充后，以覆盖率为引导修改参数。同时将CNN作为判别器模块，可以更好地提取局部特征。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2024/01/27/1-27/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
   
     <article id="post-1-26" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
@@ -1247,87 +1355,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2023/08/06/%E6%8A%A5%E5%91%8A%E7%AC%AC%E4%BA%8C%E7%AF%87How-to-Do-Great-Research/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-系统论文与写作第二篇Writing a good introduction" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <div align="center" class="post-count">
-    字数：861字 | 预计阅读时长：2分钟
-</div>
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2023/08/05/%E7%B3%BB%E7%BB%9F%E8%AE%BA%E6%96%87%E4%B8%8E%E5%86%99%E4%BD%9C%E7%AC%AC%E4%BA%8C%E7%AF%87Writing%20a%20good%20introduction/">系统论文与写作第二篇</a>
-    </h1>
-  
-
-        
-        <a href="/2023/08/05/%E7%B3%BB%E7%BB%9F%E8%AE%BA%E6%96%87%E4%B8%8E%E5%86%99%E4%BD%9C%E7%AC%AC%E4%BA%8C%E7%AF%87Writing%20a%20good%20introduction/" class="archive-article-date">
-  	<time datetime="2023-08-05T05:42:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-08-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Writing-a-good-introduction"><a href="#Writing-a-good-introduction" class="headerlink" title="Writing a good introduction"></a>Writing a good introduction</h1><p>(contributed May 24, 2004, by Jim Kurose, UMass; used by permission.)</p>
-<p>该文章给了一些关于论文引言的意见。</p>
-<p>一篇好的论文引言通常遵循一定的规范。如果按照一组简单的规则进行写作，你可以写出一个非常好的引言。下面是一个可以变动的大纲。例如，你可以使用两个段落而不是一个段落，或者你可以更加强调引言的某个方面。但无论如何，在引言中都需要涵盖以下所有要点，并且在大多数论文中，引言不需要涉及任何其他内容。</p>
-<h2 id="段落一："><a href="#段落一：" class="headerlink" title="段落一："></a>段落一：</h2><p>动机。在高层次上，介绍你所研究的问题领域和为什么它很重要。这一段需要给出问题的背景和重要性，以便让读者了解问题在整个学术界的相关性。</p>
-<h2 id="段落二："><a href="#段落二：" class="headerlink" title="段落二："></a>段落二：</h2><p>具体问题。这一段缩小了论文的研究范围。在第一段中，你已经建立了一般的背景和重要性。在这里，你要进一步说明具体的背景和问题。</p>
-<h2 id="段落三："><a href="#段落三：" class="headerlink" title="段落三："></a>段落三：</h2><p>“在本文中，我们展示…”。这是引言中最关键的段落-你要在一段话中总结出你的论文在第1段和第2段建立的背景下的主要贡献。你采取了什么方法？为什么具体的结果很重要？这一段必须非常好。如果你不能在引言中用一段话概括你的工作，那就有麻烦了。作为一名读者或审稿人，这是我总是会仔细阅读的段落。</p>
-<p>你应该考虑如何构建这个一两段对论文内容进行总结的段落。如果有两个或三个主要结果，你可以考虑用项目符号或文字列举出它们（例如，“首先，…”）。如果结果分为理论和应用两个大类，你可以在这里明确区分。例如，“我们的结果既具有理论性质，也具有应用性质。（接下来的两个句子，一个关于理论，一个关于应用）”。</p>
-<h2 id="段落四："><a href="#段落四：" class="headerlink" title="段落四："></a>段落四：</h2><p>你的工作与他人工作有哪些不同之处？保持在高层次上，可以提到后面的具体部分中会给出详细的细节和差异。但是让读者在高层次上了解，这项工作与该领域中其他工作相比有什么新颖之处是很重要的。</p>
-<h2 id="段落五："><a href="#段落五：" class="headerlink" title="段落五："></a>段落五：</h2><p>“本文的剩余部分结构如下…”。给读者对论文的剩余部分做一个概览。避免重复的措辞，例如，“第2节中，第3节中，…第4节中…”等等。</p>
-<h2 id="其他一些普遍性的建议："><a href="#其他一些普遍性的建议：" class="headerlink" title="其他一些普遍性的建议："></a>其他一些普遍性的建议：</h2><ul>
-<li>不要花太多时间在引言中告诉读者论文中你没有做什么。明确你所做的事情，不要在这里沉迷于你没有做的事情。</li>
-<li>每个段落是否有一个主题句，为整个段落设定基调？段落中的句子和主题是否相关？</li>
-<li>段落中的时态是否一致？</li>
-</ul>
-<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>该文章介绍了论文引言的结构和注意点，首先要结构明确、条理清晰，明确问题的背景和重要性，详细具体阐述我们做了什么，并且不要有过于冗余的话。</p>
-<h3 id="参考文章："><a href="#参考文章：" class="headerlink" title="参考文章："></a>参考文章：</h3><p><a target="_blank" rel="noopener" href="http://www.cs.columbia.edu/~hgs/etc/intro-style.html">http://www.cs.columbia.edu/~hgs/etc/intro-style.html</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2023/08/05/%E7%B3%BB%E7%BB%9F%E8%AE%BA%E6%96%87%E4%B8%8E%E5%86%99%E4%BD%9C%E7%AC%AC%E4%BA%8C%E7%AF%87Writing%20a%20good%20introduction/">展开全文 >></a>
         </p>
       
 
