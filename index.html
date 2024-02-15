@@ -60,10 +60,10 @@
 			</ul>
 		</nav>
                                 <nav>
-                                               总文章数 37
+                                               总文章数 38
                                 </nav>
                                 <nav>
-	总字数 <span class="post-count">57.3k</span>
+	总字数 <span class="post-count">60.9k</span>
                                 </nav>
 		<nav class="header-smart-menu">
     		
@@ -158,6 +158,148 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-FIRMCORN-Vulnerability-Oriented-Fuzzing-of-IoT-Firmware-via-Optimized-Virtual-Execution" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        <div align="center" class="post-count">
+    字数：3.7k字 | 预计阅读时长：12分钟
+</div>
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2024/02/15/FIRMCORN-Vulnerability-Oriented-Fuzzing-of-IoT-Firmware-via-Optimized-Virtual-Execution/">FIRMCORN: Vulnerability-Oriented Fuzzing of IoT Firmware via Optimized Virtual Execution~</a>
+    </h1>
+  
+
+        
+        <a href="/2024/02/15/FIRMCORN-Vulnerability-Oriented-Fuzzing-of-IoT-Firmware-via-Optimized-Virtual-Execution/" class="archive-article-date">
+  	<time datetime="2024-02-14T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2024-02-15</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="FIRMCORN-Vulnerability-Oriented-Fuzzing-of-IoT-Firmware-via-Optimized-Virtual-Execution"><a href="#FIRMCORN-Vulnerability-Oriented-Fuzzing-of-IoT-Firmware-via-Optimized-Virtual-Execution" class="headerlink" title="FIRMCORN: Vulnerability-Oriented Fuzzing of IoT Firmware via Optimized Virtual Execution"></a>FIRMCORN: Vulnerability-Oriented Fuzzing of IoT Firmware via Optimized Virtual Execution</h1><p><strong>Published in:</strong> <a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=6287639">IEEE Access</a> ( Volume: 8) </p>
+<p><strong>Page(s):</strong>  29826 - 29841</p>
+<p><strong>Date of Publication:</strong> 10 February 2020 </p>
+<p><strong>Electronic ISSN:</strong> 2169-3536 </p>
+<p><strong>DOI:</strong> <a target="_blank" rel="noopener" href="https://doi.org/10.1109/ACCESS.2020.2973043">10.1109&#x2F;ACCESS.2020.2973043</a></p>
+<p>Publisher: IEEE</p>
+<h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>本文提出了FIRMCORN，这是第一个面向物联网固件的模糊器。FIRMCORN基于优化虚拟执行的新技术，重点解决物联网固件模糊化的三个典型问题：（1）模糊化所需的高吞吐量，（2）与真实的设备相比仿真的不准确性，（3）由于缺乏硬件而导致的仿真不稳定性。</p>
+<p>优化了虚拟执行的初始环境和执行过程，以实现更快，更准确，更稳定的模糊测试。为了提高FIRMCorn漏洞挖掘的效率，根据物联网固件的特点，设计了一种可扩展代码搜索算法来获取模糊检测的入口点，并将这种面向可扩展性的模糊检测应用于物联网设备固件。</p>
+<h2 id="绪论"><a href="#绪论" class="headerlink" title="绪论"></a>绪论</h2><p><strong>存在的问题：</strong></p>
+<p>近年来，各种物联网（IoT）设备开始大规模接入互联网，深刻改变了人们的生活方式，但制造商尚未优先考虑此类设备的安全问题。比如：</p>
+<p>1、由于物联网设备的资源有限，桌面设备中常用的保护机制，如地址空间布局随机化（ASLR）和堆栈金丝雀 ，并未广泛用于物联网设备。</p>
+<p>2、物联网固件架构多样且依赖于设备，因此固件分析和漏洞挖掘难以研究。</p>
+<p>3、模糊测试是一种发现安全漏洞的有效测试方法，FIRM-AFL 基于 FIRMADYNE，后者通过灰盒模糊测试将 AFL  应用于物联网固件漏洞挖掘。但是，此工具只能测试 FIRMADYNE 可以模拟的固件。</p>
+<p>4、对IoT固件的准确测试需要基于真实设备，在进行大规模并行测试时需要大量的实际硬件。基于仿真的方案消耗大量计算资源，并且使用的仿真环境与实际设备操作环境不同。此外，由于设备固件的硬件依赖性，当遇到缺乏硬件时，仿真有时会崩溃。</p>
+<p><strong>解决方案：</strong></p>
+<p>通过优化的虚拟执行，对物联网固件进行面向漏洞的模糊测试。</p>
+<p>旨在解决固件模糊测试中的以下一般问题：</p>
+<p>（1）模糊测试的高吞吐量要求</p>
+<p>（2）与真实设备相比，仿真不准确</p>
+<p>（3）由于缺乏硬件导致的仿真崩溃导致的不稳定性。</p>
+<p>提出了优化的虚拟执行，主要思想是优化虚拟执行的初始环境和执行过程。通过结合实际设备的真实上下文来提高仿真精度，通过使用启发式算法跳过不必要的模糊测试功能来提高系统吞吐量，并通过挂钩硬件依赖函数来模糊测试稳定性。设计了一种漏洞代码搜索算法来确定固件的漏洞，以进行面向漏洞的模糊测试。</p>
+<p>本文中，我们将介绍 FIRMCORN，这是一个基于优化虚拟执行的面向漏洞的物联网固件模糊测试框架。FIRMCORN可以用于在真实设备上转储运行时上下文信息，对固件代码进行自动分析以获取易损部分，并在CPU仿真器中高效稳定地对各种架构的物联网固件进行模糊测试。</p>
+<p><strong>主要贡献：</strong></p>
+<ul>
+<li>提出了一种称为优化虚拟执行的新技术，并将其作为固件模糊测试的基础。</li>
+<li>提出并实现了一种漏洞代码搜索算法，该算法对物联网固件进行静态分析以获得易受攻击的部件。</li>
+<li>设计并实现了基于优化虚拟执行的物联网固件模糊测试框架FIRMCORN，并首次将面向漏洞的模糊测试应用于物联网固件。</li>
+<li>与传统的虚拟执行技术相比，FIRMCORN可以显著提高速度和稳定性</li>
+</ul>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p><strong>物联网固件</strong>：</p>
+<p>固件是指存在于EEPROM或FLASH芯片中的二进制程序。固件有两种类型：低级固件和高级固件。低级固件主要存在于EEPROM中，难以修改或更新;高级固件通常驻留在闪存中。固件工作在底层硬件和上层软件之间，通过有效管理硬件设备，为软件提供简单的调用接口。</p>
+<p>固件主要包括固件头、引导加载程序、系统内核和文件系统，由于物联网设备的计算资源和存储空间有限，固件往往以压缩形式在设备中烧录。为了执行固件程序分析以了解设备行为并挖掘其潜在漏洞，需要使用静态分析和动态调试来设置调试环境。</p>
+<p><strong>模糊测试：</strong></p>
+<p>基于覆盖范围的模糊测试已经挖掘了许多现实世界的漏洞，它在实践中被认为是有效的。然而，对模糊测试的深入研究表明，简单地提高代码覆盖率的模糊测试策略是低效的，因为易受攻击的代码仅占整个代码 [12] 的一小部分。更有效的策略应该确定目标程序的脆弱部分，然后执行有针对性的测试。</p>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p><strong>目前可用的物联网固件分析方法：</strong></p>
+<p>1、硬件接口调试：</p>
+<p>直接通过物联网设备的硬件接口进行调试，这种方法准确可靠。但是，它依赖于物理设备，只能调试已经存在并保留在调试接口中的设备。此外，分析过程很大程度上依赖于人工执行，不利于大规模自动化分析。</p>
+<p>2、完整的静态分析：</p>
+<p>最直接、最简单的方法，需要对固件进行完全、全程解压，与单个程序或多个程序无关。该方法适用于大规模并行分析，可采集大量固件进行自动化测试。这种方法存在明显的局限性，即无法准确分析固件运行中的实际行为，导致大量误报。</p>
+<p>3、用户模式仿真：</p>
+<p>一种简单快速的动态调试方法。通过解压固件，可以获得一个根文件系统，然后使用QEMU用户模式来运行固件中的单个程序。QEMU支持远程调试，其中远程目标可以通过gdb设置，其固件可以通过QEMU进行有效调试。然而，在这种方法中，固件程序可能会在启动时执行许多基于硬件设备的初始化操作，并且由于无法仿真硬件设备，因此该过程经常在启动时崩溃。</p>
+<p>4、全系统仿真：</p>
+<p>FIRMADYNE基于全系统仿真，为用户提供Web界面。</p>
+<p>该方法基于QEMU的系统模式;它使用固件抽取文件系统根据busybox收集系统架构信息，匹配自定义的系统内核，然后使用QEMU系统模式运行固件。</p>
+<p>设备的配置文件一般存储在NVRAM中，NVRAM值可以通过类似nvram_get的功能在固件中读取。如果缺少 NVRAM，这些函数将在仿真期间崩溃。</p>
+<p>为了解决NVRAM缺失的问题，FIRMADYNE自定义了 libnvram.so  文件，通过LD_PRELOAD加载，并劫持NVRAM相关函数的调用。然而，在这种方法中，整个系统的仿真难度极大，时间开销大，从而限制了该方法对大规模测试分析的适应性。此外，这种方法的成功率低，并且在模糊测试过程中不稳定，因为如果程序在没有仿真函数的情况下调用 libnvram.so 文件，仿真会立即崩溃。</p>
+<p>5、增强的流程仿真</p>
+<p>通过在用户模式仿真中增加全系统仿真的功能来提高准确性和兼容性。在该方法中，被仿真的程序在一个虚拟的用户空间环境中运行，仿真器会拦截和转换程序的系统调用，并模拟其在真实环境中的行为。同时，该方法还使用系统模式仿真来模拟整个计算机系统的行为，包括处理器、内存、外设等硬件组件以及操作系统的功能。然而，这种方法中的全系统仿真组件本身并不能完全解决固件中存在的硬件依赖函数问题。如果该方法遇到一个没有仿真的外部函数，那么仿真过程将会崩溃。此外，用户模式和系统模式之间的切换也会导致性能开销。</p>
+<p>6、多目标编排分析</p>
+<p>是基于真实设备和仿真技术的组合，并致力于解决无法通过仿真解决的准确性问题以及无法通过硬件调试解决的自动分析问题。Avatar和Avatar2是这个概念的具体例子，试图将I&#x2F;O操作转发到真实设备上，以解决外部环境交互问题。然而，Avatar和Avatar2方案存在一个问题，即在大规模模糊测试中，切换仿真环境和真实设备会影响运行速度。</p>
+<p>现有方法在固件调试中发挥了重要作用，但现有方法在速度、准确性和稳定性方面仍然存在问题，文中提出了自己的方法。</p>
+<p><strong>FIRMCORN在进行模糊测试之前的准备工作和执行过程：</strong></p>
+<ol>
+<li>首先，FIRMCORN使用易受攻击代码搜索算法对固件进行分析，并确定模糊测试的入口点。然后，在实际设备上运行到入口点，并将该位置的上下文信息转储为模糊测试的初始状态。</li>
+<li>接下来，FIRMCORN在CPU模拟器中设置入口点的寄存器和内存布局。然后，使用启发式算法收集一些在进行模糊测试之前不需要模拟的函数，包括与硬件相关的函数、读写动态分配内存空间的函数以及不必要的函数。这些函数分别被称为硬件特定、未解决和不必要的函数。</li>
+<li>最后，从入口点开始，为上述函数添加钩子或过滤器，以便对易受攻击的代码进行模糊测试。这样就完成了对固件的预处理和设置，为后续的模糊测试工作做好准备。</li>
+</ol>
+<p>优化虚拟执行：</p>
+<p>通过CPU模拟器读取和执行部分固件指令，以避免全系统模拟所带来的大量时间开销。传统的基于CPU模拟器的虚拟执行方法虽然轻量级但不够准确和稳定，并且某些输出函数如puts对模糊测试并不必要。</p>
+<p>优化的虚拟执行通过使用真实IoT设备的转储上下文来优化虚拟执行的初始环境，并使用启发式算法搜索上文三种类型的函数来优化虚拟执行过程，从而实现更快、更准确、更稳定的虚拟执行。在FIRMCORN的实现中，采用优化的虚拟执行作为模糊测试的基础。</p>
+<p><strong>挑战</strong></p>
+<p>1、入口点生成</p>
+<p>物联网设备固件中存在一些与硬件相关的函数，即使这些函数存在漏洞，也无法通过远程交互进行有效利用。因此，在进行模糊测试时需要将这部分代码从测试范围中排除。同时，虚拟执行本身需要计算资源，并且基于覆盖率的模糊测试策略会不断生成新的输入以确定新的路径，这使得它成为一种效率极低的测试策略。模糊测试的入口点是在框架设计中必须获取的关键信息，它会影响模糊测试的效率和漏洞挖掘能力。</p>
+<p>2、大规模测试</p>
+<p>由于固件操作与设备密切相关，大规模测试需要大量设备的参与，而模糊测试可能会导致程序执行崩溃和频繁重启，从而消耗大量运行时间。因此，需要设计一个框架，在有限的时间内有效地测试物联网设备固件，并在可接受的硬件和软件资源范围内进行测试。</p>
+<p>3、自动化函数处理</p>
+<p>在固件的虚拟执行过程中，会遇到需要处理的函数。举例来说，在实际的固件测试中，存在大量硬件特定的函数，这可能导致虚拟执行崩溃。手动注释这些函数的地址是耗时的。因此，框架设计必须考虑自动化这些函数，以确保稳定和快速的模糊测试。</p>
+<p><strong>上述问题的解决方案</strong></p>
+<p>1、漏洞代码搜索算法</p>
+<p>基于IDAPython的高级API，计算函数的圆形复杂度和引用次数作为复杂度指标，以获取复杂度组。在每个组中，计算内存操作次数和敏感函数调用次数作为漏洞特征指标，以获取易受攻击的函数顺序；然后，使用函数的初始地址作为模糊测试的入口点。</p>
+<p>函数的圆形复杂度是一种软件度量标准，用于衡量程序中独立路径的数量，通常用于评估代码的复杂程度，后面会介绍。</p>
+<p>2、上下文转储</p>
+<p>在FIRMCORN的设计过程中采用了将上下文信息转储的方法来实现数据收集和多次测试。为了实现虚拟执行的准确性，在真实的物联网设备上转储上下文信息，恢复完整的上下文信息，并在虚拟执行之前设置寄存器和内存布局。</p>
+<p>3、启发式钩子</p>
+<p>基于启发式算法实现了针对不同类型函数的自动化处理机制。他们协调使用了两种钩子技术：全局偏移表钩子（GOT-based）和异常钩子（exception-based）。通过使用这些钩子，他们可以自动替换和模拟未解析的、硬件特定的函数，并跳过不必要的函数。下文会详细介绍。</p>
+<h2 id="详细设计"><a href="#详细设计" class="headerlink" title="详细设计"></a>详细设计</h2><p>FIRMCORN概述</p>
+<p><img src="/2024/02/15/FIRMCORN-Vulnerability-Oriented-Fuzzing-of-IoT-Firmware-via-Optimized-Virtual-Execution/image-20240215203447353.png"></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2024/02/15/FIRMCORN-Vulnerability-Oriented-Fuzzing-of-IoT-Firmware-via-Optimized-Virtual-Execution/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-CVE-2020-13390" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -220,6 +362,7 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo <span class="built_in">chroot</span> ./ ./qemu-arm-static -g 1234 ./bin/httpd</span><br><span class="line">gdb-multiarch ./bin/httpd</span><br><span class="line">target remote :1234</span><br><span class="line"><span class="built_in">continue</span></span><br></pre></td></tr></table></figure>
 
 <p><img src="/2024/02/14/CVE-2020-13390/image-20240214145633119.png"></p>
+<p><img src="/2024/02/14/CVE-2020-13390/image-20240214200907722.png"></p>
 <p>ida查看</p>
 <p><img src="/2024/02/14/CVE-2020-13390/image-20240214141320693.png"></p>
 <p>漏洞的成因是web服务在处理post请求时，对entrys和mitInterface参数没有进行检查直接复制到栈上的一个局部变量中可导致栈溢出。定位到fromAddressNat函数。</p>
@@ -1208,162 +1351,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2024/01/31/CVE-2019-7297%E6%BC%8F%E6%B4%9E/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-1-29" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <div align="center" class="post-count">
-    字数：3.5k字 | 预计阅读时长：11分钟
-</div>
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2024/01/29/1-29/">1.29</a>
-    </h1>
-  
-
-        
-        <a href="/2024/01/29/1-29/" class="archive-article-date">
-  	<time datetime="2024-01-28T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2024-01-29</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="IoTFuzzBench-A-Pragmatic-Benchmarking-Framework-for-Evaluating-IoT-Black-Box-Protocol-Fuzzers"><a href="#IoTFuzzBench-A-Pragmatic-Benchmarking-Framework-for-Evaluating-IoT-Black-Box-Protocol-Fuzzers" class="headerlink" title="IoTFuzzBench: A Pragmatic Benchmarking Framework for Evaluating IoT Black-Box Protocol Fuzzers"></a>IoTFuzzBench: A Pragmatic Benchmarking Framework for Evaluating IoT Black-Box Protocol Fuzzers</h1><p>Citation: Cheng, Y.; Chen, W.; Fan,W.; Huang, W.; Yu, G.; Liu, W.IoTFuzzBench: A Pragmatic<br>Benchmarking Framework forEvaluating IoT Black-Box ProtocolFuzzers. Electronics 2023, 12, 3010.<a target="_blank" rel="noopener" href="https://doi.org/10.3390/electronics12143010">https://doi.org/10.3390/electronics12143010</a></p>
-<p>本文设计并实现了IoTFuzzBench，这是一个可扩展的，模块化的，度量驱动的自动化框架，用于全面定量地评估物联网智能设备的黑盒协议模糊器。</p>
-<p>由于物联网智能设备是具有网络功能的计算设备，只要用户可以通过特定的网络协议远程访问它们，它们就无法免受来自互联网的攻击。这促使研究人员探索如何通过网络协议从设备外部对固件执行黑盒模糊测试。</p>
-<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>如何正确评估黑盒协议模糊技术。</p>
-<p>第一个挑战：缺乏统一的物联网模糊评估标准。Fuzzing论文使用不同的基准设备和固件映像，这使得比较它们变得困难。此外，一些基准设备可能会停产或更新，使得重复实验变得困难。因此，后续研究可能无法获得与现有工作相同的基准设备或固件映像。</p>
-<p>第二个挑战：模糊评估的高成本。涉及在许多基准固件映像上比较模糊工具，这需要时间和精力，有时需要数月。</p>
-<p>第三个挑战：缺乏统一的种子信息。IoT智能设备可以具有几十个不同的网络接口。使用来自一个接口的种子消息来模糊另一个接口可能是无效的，因为种子的质量会影响模糊结果。</p>
-<p>第四个挑战：缺乏全面的衡量标准。现有的fuzzing论文主要使用触发崩溃的次数和时间作为评估指标，但这些都是不够的。还有独特的响应信息和开销等。</p>
-<p>为了应对上述挑战，我们设计并实现了IoTFuzzBench，这是一个可扩展的，模块化的，度量驱动的物联网黑盒协议模糊评估框架。到目前为止，IoTFuzzBench已经包含了14个真实世界的基准固件镜像，30个真实世界的基准漏洞，相应的模糊种子，7个流行的模糊器和5类性能指标。</p>
-<h2 id="背景和相关工作"><a href="#背景和相关工作" class="headerlink" title="背景和相关工作"></a>背景和相关工作</h2><p>物联网智能设备的现有模糊方法主要使用基于固件仿真的灰盒模糊和基于网络的黑盒模糊来解决上述挑战。仿真器可以执行最初在IoT固件上运行的程序，而无需相应的硬件。但仿真的成功率还不够高。</p>
-<p>同时现有模糊技术的评价是临时和随意的，不同文章指标都是不同的，难以交叉比较。</p>
-<p>现有的FuzzBench和Magma等测试框架以覆盖率、bug发现个数和时间等作为评判指标。</p>
-<h2 id="设计"><a href="#设计" class="headerlink" title="设计"></a>设计</h2><h3 id="整体框架"><a href="#整体框架" class="headerlink" title="整体框架"></a>整体框架</h3><p><img src="/2024/01/29/1-29/image-20240129141335749.png">、</p>
-<p>该框架包括四个主要组件：调度器（scheduler）、数据库（database）、任务队列（task queue）和作业驱动程序（job driver）。</p>
-<ul>
-<li><p><strong>调度器</strong>：负责读取评估配置文件，生成模糊测试任务，并调用分析器。在评估过程开始时，它会读取评估配置文件，并将每个模糊器与每个基准中的漏洞组合，形成模糊器、基准固件镜像和漏洞的三元组。这些三元组对应于后续模糊测试过程中可以独立运行的模糊测试任务。</p>
-</li>
-<li><p><strong>数据库</strong>：存储基准程序包、模糊测试器包和模糊测试结果。</p>
-</li>
-<li><p><strong>任务队列</strong>：管理模糊测试任务，并安排它们执行。</p>
-</li>
-<li><p><strong>作业驱动程序</strong>：创建和运行基准和模糊测试器容器，推动模糊测试过程，监视过程，并记录模糊测试结果。它根据任务参数创建一组独立的基准容器和模糊测试器容器，驱动模糊测试过程，监视过程，并记录模糊测试结果。</p>
-</li>
-<li><p><code>Benchmark bundles</code>是指基准程序包，它包含了IoT设备或嵌入式设备的固件镜像文件以及所需的运行环境。这些基准程序包可以被用于进行模糊测试，以检测其中的漏洞和安全问题。</p>
-</li>
-<li><p><code>Fuzzer bundles</code>是指模糊测试器包，它包括了一个或多个模糊测试器以及所需的运行环境。这些模糊测试器可以用于对基准程序进行模糊测试，以发现其中的安全漏洞和缺陷。</p>
-</li>
-</ul>
-<p>在IoTFuzzBench框架中，调度器会读取评估配置文件，使用其中的信息来确定哪些基准程序和模糊测试器应该被使用，并将它们打包成相应的<code>benchmark bundles</code>和<code>fuzzer bundles</code>。然后作业驱动程序会使用这些包来创建容器，以便在容器中执行模糊测试任务。</p>
-<p>整个模糊测试过程如下：</p>
-<ol>
-<li>调度器根据评估配置文件创建多个独立的模糊测试任务，并将它们添加到任务队列中，由任务队列安排执行。</li>
-<li>在每个模糊测试任务中，作业驱动程序根据任务参数创建一组独立的基准容器和模糊测试器容器，驱动模糊测试过程，监视过程，并记录模糊测试结果。</li>
-<li>所有模糊测试任务完成后，调度器调用分析器分析所有任务的模糊测试结果，生成相应的模糊测试报告，并将其存储在数据库中。</li>
-</ol>
-<h3 id="fuzz工作流程"><a href="#fuzz工作流程" class="headerlink" title="fuzz工作流程"></a>fuzz工作流程</h3><p><img src="/2024/01/29/1-29/image-20240129142525502.png"></p>
-<ol>
-<li><code>Benchmark Builder</code>（基准构建器）：它读取基准程序包中的配置文件，准备容器运行时参数。然后，根据基准程序包中的Dockerfile构建基准镜像，并根据运行时参数启动容器，完成基准容器的构建过程。</li>
-<li><code>Seed Updater</code>（种子更新器）：它更新模糊测试种子中的身份验证信息。由于固件仿真过程需要一定时间，在启动基准容器时，种子更新器循环监视基准容器中的服务是否存活，并等待服务上线。当服务上线时，种子更新器调用基准程序包中实现的种子更新接口，完成模糊测试种子的更新操作。此外，种子更新器在容器中创建一个数据包捕获进程，以在后续的模糊测试过程中捕获网络流量。</li>
-<li><code>Monitor</code>（监视器）：它用于监视模糊测试器容器和基准容器，判断模糊测试结果并收集用于模糊测试评估的原始数据。对于模糊测试器容器，监视器周期性地检查模糊测试器容器的存活状态，以确定模糊测试过程是否结束。同时，监视器周期性地记录模糊测试器运行时的计算资源消耗（如内存），以供后续评估使用。对于基准容器，仿真工具可以创建一个独立的运行环境来运行基准固件。因此，当触发基准固件中的漏洞时，基准固件的服务通常会异常，基准容器不会直接退出。因此，监视器创建一个独立的监控子进程，定期访问基准服务，监控基准固件中的漏洞是否成功触发。当基准服务崩溃、模糊测试器容器退出或达到最大模糊测试时间时，监视器收集所有的模糊测试结果，包括流量数据包、日志信息、运行时计算资源消耗等，并将这些生成的数据写入数据库中。</li>
-</ol>
-<h3 id="基准选择原则"><a href="#基准选择原则" class="headerlink" title="基准选择原则"></a>基准选择原则</h3><ol>
-<li>真实世界的固件映像：每个基准固件映像都应该来自真实世界，并覆盖主流架构。</li>
-<li>真实世界的漏洞：每个基准固件映像应包含至少一个真实世界的漏洞。</li>
-<li>典型漏洞类型：固件中的漏洞类型应涵盖典型的物联网设备漏洞类型，如内存损坏，命令注入和拒绝服务。</li>
-<li>漏洞的利用难度和价值相似：所选漏洞的CVSS分数应该在同一范围内，例如都是CVSS分数在7以上的高危漏洞。</li>
-<li>确定的种子信息：所有评估的模糊测试工具都应该使用相同的标准网络接口通信消息作为初始种子进行变异。这是因为不同的模糊测试工具可能有不同的变异策略和算法，但在评估它们的能力时，应该使用相同的起点，即相同的初始种子消息。</li>
-<li>固件映像的仿真和保真度：研究人员应该为每个基准固件提供丰富的运行时信息，如体系结构信息，仿真方法和仿真步骤，同时验证保真性。</li>
-</ol>
-<p><strong>接下来详细说明六个原则的实现步骤。</strong></p>
-<ol>
-<li><strong>首先要选取一批可以成功仿真的固件镜像作为候选基准固件。</strong></li>
-</ol>
-<ul>
-<li><p>对于用户态仿真，固件中需要由不同固件镜像进行仿真的程序、操作参数和相关资源文件可能会有很大差异。我们收集研究人员的固件仿真报告，并手动编写Dockerfile来完成仿真过程。</p>
-</li>
-<li><p>系统态仿真将在固件运行时对整个操作系统进行仿真，并在操作系统上运行固件中的应用程序。这种方法比用户态仿真消耗更多的计算资源，但仿真更加通用。一些系统态仿真工具，如Firmadyne和FirmAE，可以直接尝试仿真目标固件镜像，并提供仿真是否成功的反馈。因此，我们首先收集了一些公开可用的固件镜像，并基于固件分析工具（Firmware Analysis Toolkit）编写了一个基于批量仿真测试工具，实现自动化固件系统态仿真测试。</p>
-<p> <strong>2.每个基准固件都应该包含基准固件筛选原则中的真实漏洞。</strong></p>
-</li>
-</ul>
-<p>最后成功验证了14个候选基准固件映像上的30个漏洞。</p>
-<p><img src="/2024/01/29/1-29/image-20240129171719597.png"></p>
-<p><strong>3.Benchmark Bundle：</strong>包括一个模拟固件映像、一个Dockerfile和启动脚本、一个基准测试配置文件和一个模糊种子更新脚本。</p>
-<p><strong>基准固件仿真虚拟环境的构建</strong>，为每个基准固件编写了独立的Dockerfile和相应的容器启动脚本，以规范每个基准固件仿真环境的构建过程。网络拓扑如图所示：</p>
-<p><img src="/2024/01/29/1-29/image-20240129174358721.png"></p>
-<p>仿真设备的tap1网络卡和基准容器的tap0网络卡位于同一个独立子网中，模糊测试任务所在主机的eth0网络卡和基准容器的eth1网络卡位于另一个独立子网中。因此，为了使仿真设备提供的网络服务能够被模糊测试任务所在的主机和后续的模糊测试工具访问，需要将网络服务端口转发到基准容器的eth1网络卡上的特定端口。这一步可以通过在基准容器内部创建一个独立的端口转发进程来实现。</p>
-<p><strong>种子认证问题</strong>：一些物联网智能设备在通过网络接口与外界通信时需要身份验证。需要实时更新，为每个基准固件编写了独立的种子更新脚本，以完成此接口的不同实现。</p>
-<p><strong>4.模糊器选择：</strong>选择有代表性的模糊器进行测试，有Snipuzz，T-Reqs，Mutiny，Fuzzotron ，Boofuzz-Default，BoofuzzByte和Boofuzz-Replant。</p>
-<p><strong>Fuzzer Bundle：</strong>构建单个fuzzer运行时环境的所有资源文件。包括一个独立的fuzzer及其所有依赖项、一个Dockerfile和启动脚本。IoTFuzzBench为每个模糊器容器提供了三个运行时参数，即IP地址、端口和更新的模糊种子。每个模糊测试工具的启动脚本专门使用这三个参数，并单独实现模糊测试工具的启动过程。</p>
-<p><strong>5.性能度量</strong>：</p>
-<ol>
-<li>发现漏洞的数量</li>
-<li>发现漏洞的速度</li>
-<li>发现漏洞的稳定性：IoTFuzzBench计算每个模糊器在每个实验中发现的漏洞数量的相对标准偏差（RSD）作为具体的定量指标。</li>
-<li>唯一响应数：由于物联网智能设备通常通过网络接口与外部世界进行通信，从物联网设备中唤起的独特响应消息的数量是衡量模糊测试工具性能的重要指标。较高数量的独特响应触发表示该模糊测试工具可能在物联网智能设备中检测到更多的代码执行路径。检测到的代码路径越多，模糊测试工具可能发现的漏洞就越多。一定程度上反映了覆盖率。</li>
-<li>运行开销：IoTFuzzBench使用内存消耗作为衡量不同模糊器开销的指标。</li>
-</ol>
-<h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><p>1.发现漏洞的数量</p>
-<p>a是未经判断的，b是经过判断的</p>
-<p><img src="/2024/01/29/1-29/image-20240130141136249.png"></p>
-<p>2.速度</p>
-<p><img src="/2024/01/29/1-29/image-20240130141721789.png"></p>
-<p><img src="/2024/01/29/1-29/image-20240130141743875.png"></p>
-<p>3.稳定性</p>
-<p>RSD:每个模糊器在每个实验中发现的漏洞数量的相对标准偏差,越低越好</p>
-<p><img src="/2024/01/29/1-29/image-20240130141907110.png"></p>
-<p>4.独特的响应</p>
-<p>针对一些典型漏洞类型，每个fuzzer随着时间推移发现的平均独特响应数量。这些响应是指在测试期间被fuzzer唯一发现的、未被其他fuzzer发现的漏洞响应。</p>
-<p><img src="/2024/01/29/1-29/image-20240130143639333.png"></p>
-<p>5.运行开销</p>
-<p><img src="/2024/01/29/1-29/image-20240130143759881.png"></p>
-<h3 id><a href="#" class="headerlink" title></a></h3>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2024/01/29/1-29/">展开全文 >></a>
         </p>
       
 
