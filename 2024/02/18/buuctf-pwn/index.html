@@ -63,13 +63,13 @@
 <meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240221205030401.png">
 <meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240221204950976.png">
 <meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240221210751048.png">
-<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/Users/26645/AppData/Roaming/Typora/typora-user-images/image-20240221211109237.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240221211109237.png">
 <meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240221211302948.png">
 <meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240221211348886.png">
 <meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240221211716815.png">
 <meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240221214904809.png">
 <meta property="article:published_time" content="2024-02-17T16:00:00.000Z">
-<meta property="article:modified_time" content="2024-02-21T13:54:47.157Z">
+<meta property="article:modified_time" content="2024-02-21T14:07:30.884Z">
 <meta property="article:author" content="shy">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240218104334527.png">
@@ -406,7 +406,7 @@
 <p><img src="/2024/02/18/buuctf-pwn/image-20240221210751048.png"></p>
 <p><strong>可以考虑利用rop链调用execve函数，用系统调用的函数参数是存在寄存器中的，但是本程序找不到&#x2F;bin&#x2F;sh的字符串，可以利用read函数读入&#x2F;bin&#x2F;sh字符串</strong></p>
 <p><strong>gadget</strong></p>
-<p><img src="/2024/02/18/buuctf-pwn/Users\26645\AppData\Roaming\Typora\typora-user-images\image-20240221211109237.png" alt="image-20240221211109237"></p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240221211109237.png"></p>
 <p><code>ROPgadget --binary simplerop --only &quot;pop|ret&quot; | grep &quot;edx&quot;</code></p>
 <p><img src="/2024/02/18/buuctf-pwn/image-20240221211302948.png"></p>
 <p><code>ROPgadget --binary simplerop --only &quot;pop|ret&quot; | grep &quot;eax&quot;</code></p>

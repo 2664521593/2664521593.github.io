@@ -350,7 +350,7 @@
 <p><img src="/2024/02/18/buuctf-pwn/image-20240221210751048.png"></p>
 <p><strong>可以考虑利用rop链调用execve函数，用系统调用的函数参数是存在寄存器中的，但是本程序找不到&#x2F;bin&#x2F;sh的字符串，可以利用read函数读入&#x2F;bin&#x2F;sh字符串</strong></p>
 <p><strong>gadget</strong></p>
-<p><img src="/2024/02/18/buuctf-pwn/Users\26645\AppData\Roaming\Typora\typora-user-images\image-20240221211109237.png" alt="image-20240221211109237"></p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240221211109237.png"></p>
 <p><code>ROPgadget --binary simplerop --only &quot;pop|ret&quot; | grep &quot;edx&quot;</code></p>
 <p><img src="/2024/02/18/buuctf-pwn/image-20240221211302948.png"></p>
 <p><code>ROPgadget --binary simplerop --only &quot;pop|ret&quot; | grep &quot;eax&quot;</code></p>
