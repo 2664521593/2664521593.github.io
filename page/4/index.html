@@ -60,10 +60,10 @@
 			</ul>
 		</nav>
                                 <nav>
-                                               总文章数 40
+                                               总文章数 41
                                 </nav>
                                 <nav>
-	总字数 <span class="post-count">70.7k</span>
+	总字数 <span class="post-count">74.7k</span>
                                 </nav>
 		<nav class="header-smart-menu">
     		
@@ -157,6 +157,123 @@
           </div>
           <div id="js-content" class="content-ll">
             
+  
+    <article id="post-Exercise-7-VLC-Media-Player" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        <div align="center" class="post-count">
+    字数：777字 | 预计阅读时长：3分钟
+</div>
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2023/07/20/Exercise-7-VLC-Media-Player/">Exercise-7-VLC Media Player</a>
+    </h1>
+  
+
+        
+        <a href="/2023/07/20/Exercise-7-VLC-Media-Player/" class="archive-article-date">
+  	<time datetime="2023-07-20T04:33:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-07-20</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>本次练习的目标是对VLC媒体播放器进行模糊测试，目的是发现VLC 3.0.7.1版本中 <a target="_blank" rel="noopener" href="https://nvd.nist.gov/vuln/detail/CVE-2019-14776"><strong>CVE-2019-14776</strong></a> 的崩溃&#x2F;PoC</p>
+<p>本次实验主要学习AFL的部分插桩（Partial Instrumentation）功能，允许指定哪些函数&#x2F;文件应该使用插桩或不使用插桩进行编译。这有助于模糊测试器专注于程序的重要部分，避免通过执行无趣的代码路径产生不必要的噪音和干扰。</p>
+<p>假设我们向模糊测试器提供了一个有效的MKV文件。但在经过多次输入文件的变异后，“魔术字节”已经改变，我们的程序现在将该输入文件视为AVI文件。因此，这个“变异的MKV文件”现在将被AVI Demux处理。经过一段时间后，文件的魔术字节再次改变，现在将该文件视为MPEG文件。在这两种情况下，这个新变异文件提高代码覆盖率的潜力非常低，因为这个新文件没有任何有效的语法结构。</p>
+<p>简而言之，如果我们不对代码覆盖率设置限制，模糊测试器很容易选择错误的路径，从而使模糊测试过程效果不佳。</p>
+<p>要使用这个功能，我们在编译时设置环境变量AFL_LLVM_ALLOWLIST。这个环境变量必须指向一个包含所有应该进行插桩的函数&#x2F;文件名的文件。</p>
+<p>实验流程</p>
+<p>首先创建文件夹并下载Vlc-Media-Player3.0.7.1</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mkdir fuzzing_vlc &amp;&amp; cd fuzzing_vlc</span><br><span class="line">wget https://download.videolan.org/pub/videolan/vlc/3.0.7.1/vlc-3.0.7.1.tar.xz</span><br><span class="line">tar -xvf vlc-3.0.7.1.tar.xz</span><br></pre></td></tr></table></figure>
+
+<p>搜索VLC所需的依赖并安装</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install libvlc-dev libavcodec-dev libavformat-dev libswscale-dev libxcb1-dev libxcb-composite0-dev libxcb-xv0-dev libxcb-randr0-dev libasound2-dev libpulse-dev</span><br></pre></td></tr></table></figure>
+
+<p>编译安装，根据提示禁用一些选项</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./configure --prefix=&quot;$HOME/fuzzing_vlc/vlc-3.0.7.1/install&quot; --disable-a52 --disable-lua --disable-qt</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/07/20/Exercise-7-VLC-Media-Player/image-20230724110012857.png"></p>
+<p><img src="/2023/07/20/Exercise-7-VLC-Media-Player/image-20230724110349956.png"></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make -j$(nproc)</span><br></pre></td></tr></table></figure>
+
+<p>安装成功</p>
+<p><img src="/2023/07/20/Exercise-7-VLC-Media-Player/image-20230724110434139.png"></p>
+<p>根据fuzzing101的文档对vlc3.0.7.1&#x2F;test&#x2F;vlc-demux-run.c的文件做修改</p>
+<p><img src="/2023/07/20/Exercise-7-VLC-Media-Player/image-20230724104858372.png"></p>
+<p>同时再根据speedup.patch修改文件</p>
+<p><img src="/2023/07/20/Exercise-7-VLC-Media-Player/image-20230724112125871.png"></p>
+<p>下载Partial_instrumentation</p>
+<p><img src="/2023/07/20/Exercise-7-VLC-Media-Player/image-20230724141851324.png"></p>
+<p>重新编译文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CC=&quot;afl-clang-fast&quot; CXX=&quot;afl-clang-fast++&quot; ./configure --prefix=&quot;$HOME/fuzzing101/fuzzing_vlc/install&quot; --disable-a52 --disable-lua --disable-qt --with-sanitizer=address</span><br><span class="line">AFL_LLVM_ALLOWLIST=$HOME/fuzzing101/fuzzing_vlc/Partial_instrumentation make -j$(nproc) LDFLAGS=&quot;-fsanitize=address&quot;</span><br></pre></td></tr></table></figure>
+
+<p>编译后出现内存泄漏问题</p>
+<p>下载字典</p>
+<p><img src="/2023/07/20/Exercise-7-VLC-Media-Player/image-20230724144303023.png"></p>
+<p>下载语料库</p>
+<p><img src="/2023/07/20/Exercise-7-VLC-Media-Player/image-20230724144326647.png"></p>
+<p>编译vlc-demux-run</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make vlc-demux-run -j$(nproc) LDFLAGS=&quot;-fsanitize=address&quot;</span><br></pre></td></tr></table></figure>
+
+<p>开始fuzz</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">afl-fuzz -m none -t 100  -i &#x27;./afl_in&#x27; -o &#x27;./afl_out&#x27; -x asf_dictionary.dict -D -- ./vlc-3.0.7.1/test/vlc-demux-run @@</span><br></pre></td></tr></table></figure>
+
+<p> 虽然速度慢，但还是很快出了结果。</p>
+<p><img src="/2023/07/20/Exercise-7-VLC-Media-Player/image-20230731190403621.png"></p>
+<h2 id="crash分析"><a href="#crash分析" class="headerlink" title="crash分析"></a>crash分析</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./vlc-demux-run $HOME/fuzzing101/fuzzing_vlc/afl_out/default/crashes/id:000000,sig:06,src:000003,time:153403,execs:4393,op:flip1,pos:279</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/07/20/Exercise-7-VLC-Media-Player/image-20230731191515724.png"></p>
+<p>发现内存泄漏问题</p>
+<p><img src="/2023/07/20/Exercise-7-VLC-Media-Player/image-20230731191928935.png"></p>
+<h2 id="修复"><a href="#修复" class="headerlink" title="修复"></a>修复</h2><p><a target="_blank" rel="noopener" href="https://github.com/videolan/vlc/commit/fdbdd677c1e6262f31771b0ba10afb24aabf108c#diff-a22170125046390274dd33c2cb5bb0e99d485e6708b376f40978de9534ac55a9">https://github.com/videolan/vlc/commit/fdbdd677c1e6262f31771b0ba10afb24aabf108c#diff-a22170125046390274dd33c2cb5bb0e99d485e6708b376f40978de9534ac55a9  </a></p>
+<p><img src="/2023/07/20/Exercise-7-VLC-Media-Player/image-20230731192157373.png"></p>
+<p>看到减少了内存分配的大小</p>
+<h2 id="总结与反思"><a href="#总结与反思" class="headerlink" title="总结与反思"></a>总结与反思</h2><p>通过本次实验，学习到了afl的部分插桩功能，如果要实现这个，需要对程序进行全面分析与理解。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2023/07/20/Exercise-7-VLC-Media-Player/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
   
     <article id="post-Exercise-6-GIMP" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
@@ -1229,87 +1346,9 @@
 
 
   
-    <article id="post-hello-world" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <div align="center" class="post-count">
-    字数：75字 | 预计阅读时长：1分钟
-</div>
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2023/07/06/hello-world/">Hello World</a>
-    </h1>
-  
-
-        
-        <a href="/2023/07/06/hello-world/" class="archive-article-date">
-  	<time datetime="2023-07-06T15:40:08.719Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-07-06</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2023/07/06/hello-world/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/3/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span>
+      <a class="extend prev" rel="prev" href="/page/3/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/5/">Next &amp;raquo;</a>
     </nav>
   
 
